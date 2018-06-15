@@ -1,7 +1,7 @@
-const dataPropertyPrefix = 'd:';
+const dataPrefix = 'd:';
 
 export default {
-    topicPropertyPrefix: 't:',
-    dataPropertyPrefix: dataPropertyPrefix,
+    topicPrefix: 't:',
+    dataPrefix: dataPrefix,
     dataPropertyKey: dataPropertyPrefix+'data',
 };
