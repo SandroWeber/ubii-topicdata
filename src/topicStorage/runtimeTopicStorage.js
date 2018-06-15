@@ -1,36 +1,69 @@
-import TopicStorage from './dataStorage';
+import TopicStorage from './topicStorage.js';
+import {topicPrefix, dataPropertyKey} from './constants.js';
 
 (() => {
-  const topicPrefix = 't:';
-  const dataPrefix = 'd:';
-  const dataPropertyKey = dataPrefix+'data'
-
+  /**
+   * Local runtime implementaion of a topic storage.
+   * The data is only available at runtime and is not permanently stored.
+   * (No local file or database involved. The data is only in the program memory.)
+   */
   class RuntimeTopicStorage extends TopicStorage {
+    /*
+    * The runtime topic storage uses a common javascript object as storage structure.
+    * This is the most performant way to find key-value pairs.
+    * The topic of queries is split and used as property keys.
+    * */
     
     constructor() {
       super();
-      // more Derived-specific stuff here, maybe
 
       this.storage = {};
     }
 
+    /**
+     * Pushes data into memory under the specified topic.
+     * If there is already data under this topic, it will be overwritten.
+     * @param {String} topic Well formed topic string.
+     * @param {*} data 
+     */
     push(topic, data){
       let element = traverseAndCreateTopicPath(topic).apply(this);
       element[dataPropertyKey] = data;
     }
 
+    /**
+     * Pulls the data from memory that is stored under the given topic.
+     * @param {String} topic Well formed topic string.
+     * @returns Returns the data stored under the given topic. Returns null if the topic does not exist.
+     */
     pull(topic){
+      if(!this.has(topic)){
+        return null;
+      }
       let element = traverseAndCreateTopicPath(topic).apply(this);
       return element[dataPropertyKey];
     }
 
+    /**
+     * Removes the topic and data from memory that is stored under the given topic if the topic exists. 
+     * Cleans up the path afterwards.
+     * @param {String} topic Well formed topic string.
+     */
     remove(topic){
+      if(!this.has(topic)){
+        return;
+      }
       let element = traverseAndCreateTopicPath(topic).apply(this);
       element[dataPropertyKey] = {};
 
       cleanPath(topic).apply(this);
     }
 
+    /**
+     * Does the the storage has the given topic?
+     * @param {String} topic Well formed topic string.
+     * @returns {Boolean} Returns whether the the storage has the given topic or not.
+     */
     has(topic){
       // get topic path
       const path = getTopicPathArray(topic);
@@ -49,7 +82,7 @@ import TopicStorage from './dataStorage';
     }
   }
 
-  // private methods
+  // --- private methods
 
   /**
    * 
@@ -172,9 +205,13 @@ import TopicStorage from './dataStorage';
     return storageElement;
   }
 
+  /**
+   * Returns 
+   * @param {String} topic 
+   */
   function getTopicPathArray(topic){
     return topic.toString().split(':').map( t => '' + topicPrefix + t );
   }
 
   export default RuntimeTopicStorage;
-}();)
+})();

@@ -25,7 +25,7 @@ const index = {
     target: 'web',
     mode: 'development',
     devtool: 'source-map',
-    entry: './src/js/index.js',
+    entry: './src/index.js',
     output: {
         path: path.resolve(__dirname, 'dist/js'),
         filename: 'bundle.js',
