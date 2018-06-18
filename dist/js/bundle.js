@@ -219,7 +219,7 @@ var _require2 = __webpack_require__(/*! ./constants.js */ "./src/topicStorage/co
           return;
         }
         var element = traverseAndCreateTopicPath.call(this, topic);
-        element[dataPropertyKey] = {};
+        delete element[dataPropertyKey];
 
         cleanPath.call(this, topic);
       }
@@ -241,7 +241,7 @@ var _require2 = __webpack_require__(/*! ./constants.js */ "./src/topicStorage/co
         var il = path.length;
         for (var i = 0; i < il; i++) {
           if (element.hasOwnProperty(path[i])) {
-            element = e[path[i]];
+            element = element[path[i]];
           } else {
             return false;
           }
@@ -271,7 +271,7 @@ var _require2 = __webpack_require__(/*! ./constants.js */ "./src/topicStorage/co
     var il = path.length;
     for (var i = 0; i < il; i++) {
       if (element.hasOwnProperty(path[i])) {
-        element = e[path[i]];
+        element = element[path[i]];
       } else {
         element[path[i]] = {};
         element = element[path[i]];
@@ -284,63 +284,21 @@ var _require2 = __webpack_require__(/*! ./constants.js */ "./src/topicStorage/co
     // Get the topic path.
     var path = getTopicPathArray(topic);
 
-    recursiveIsRelevantCleanUp(this.storage[path[0]]);
-
-    /* None-recursive approach: (Should be minimal more efficient since only the specified path is checked, but the recursive version is more reliable due to redundant checks of all sub-paths)
-    // Do not clean if the topic path target is no "leaf".
-    if(Object.getOwnPropertyNames(obj).length !== 0){
-      return;
+    if (!recursiveIsRelevantCleanUp(this.storage[path[0]])) {
+      delete this.storage[path[0]];
     }
-     // Traverse the path to the target and fill relevance map
-    let element = this.storage;
-    let relevanceMap = [];
-    const il = path.length;
-    for(let i = 0; i < il; i++){
-      if(element.hasOwnProperty(path[i])){
-        element = e[path[i]];
-      }else{
-        break;
-      }
-       if(Object.getOwnPropertyNames(element).length > 1){
-        // has data or another path
-        relevanceMap.push(true);
-      }else{
-        relevanceMap.push(false);
-      }
-    }
-     // Now check if the topic is still relevant and clean up if necessary.
-    const ol = relevanceMap.length;
-    let element = this.storage;
-     for(let i = 0; i < il; i++){
-      // The topic is relevant if any descendant is relevant
-      let nextIsRelevant = false;
-      for(let o = i; o < ol; o++){ 
-        if(relevanceMap[o]){
-          nextIsRelevant = true;
-          break;
-        }
-      }
-       if(!nextIsRelevant){
-        delete element[path[i]];
-        break;
-      }
-       if(element.hasOwnProperty(path[i])){
-        element = e[path[i]];
-      }else{
-        break;
-      }
-    }*/
   };
 
   var recursiveIsRelevantCleanUp = function recursiveIsRelevantCleanUp(element) {
     var result = false;
     var keys = Object.getOwnPropertyNames(element);
 
-    il = keys.length;
+    var il = keys.length;
     for (var i = 0; i < il; i++) {
-      if (keys[i] = dataPropertyKey) {
-        return true;
+      if (keys[i] === dataPropertyKey) {
+        result = true;
       } else {
+        // ToDo: Check for valid path element (starts with t:)
         var intermediateResult = recursiveIsRelevantCleanUp(element[keys[i]]);
         if (!intermediateResult) {
           delete element[keys[i]];
@@ -348,7 +306,7 @@ var _require2 = __webpack_require__(/*! ./constants.js */ "./src/topicStorage/co
         result = result || intermediateResult;
       }
     }
-
+    console.log("return " + result);
     return result;
   };
 

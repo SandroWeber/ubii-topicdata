@@ -4,13 +4,13 @@ import {RuntimeTopicStorage} from './../dist/js/bundle.js';
 (function(){
 
 	
-	let createStorageSnapwhotOne = () => {
+	let createStorageSnapshotOne = () => {
 		let raw = {};
 
 		return raw;
     }
     
-    let createStorageSnapwhotTwo = () => {
+    let createStorageSnapshotTwo = () => {
 		let raw = {
             't:a': {
                 'd:data': 'awesome a',
@@ -26,6 +26,56 @@ import {RuntimeTopicStorage} from './../dist/js/bundle.js';
             },
             't:b': {
                 'd:data': 'awesome b',
+            }
+        };
+
+		return raw;
+    }
+
+    let createStorageSnapshotThree = () => {
+		let raw = {
+            't:a': {
+                'd:data': 'awesome a',
+                't:x': {
+                    't:o': {
+                        'd:data': 'awesome a:x:o',
+                    }
+                },
+                't:y': {
+                    'd:data': 'awesome a:y',
+                }
+            },
+            't:b': {
+                'd:data': 'awesome b',
+            }
+        };
+
+		return raw;
+    }
+
+    let createStorageSnapshotFour = () => {
+		let raw = {
+            't:a': {
+                'd:data': 'awesome a',
+                't:y': {
+                    'd:data': 'awesome a:y',
+                }
+            },
+            't:b': {
+                'd:data': 'awesome b',
+            }
+        };
+
+		return raw;
+    }
+
+    let createStorageSnapshotFive = () => {
+		let raw = {
+            't:a': {
+                'd:data': 'awesome a',
+                't:y': {
+                    'd:data': 'awesome a:y',
+                }
             }
         };
 
@@ -48,7 +98,7 @@ import {RuntimeTopicStorage} from './../dist/js/bundle.js';
 
 
 	test('empty', t => {
-        let snapshot = createStorageSnapwhotOne();
+        let snapshot = createStorageSnapshotOne();
         let storage = new RuntimeTopicStorage();
 
         t.deepEqual(storage.storage, snapshot);
@@ -56,7 +106,7 @@ import {RuntimeTopicStorage} from './../dist/js/bundle.js';
     });
     
     test('push', t => {
-        let snapshot = createStorageSnapwhotTwo();
+        let snapshot = createStorageSnapshotTwo();
         let storage = createStorageTwo();
 
         t.deepEqual(storage.storage, snapshot);
@@ -64,7 +114,7 @@ import {RuntimeTopicStorage} from './../dist/js/bundle.js';
     });
 
     test('pull', t => {
-        let snapshot = createStorageSnapwhotTwo();
+        let snapshot = createStorageSnapshotTwo();
         let storage = createStorageTwo();
 
         let dataA = storage.pull('a');
@@ -79,6 +129,30 @@ import {RuntimeTopicStorage} from './../dist/js/bundle.js';
         t.is(dataAY, 'awesome a:y');
         t.is(dataAXO, 'awesome a:x:o');
 
+    });
+
+    test('remove', t => {
+        let snapshot = createStorageSnapshotTwo();
+        let storage = createStorageTwo();
+
+        t.deepEqual(storage.storage, snapshot);
+
+        storage.remove('a:x');
+        snapshot = createStorageSnapshotThree();
+        t.deepEqual(storage.storage, snapshot);
+
+        storage.remove('a:x:o');
+        snapshot = createStorageSnapshotFour();
+        t.deepEqual(storage.storage, snapshot);
+
+        storage.remove('b');
+        snapshot = createStorageSnapshotFive();
+        t.deepEqual(storage.storage, snapshot);
+
+        storage.remove('a');
+        storage.remove('a:y');
+        snapshot = createStorageSnapshotOne();
+        t.deepEqual(storage.storage, snapshot);
     });
     
 
