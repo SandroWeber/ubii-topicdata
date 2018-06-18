@@ -74,7 +74,7 @@ const {topicPrefix, dataPropertyKey} = require('./constants.js');
       const il = path.length;
       for(let i = 0; i < il; i++){
         if(element.hasOwnProperty(path[i])){
-          element = e[path[i]];
+          element = element[path[i]];
         }else{
           return false;
         }
@@ -99,7 +99,7 @@ const {topicPrefix, dataPropertyKey} = require('./constants.js');
     const il = path.length;
     for(let i = 0; i < il; i++){
       if(element.hasOwnProperty(path[i])){
-        element = e[path[i]];
+        element = element[path[i]];
       }else{
         element[path[i]] = {};
         element = element[path[i]];
