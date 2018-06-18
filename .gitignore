@@ -1,6 +1,6 @@
 node_modules/
+dist/
 .build/
-.dist/
 .devnotes/
 .node_modules/
 lib/tests/
