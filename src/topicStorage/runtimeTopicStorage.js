@@ -1,7 +1,8 @@
-import TopicStorage from './topicStorage.js';
-import {topicPrefix, dataPropertyKey} from './constants.js';
+const {TopicStorage} = require('./topicStorage.js');
+const {topicPrefix, dataPropertyKey} = require('./constants.js');
 
-(() => {
+
+(function(){
   /**
    * Local runtime implementaion of a topic storage.
    * The data is only available at runtime and is not permanently stored.
@@ -27,7 +28,7 @@ import {topicPrefix, dataPropertyKey} from './constants.js';
      * @param {*} data 
      */
     push(topic, data){
-      let element = traverseAndCreateTopicPath(topic).apply(this);
+      let element = traverseAndCreateTopicPath.call(this, topic);
       element[dataPropertyKey] = data;
     }
 
@@ -40,7 +41,7 @@ import {topicPrefix, dataPropertyKey} from './constants.js';
       if(!this.has(topic)){
         return null;
       }
-      let element = traverseAndCreateTopicPath(topic).apply(this);
+      let element = traverseAndCreateTopicPath.call(this, topic);
       return element[dataPropertyKey];
     }
 
@@ -53,10 +54,10 @@ import {topicPrefix, dataPropertyKey} from './constants.js';
       if(!this.has(topic)){
         return;
       }
-      let element = traverseAndCreateTopicPath(topic).apply(this);
+      let element = traverseAndCreateTopicPath.call(this,topic);
       element[dataPropertyKey] = {};
 
-      cleanPath(topic).apply(this);
+      cleanPath.call(this,topic);
     }
 
     /**
@@ -89,7 +90,7 @@ import {topicPrefix, dataPropertyKey} from './constants.js';
    * @param {String} topic 
    * @return returns the path target element
    */
-  function traverseAndCreateTopicPath(topic){
+  let traverseAndCreateTopicPath = function(topic){
     // get topic path
     const path = getTopicPathArray(topic);
 
@@ -101,13 +102,13 @@ import {topicPrefix, dataPropertyKey} from './constants.js';
         element = e[path[i]];
       }else{
         element[path[i]] = {};
-        element = e[path[i]];
+        element = element[path[i]];
       }
     }
     return element;
   }
 
-  function cleanPath(topic){
+  let cleanPath = function(topic){
     // Get the topic path.
     const path = getTopicPathArray(topic);
 
@@ -165,7 +166,7 @@ import {topicPrefix, dataPropertyKey} from './constants.js';
     }*/
   }
 
-  function recursiveIsRelevantCleanUp(element){
+  let recursiveIsRelevantCleanUp = function(element){
     let result = false;
     let keys = Object.getOwnPropertyNames(element);
 
@@ -185,7 +186,7 @@ import {topicPrefix, dataPropertyKey} from './constants.js';
     return result;
   }
 
-  function getData(topic){
+  let getData = function(topic){
     // get topic path
     const path = getTopicPathArray(topic);
 
@@ -209,9 +210,13 @@ import {topicPrefix, dataPropertyKey} from './constants.js';
    * Returns 
    * @param {String} topic 
    */
-  function getTopicPathArray(topic){
+  let getTopicPathArray = function(topic){
     return topic.toString().split(':').map( t => '' + topicPrefix + t );
   }
 
-  export default RuntimeTopicStorage;
+  module.exports = {
+    'RuntimeTopicStorage': RuntimeTopicStorage,
+  }
+
 })();
+

@@ -1,7 +1,7 @@
 const dataPrefix = 'd:';
 
-export default {
+module.exports =  {
     topicPrefix: 't:',
     dataPrefix: dataPrefix,
-    dataPropertyKey: dataPropertyPrefix+'data',
+    dataPropertyKey: dataPrefix+'data',
 };

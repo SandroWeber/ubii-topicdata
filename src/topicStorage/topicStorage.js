@@ -26,4 +26,6 @@ class TopicStorage {
   }
 }
 
-export default TopicStorage;
+module.exports = {
+  TopicStorage: TopicStorage,
+}
