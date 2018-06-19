@@ -166,9 +166,7 @@ const {topicPrefix, dataPropertyKey, topicSeparator} = require('./constants.js')
     return topic.toString().split(this.topicSeparator).map( t => '' + topicPrefix + t );
   }
 
-  module.exports = {
-    'RuntimeTopicStorage': RuntimeTopicStorage,
-  }
+  module.exports = RuntimeTopicStorage;
 
 })();
 

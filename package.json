@@ -1,6 +1,6 @@
 {
   "name": "@tum-far/ubii-topic-data",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "",
   "main": "src/index.js",
   "repository": "https://gitlab.lrz.de/IN-FAR/Ubi-Interact/ubii-topic-data",
@@ -12,13 +12,9 @@
   "engines": {
     "node": ">=4"
   },
-
   "scripts": {
     "test": "webpack && ava"
   },
-  "files": [
-    "dist/bundle.js"
-  ],
   "keywords": [
     ""
   ],
