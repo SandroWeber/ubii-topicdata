@@ -1,9 +1,11 @@
 import test from 'ava';
-import {RuntimeTopicStorage} from './../dist/js/bundle.js';
+import {RuntimeTopicStorage} from './../src/index.js';
+import {topicSeparator} from './../src/topicStorage/constants.js';
 
 (function(){
 
-	
+    const separator = topicSeparator;
+    
 	let createStorageSnapshotOne = () => {
 		let raw = {};
 
@@ -15,13 +17,13 @@ import {RuntimeTopicStorage} from './../dist/js/bundle.js';
             't:a': {
                 'd:data': 'awesome a',
                 't:x': {
-                    'd:data': 'awesome a:x',
+                    'd:data': 'awesome ax',
                     't:o': {
-                        'd:data': 'awesome a:x:o',
+                        'd:data': 'awesome axo',
                     }
                 },
                 't:y': {
-                    'd:data': 'awesome a:y',
+                    'd:data': 'awesome ay',
                 }
             },
             't:b': {
@@ -38,11 +40,11 @@ import {RuntimeTopicStorage} from './../dist/js/bundle.js';
                 'd:data': 'awesome a',
                 't:x': {
                     't:o': {
-                        'd:data': 'awesome a:x:o',
+                        'd:data': `awesome axo`,
                     }
                 },
                 't:y': {
-                    'd:data': 'awesome a:y',
+                    'd:data': 'awesome ay',
                 }
             },
             't:b': {
@@ -58,7 +60,7 @@ import {RuntimeTopicStorage} from './../dist/js/bundle.js';
             't:a': {
                 'd:data': 'awesome a',
                 't:y': {
-                    'd:data': 'awesome a:y',
+                    'd:data': `awesome ay`,
                 }
             },
             't:b': {
@@ -74,7 +76,7 @@ import {RuntimeTopicStorage} from './../dist/js/bundle.js';
             't:a': {
                 'd:data': 'awesome a',
                 't:y': {
-                    'd:data': 'awesome a:y',
+                    'd:data': `awesome ay`,
                 }
             }
         };
@@ -85,11 +87,11 @@ import {RuntimeTopicStorage} from './../dist/js/bundle.js';
     let createStorageTwo = () => {
         let storage = new RuntimeTopicStorage();
 
-        storage.push('a','awesome a');
-        storage.push('a:x','awesome a:x');
-        storage.push('a:x:o','awesome a:x:o');
-        storage.push('a:y','awesome a:y');
-        storage.push('b','awesome b');
+        storage.push(`a`,`awesome a`);
+        storage.push(`a${separator}x`,`awesome ax`);
+        storage.push(`a${separator}x${separator}o`,`awesome axo`);
+        storage.push(`a${separator}y`,`awesome ay`);
+        storage.push(`b`,`awesome b`);
 
         return storage;
     }
@@ -119,15 +121,15 @@ import {RuntimeTopicStorage} from './../dist/js/bundle.js';
 
         let dataA = storage.pull('a');
         let dataB = storage.pull('b');
-        let dataAX = storage.pull('a:x');
-        let dataAY = storage.pull('a:y');
-        let dataAXO = storage.pull('a:x:o');
+        let dataAX = storage.pull(`a${separator}x`);
+        let dataAY = storage.pull(`a${separator}y`);
+        let dataAXO = storage.pull(`a${separator}x${separator}o`);
 
         t.is(dataA, 'awesome a');
         t.is(dataB, 'awesome b');
-        t.is(dataAX, 'awesome a:x');
-        t.is(dataAY, 'awesome a:y');
-        t.is(dataAXO, 'awesome a:x:o');
+        t.is(dataAX, 'awesome ax');
+        t.is(dataAY, 'awesome ay');
+        t.is(dataAXO, 'awesome axo');
 
     });
 
@@ -137,11 +139,11 @@ import {RuntimeTopicStorage} from './../dist/js/bundle.js';
 
         t.deepEqual(storage.storage, snapshot);
 
-        storage.remove('a:x');
+        storage.remove(`a${separator}x`);
         snapshot = createStorageSnapshotThree();
         t.deepEqual(storage.storage, snapshot);
 
-        storage.remove('a:x:o');
+        storage.remove(`a${separator}x${separator}o`);
         snapshot = createStorageSnapshotFour();
         t.deepEqual(storage.storage, snapshot);
 
@@ -150,7 +152,7 @@ import {RuntimeTopicStorage} from './../dist/js/bundle.js';
         t.deepEqual(storage.storage, snapshot);
 
         storage.remove('a');
-        storage.remove('a:y');
+        storage.remove(`a${separator}y`);
         snapshot = createStorageSnapshotOne();
         t.deepEqual(storage.storage, snapshot);
     });

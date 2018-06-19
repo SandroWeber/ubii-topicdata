@@ -1,8 +1,13 @@
+const {topicSeparator} = require('./constants.js');
+
+
 class TopicStorage {
-  constructor() {
+  constructor(customTopicSeparator = topicSeparator) {
     if (new.target === TopicStorage) {
       throw new TypeError("Cannot construct TopicStorage instances directly");
     }
+
+    this.topicSeparator = customTopicSeparator;
 
     if (this.push === undefined) {
       // or maybe test typeof this.method === "function"
