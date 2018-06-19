@@ -15,9 +15,10 @@ const {topicPrefix, dataPropertyKey} = require('./constants.js');
     * The topic of queries is split and used as property keys.
     * */
     
-    constructor() {
+    constructor(topicSeparator = ':') {
       super();
 
+      this.topicSeparator = topicSeparator;
       this.storage = {};
     }
 
@@ -163,7 +164,7 @@ const {topicPrefix, dataPropertyKey} = require('./constants.js');
    * @param {String} topic 
    */
   let getTopicPathArray = function(topic){
-    return topic.toString().split(':').map( t => '' + topicPrefix + t );
+    return topic.toString().split(this.topicSeparator).map( t => '' + topicPrefix + t );
   }
 
   module.exports = {
