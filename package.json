@@ -1,8 +1,8 @@
 {
   "name": "@tum-far/ubii-topic-data",
-  "version": "0.0.1",
+  "version": "0.0.4",
   "description": "",
-  "license": "",
+  "main": "src/index.js",
   "repository": "https://gitlab.lrz.de/IN-FAR/Ubi-Interact/ubii-topic-data",
   "author": {
     "name": "Daniel Dyrda",
@@ -15,9 +15,6 @@
   "scripts": {
     "test": "webpack && ava"
   },
-  "files": [
-    "dist/bundle.js"
-  ],
   "keywords": [
     ""
   ],
@@ -30,6 +27,5 @@
     "babel-loader": "^7.1.4",
     "babel-preset-env": "^1.6.1"
   },
-  "dependencies": {
-  }
+  "dependencies": {}
 }

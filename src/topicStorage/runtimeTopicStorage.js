@@ -1,5 +1,5 @@
 const {TopicStorage} = require('./topicStorage.js');
-const {topicPrefix, dataPropertyKey} = require('./constants.js');
+const {topicPrefix, dataPropertyKey, topicSeparator} = require('./constants.js');
 
 
 (function(){
@@ -15,8 +15,8 @@ const {topicPrefix, dataPropertyKey} = require('./constants.js');
     * The topic of queries is split and used as property keys.
     * */
     
-    constructor() {
-      super();
+    constructor(customTopicSeparator = topicSeparator) {
+      super(customTopicSeparator);
 
       this.storage = {};
     }
@@ -67,7 +67,7 @@ const {topicPrefix, dataPropertyKey} = require('./constants.js');
      */
     has(topic){
       // get topic path
-      const path = getTopicPathArray(topic);
+      const path = getTopicPathArray.call(this, topic);
 
       // traverse path
       let element = this.storage;
@@ -92,7 +92,7 @@ const {topicPrefix, dataPropertyKey} = require('./constants.js');
    */
   let traverseAndCreateTopicPath = function(topic){
     // get topic path
-    const path = getTopicPathArray(topic);
+    const path = getTopicPathArray.call(this, topic);
 
     // traverse path and create if necessary
     let element = this.storage;
@@ -110,7 +110,7 @@ const {topicPrefix, dataPropertyKey} = require('./constants.js');
 
   let cleanPath = function(topic){
     // Get the topic path.
-    const path = getTopicPathArray(topic);
+    const path = getTopicPathArray.call(this, topic);
 
     if(!recursiveIsRelevantCleanUp(this.storage[path[0]])){
       delete this.storage[path[0]];
@@ -140,7 +140,7 @@ const {topicPrefix, dataPropertyKey} = require('./constants.js');
 
   let getData = function(topic){
     // get topic path
-    const path = getTopicPathArray(topic);
+    const path = getTopicPathArray.call(this, topic);
 
     // check topic path
     let storageElement = this.storage;
@@ -163,12 +163,10 @@ const {topicPrefix, dataPropertyKey} = require('./constants.js');
    * @param {String} topic 
    */
   let getTopicPathArray = function(topic){
-    return topic.toString().split(':').map( t => '' + topicPrefix + t );
+    return topic.toString().split(this.topicSeparator).map( t => '' + topicPrefix + t );
   }
 
-  module.exports = {
-    'RuntimeTopicStorage': RuntimeTopicStorage,
-  }
+  module.exports = RuntimeTopicStorage;
 
 })();
 

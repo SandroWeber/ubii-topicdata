@@ -121,7 +121,8 @@ var dataPrefix = 'd:';
 module.exports = {
     topicPrefix: 't:',
     dataPrefix: dataPrefix,
-    dataPropertyKey: dataPrefix + 'data'
+    dataPropertyKey: dataPrefix + 'data',
+    'topicSeparator': '->'
 };
 
 /***/ }),
@@ -149,7 +150,8 @@ var _require = __webpack_require__(/*! ./topicStorage.js */ "./src/topicStorage/
 
 var _require2 = __webpack_require__(/*! ./constants.js */ "./src/topicStorage/constants.js"),
     topicPrefix = _require2.topicPrefix,
-    dataPropertyKey = _require2.dataPropertyKey;
+    dataPropertyKey = _require2.dataPropertyKey,
+    topicSeparator = _require2.topicSeparator;
 
 (function () {
   /**
@@ -167,9 +169,11 @@ var _require2 = __webpack_require__(/*! ./constants.js */ "./src/topicStorage/co
     * */
 
     function RuntimeTopicStorage() {
+      var customTopicSeparator = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : topicSeparator;
+
       _classCallCheck(this, RuntimeTopicStorage);
 
-      var _this = _possibleConstructorReturn(this, (RuntimeTopicStorage.__proto__ || Object.getPrototypeOf(RuntimeTopicStorage)).call(this));
+      var _this = _possibleConstructorReturn(this, (RuntimeTopicStorage.__proto__ || Object.getPrototypeOf(RuntimeTopicStorage)).call(this, customTopicSeparator));
 
       _this.storage = {};
       return _this;
@@ -234,7 +238,7 @@ var _require2 = __webpack_require__(/*! ./constants.js */ "./src/topicStorage/co
       key: 'has',
       value: function has(topic) {
         // get topic path
-        var path = getTopicPathArray(topic);
+        var path = getTopicPathArray.call(this, topic);
 
         // traverse path
         var element = this.storage;
@@ -264,7 +268,7 @@ var _require2 = __webpack_require__(/*! ./constants.js */ "./src/topicStorage/co
 
   var traverseAndCreateTopicPath = function traverseAndCreateTopicPath(topic) {
     // get topic path
-    var path = getTopicPathArray(topic);
+    var path = getTopicPathArray.call(this, topic);
 
     // traverse path and create if necessary
     var element = this.storage;
@@ -282,7 +286,7 @@ var _require2 = __webpack_require__(/*! ./constants.js */ "./src/topicStorage/co
 
   var cleanPath = function cleanPath(topic) {
     // Get the topic path.
-    var path = getTopicPathArray(topic);
+    var path = getTopicPathArray.call(this, topic);
 
     if (!recursiveIsRelevantCleanUp(this.storage[path[0]])) {
       delete this.storage[path[0]];
@@ -311,7 +315,7 @@ var _require2 = __webpack_require__(/*! ./constants.js */ "./src/topicStorage/co
 
   var getData = function getData(topic) {
     // get topic path
-    var path = getTopicPathArray(topic);
+    var path = getTopicPathArray.call(this, topic);
 
     // check topic path
     var storageElement = this.storage;
@@ -334,7 +338,7 @@ var _require2 = __webpack_require__(/*! ./constants.js */ "./src/topicStorage/co
    * @param {String} topic 
    */
   var getTopicPathArray = function getTopicPathArray(topic) {
-    return topic.toString().split(':').map(function (t) {
+    return topic.toString().split(this.topicSeparator).map(function (t) {
       return '' + topicPrefix + t;
     });
   };
@@ -358,12 +362,19 @@ var _require2 = __webpack_require__(/*! ./constants.js */ "./src/topicStorage/co
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+var _require = __webpack_require__(/*! ./constants.js */ "./src/topicStorage/constants.js"),
+    topicSeparator = _require.topicSeparator;
+
 var TopicStorage = function TopicStorage() {
+  var customTopicSeparator = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : topicSeparator;
+
   _classCallCheck(this, TopicStorage);
 
   if (new.target === TopicStorage) {
     throw new TypeError("Cannot construct TopicStorage instances directly");
   }
+
+  this.topicSeparator = customTopicSeparator;
 
   if (this.push === undefined) {
     // or maybe test typeof this.method === "function"
