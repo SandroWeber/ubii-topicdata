@@ -306,7 +306,6 @@ var _require2 = __webpack_require__(/*! ./constants.js */ "./src/topicStorage/co
         result = result || intermediateResult;
       }
     }
-    console.log("return " + result);
     return result;
   };
 
