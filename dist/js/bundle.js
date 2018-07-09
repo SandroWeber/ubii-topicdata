@@ -97,8 +97,7 @@ module.exports =
 "use strict";
 
 
-var _require = __webpack_require__(/*! ./topicStorage/runtimeTopicStorage.js */ "./src/topicStorage/runtimeTopicStorage.js"),
-    RuntimeTopicStorage = _require.RuntimeTopicStorage;
+var RuntimeTopicStorage = __webpack_require__(/*! ./topicStorage/runtimeTopicStorage.js */ "./src/topicStorage/runtimeTopicStorage.js");
 
 module.exports = {
     'RuntimeTopicStorage': RuntimeTopicStorage
@@ -343,9 +342,7 @@ var _require2 = __webpack_require__(/*! ./constants.js */ "./src/topicStorage/co
     });
   };
 
-  module.exports = {
-    'RuntimeTopicStorage': RuntimeTopicStorage
-  };
+  module.exports = RuntimeTopicStorage;
 })();
 
 /***/ }),
