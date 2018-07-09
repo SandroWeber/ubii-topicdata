@@ -1,8 +1,11 @@
-const dataPrefix = 'd:';
+const DATA_PREFIX = 'd:';
+const TOPIC_PREFIX = 't:';
+const DATA_PROPERTY_KEY = dataPrefix+'data';
+const TOPIC_SEPARATOR = '->';
 
 module.exports =  {
-    topicPrefix: 't:',
-    dataPrefix: dataPrefix,
-    dataPropertyKey: dataPrefix+'data',
-    'topicSeparator': '->',
+    TOPIC_PREFIX: TOPIC_PREFIX,
+    DATA_PREFIX: DATA_PREFIX,
+    DATA_PROPERTY_KEY: DATA_PROPERTY_KEY,
+    TOPIC_SEPARATOR: TOPIC_SEPARATOR,
 };
