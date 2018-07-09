@@ -1,10 +1,14 @@
 import test from 'ava';
 import {RuntimeTopicStorage} from './../src/index.js';
-import {topicSeparator} from './../src/topicStorage/constants.js';
 
 (function(){
 
-    const separator = topicSeparator;
+    const getTopicA = () => JSON.parse(JSON.stringify(['a']));
+    const getTopicAX = () => JSON.parse(JSON.stringify(['a', 'x']));
+    const getTopicAXO = () => JSON.parse(JSON.stringify(['a', 'x', 'o']));
+    const getTopicAY = () => JSON.parse(JSON.stringify(['a', 'y']));
+    const getTopicB = () => JSON.parse(JSON.stringify(['b']));
+    
     
 	let createStorageSnapshotOne = () => {
 		let raw = {};
@@ -87,11 +91,11 @@ import {topicSeparator} from './../src/topicStorage/constants.js';
     let createStorageTwo = () => {
         let storage = new RuntimeTopicStorage();
 
-        storage.push(`a`,`awesome a`);
-        storage.push(`a${separator}x`,`awesome ax`);
-        storage.push(`a${separator}x${separator}o`,`awesome axo`);
-        storage.push(`a${separator}y`,`awesome ay`);
-        storage.push(`b`,`awesome b`);
+        storage.push(getTopicA(), `awesome a`);
+        storage.push(getTopicAX(),`awesome ax`);
+        storage.push(getTopicAXO(),`awesome axo`);
+        storage.push(getTopicAY(),`awesome ay`);
+        storage.push(getTopicB(),`awesome b`);
 
         return storage;
     }
@@ -119,11 +123,11 @@ import {topicSeparator} from './../src/topicStorage/constants.js';
         let snapshot = createStorageSnapshotTwo();
         let storage = createStorageTwo();
 
-        let dataA = storage.pull('a');
-        let dataB = storage.pull('b');
-        let dataAX = storage.pull(`a${separator}x`);
-        let dataAY = storage.pull(`a${separator}y`);
-        let dataAXO = storage.pull(`a${separator}x${separator}o`);
+        let dataA = storage.pull(getTopicA());
+        let dataB = storage.pull(getTopicB());
+        let dataAX = storage.pull(getTopicAX());
+        let dataAY = storage.pull(getTopicAY());
+        let dataAXO = storage.pull(getTopicAXO());
 
         t.is(dataA, 'awesome a');
         t.is(dataB, 'awesome b');
@@ -139,20 +143,20 @@ import {topicSeparator} from './../src/topicStorage/constants.js';
 
         t.deepEqual(storage.storage, snapshot);
 
-        storage.remove(`a${separator}x`);
+        storage.remove(getTopicAX());
         snapshot = createStorageSnapshotThree();
         t.deepEqual(storage.storage, snapshot);
 
-        storage.remove(`a${separator}x${separator}o`);
+        storage.remove(getTopicAXO());
         snapshot = createStorageSnapshotFour();
         t.deepEqual(storage.storage, snapshot);
 
-        storage.remove('b');
+        storage.remove(getTopicB());
         snapshot = createStorageSnapshotFive();
         t.deepEqual(storage.storage, snapshot);
 
-        storage.remove('a');
-        storage.remove(`a${separator}y`);
+        storage.remove(getTopicA());
+        storage.remove(getTopicAY());
         snapshot = createStorageSnapshotOne();
         t.deepEqual(storage.storage, snapshot);
     });
