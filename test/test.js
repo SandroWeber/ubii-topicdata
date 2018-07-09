@@ -3,13 +3,14 @@ import {RuntimeTopicData} from './../src/index.js';
 
 (function(){
 
+    // Creates and returns deep copies of the specified topic arrays.
     const getTopicA = () => JSON.parse(JSON.stringify(['a']));
     const getTopicAX = () => JSON.parse(JSON.stringify(['a', 'x']));
     const getTopicAXO = () => JSON.parse(JSON.stringify(['a', 'x', 'o']));
     const getTopicAY = () => JSON.parse(JSON.stringify(['a', 'y']));
     const getTopicB = () => JSON.parse(JSON.stringify(['b']));
     
-    
+    // Snapshots for comparison
 	let createTopicDataSnapshotOne = () => {
 		let raw = {};
 
@@ -88,16 +89,17 @@ import {RuntimeTopicData} from './../src/index.js';
 		return raw;
     }
 
+    // Topic Data builder functions
     let createTopicDataTwo = () => {
-        let storage = new RuntimeTopicData();
+        let topicData = new RuntimeTopicData();
 
-        storage.push(getTopicA(), `awesome a`);
-        storage.push(getTopicAX(),`awesome ax`);
-        storage.push(getTopicAXO(),`awesome axo`);
-        storage.push(getTopicAY(),`awesome ay`);
-        storage.push(getTopicB(),`awesome b`);
+        topicData.push(getTopicA(), `awesome a`);
+        topicData.push(getTopicAX(), `awesome ax`);
+        topicData.push(getTopicAXO(), `awesome axo`);
+        topicData.push(getTopicAY(), `awesome ay`);
+        topicData.push(getTopicB(), `awesome b`);
 
-        return storage;
+        return topicData;
     }
     
     
@@ -105,29 +107,29 @@ import {RuntimeTopicData} from './../src/index.js';
 
 	test('empty', t => {
         let snapshot = createTopicDataSnapshotOne();
-        let storage = new RuntimeTopicData();
+        let topicData = new RuntimeTopicData();
 
-        t.deepEqual(storage.storage, snapshot);
+        t.deepEqual(topicData.storage, snapshot);
 
     });
     
     test('push', t => {
         let snapshot = createTopicDataSnapshotTwo();
-        let storage = createTopicDataTwo();
+        let topicData = createTopicDataTwo();
 
-        t.deepEqual(storage.storage, snapshot);
+        t.deepEqual(topicData.storage, snapshot);
 
     });
 
     test('pull', t => {
         let snapshot = createTopicDataSnapshotTwo();
-        let storage = createTopicDataTwo();
+        let topicData = createTopicDataTwo();
 
-        let dataA = storage.pull(getTopicA());
-        let dataB = storage.pull(getTopicB());
-        let dataAX = storage.pull(getTopicAX());
-        let dataAY = storage.pull(getTopicAY());
-        let dataAXO = storage.pull(getTopicAXO());
+        let dataA = topicData.pull(getTopicA());
+        let dataB = topicData.pull(getTopicB());
+        let dataAX = topicData.pull(getTopicAX());
+        let dataAY = topicData.pull(getTopicAY());
+        let dataAXO = topicData.pull(getTopicAXO());
 
         t.is(dataA, 'awesome a');
         t.is(dataB, 'awesome b');
@@ -139,28 +141,25 @@ import {RuntimeTopicData} from './../src/index.js';
 
     test('remove', t => {
         let snapshot = createTopicDataSnapshotTwo();
-        let storage = createTopicDataTwo();
+        let topicData = createTopicDataTwo();
 
-        t.deepEqual(storage.storage, snapshot);
+        t.deepEqual(topicData.storage, snapshot);
 
-        storage.remove(getTopicAX());
+        topicData.remove(getTopicAX());
         snapshot = createTopicDataSnapshotThree();
-        t.deepEqual(storage.storage, snapshot);
+        t.deepEqual(topicData.storage, snapshot);
 
-        storage.remove(getTopicAXO());
+        topicData.remove(getTopicAXO());
         snapshot = createTopicDataSnapshotFour();
-        t.deepEqual(storage.storage, snapshot);
+        t.deepEqual(topicData.storage, snapshot);
 
-        storage.remove(getTopicB());
+        topicData.remove(getTopicB());
         snapshot = createTopicDataSnapshotFive();
-        t.deepEqual(storage.storage, snapshot);
+        t.deepEqual(topicData.storage, snapshot);
 
-        storage.remove(getTopicA());
-        storage.remove(getTopicAY());
+        topicData.remove(getTopicA());
+        topicData.remove(getTopicAY());
         snapshot = createTopicDataSnapshotOne();
-        t.deepEqual(storage.storage, snapshot);
+        t.deepEqual(topicData.storage, snapshot);
     });
-    
-
-
 })();
