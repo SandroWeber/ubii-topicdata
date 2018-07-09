@@ -9,6 +9,16 @@ Ubii topic data module.
 - [Command Line Interfaces (CLIs)](#CLIs)
 - [Testing](#Testing)
 
+## Topic
+
+A topic is interpreted as array of unprefixed subtopic strings specifying the topic path.
+
+## Runtime Topic Data
+
+Local runtime implementaion of a topic data.
+The data is only available at runtime and is not permanently stored. No local file or database involved. The data is only in the program memory.
+ 
+The runtime topic storage uses a common javascript object as storage structure. This is the most performant way to find key-value pairs.
 
 ## CLIs
 
