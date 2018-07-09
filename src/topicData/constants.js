@@ -1,6 +1,6 @@
 const DATA_PREFIX = 'd:';
 const TOPIC_PREFIX = 't:';
-const DATA_PROPERTY_KEY = dataPrefix+'data';
+const DATA_PROPERTY_KEY = DATA_PREFIX+'data';
 const TOPIC_SEPARATOR = '->';
 
 module.exports =  {
