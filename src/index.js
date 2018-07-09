@@ -1,5 +1,5 @@
- const RuntimeTopicStorage = require('./topicStorage/runtimeTopicStorage.js');
+ const RuntimeTopicData = require('./topicData/runtimeTopicData.js');
 
  module.exports = {
-     'RuntimeTopicStorage': RuntimeTopicStorage
+     'RuntimeTopicData': RuntimeTopicData
  }

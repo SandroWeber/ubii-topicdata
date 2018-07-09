@@ -1,4 +1,4 @@
-const {TopicStorage} = require('./topicStorage.js');
+const {TopicData} = require('./topicData.js');
 const {DATA_PROPERTY_KEY} = require('./constants.js');
 const {getTopicPathFromArray} = require('./utility.js');
 
@@ -8,7 +8,7 @@ const {getTopicPathFromArray} = require('./utility.js');
    * The data is only available at runtime and is not permanently stored.
    * (No local file or database involved. The data is only in the program memory.)
    */
-  class RuntimeTopicStorage extends TopicStorage {
+  class RuntimeTopicData extends TopicData {
     /*
     * The runtime topic storage uses a common javascript object as storage structure.
     * This is the most performant way to find key-value pairs.
@@ -139,7 +139,7 @@ const {getTopicPathFromArray} = require('./utility.js');
   }
 
 
-  module.exports = RuntimeTopicStorage;
+  module.exports = RuntimeTopicData;
 
 })();
 

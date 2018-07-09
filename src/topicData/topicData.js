@@ -1,7 +1,7 @@
-class TopicStorage {
+class TopicData {
   constructor() {
-    if (new.target === TopicStorage) {
-      throw new TypeError("Cannot construct TopicStorage instances directly");
+    if (new.target === TopicData) {
+      throw new TypeError("Cannot construct TopicData instances directly");
     }
 
     if (this.push === undefined) {
@@ -23,5 +23,5 @@ class TopicStorage {
 }
 
 module.exports = {
-  TopicStorage: TopicStorage,
+  TopicData: TopicData,
 }

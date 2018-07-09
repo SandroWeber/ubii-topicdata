@@ -1,5 +1,5 @@
 import test from 'ava';
-import {RuntimeTopicStorage} from './../src/index.js';
+import {RuntimeTopicData} from './../src/index.js';
 
 (function(){
 
@@ -10,13 +10,13 @@ import {RuntimeTopicStorage} from './../src/index.js';
     const getTopicB = () => JSON.parse(JSON.stringify(['b']));
     
     
-	let createStorageSnapshotOne = () => {
+	let createTopicDataSnapshotOne = () => {
 		let raw = {};
 
 		return raw;
     }
     
-    let createStorageSnapshotTwo = () => {
+    let createTopicDataSnapshotTwo = () => {
 		let raw = {
             't:a': {
                 'd:data': 'awesome a',
@@ -38,7 +38,7 @@ import {RuntimeTopicStorage} from './../src/index.js';
 		return raw;
     }
 
-    let createStorageSnapshotThree = () => {
+    let createTopicDataSnapshotThree = () => {
 		let raw = {
             't:a': {
                 'd:data': 'awesome a',
@@ -59,7 +59,7 @@ import {RuntimeTopicStorage} from './../src/index.js';
 		return raw;
     }
 
-    let createStorageSnapshotFour = () => {
+    let createTopicDataSnapshotFour = () => {
 		let raw = {
             't:a': {
                 'd:data': 'awesome a',
@@ -75,7 +75,7 @@ import {RuntimeTopicStorage} from './../src/index.js';
 		return raw;
     }
 
-    let createStorageSnapshotFive = () => {
+    let createTopicDataSnapshotFive = () => {
 		let raw = {
             't:a': {
                 'd:data': 'awesome a',
@@ -88,8 +88,8 @@ import {RuntimeTopicStorage} from './../src/index.js';
 		return raw;
     }
 
-    let createStorageTwo = () => {
-        let storage = new RuntimeTopicStorage();
+    let createTopicDataTwo = () => {
+        let storage = new RuntimeTopicData();
 
         storage.push(getTopicA(), `awesome a`);
         storage.push(getTopicAX(),`awesome ax`);
@@ -104,24 +104,24 @@ import {RuntimeTopicStorage} from './../src/index.js';
 
 
 	test('empty', t => {
-        let snapshot = createStorageSnapshotOne();
-        let storage = new RuntimeTopicStorage();
+        let snapshot = createTopicDataSnapshotOne();
+        let storage = new RuntimeTopicData();
 
         t.deepEqual(storage.storage, snapshot);
 
     });
     
     test('push', t => {
-        let snapshot = createStorageSnapshotTwo();
-        let storage = createStorageTwo();
+        let snapshot = createTopicDataSnapshotTwo();
+        let storage = createTopicDataTwo();
 
         t.deepEqual(storage.storage, snapshot);
 
     });
 
     test('pull', t => {
-        let snapshot = createStorageSnapshotTwo();
-        let storage = createStorageTwo();
+        let snapshot = createTopicDataSnapshotTwo();
+        let storage = createTopicDataTwo();
 
         let dataA = storage.pull(getTopicA());
         let dataB = storage.pull(getTopicB());
@@ -138,26 +138,26 @@ import {RuntimeTopicStorage} from './../src/index.js';
     });
 
     test('remove', t => {
-        let snapshot = createStorageSnapshotTwo();
-        let storage = createStorageTwo();
+        let snapshot = createTopicDataSnapshotTwo();
+        let storage = createTopicDataTwo();
 
         t.deepEqual(storage.storage, snapshot);
 
         storage.remove(getTopicAX());
-        snapshot = createStorageSnapshotThree();
+        snapshot = createTopicDataSnapshotThree();
         t.deepEqual(storage.storage, snapshot);
 
         storage.remove(getTopicAXO());
-        snapshot = createStorageSnapshotFour();
+        snapshot = createTopicDataSnapshotFour();
         t.deepEqual(storage.storage, snapshot);
 
         storage.remove(getTopicB());
-        snapshot = createStorageSnapshotFive();
+        snapshot = createTopicDataSnapshotFive();
         t.deepEqual(storage.storage, snapshot);
 
         storage.remove(getTopicA());
         storage.remove(getTopicAY());
-        snapshot = createStorageSnapshotOne();
+        snapshot = createTopicDataSnapshotOne();
         t.deepEqual(storage.storage, snapshot);
     });
     
