@@ -1,6 +1,6 @@
 const {TopicStorage} = require('./topicStorage.js');
-const {topicPrefix, dataPropertyKey, topicSeparator} = require('./constants.js');
-
+const {DATA_PROPERTY_KEY} = require('./constants.js');
+const {getTopicPathFromArray} = require('./utility.js');
 
 (function(){
   /**
@@ -15,8 +15,8 @@ const {topicPrefix, dataPropertyKey, topicSeparator} = require('./constants.js')
     * The topic of queries is split and used as property keys.
     * */
     
-    constructor(customTopicSeparator = topicSeparator) {
-      super(customTopicSeparator);
+    constructor() {
+      super();
 
       this.storage = {};
     }
@@ -24,57 +24,57 @@ const {topicPrefix, dataPropertyKey, topicSeparator} = require('./constants.js')
     /**
      * Pushes data into memory under the specified topic.
      * If there is already data under this topic, it will be overwritten.
-     * @param {String} topic Well formed topic string.
+     * @param {String[]} topic Array of unprefixed subtopic strings specifying the topic path.
      * @param {*} data 
      */
     push(topic, data){
-      let element = traverseAndCreateTopicPath.call(this, topic);
-      element[dataPropertyKey] = data;
+      let subtreeRoot = traverseAndCreateTopicPath.call(this, topic);
+      subtreeRoot[DATA_PROPERTY_KEY] = data;
     }
 
     /**
      * Pulls the data from memory that is stored under the given topic.
-     * @param {String} topic Well formed topic string.
-     * @returns Returns the data stored under the given topic. Returns null if the topic does not exist.
+     * @param {String[]} topic Array of unprefixed subtopic strings specifying the topic path.
+     * @returns Returns the data stored under the given topic. Returns undefined if the topic does not exist.
      */
     pull(topic){
       if(!this.has(topic)){
-        return null;
+        return undefined;
       }
-      let element = traverseAndCreateTopicPath.call(this, topic);
-      return element[dataPropertyKey];
+      let subtreeRoot = traverseAndCreateTopicPath.call(this, topic);
+      return subtreeRoot[DATA_PROPERTY_KEY];
     }
 
     /**
      * Removes the topic and data from memory that is stored under the given topic if the topic exists. 
      * Cleans up the path afterwards.
-     * @param {String} topic Well formed topic string.
+     * @param {String[]} topic Array of unprefixed subtopic strings specifying the topic path.
      */
     remove(topic){
       if(!this.has(topic)){
         return;
       }
-      let element = traverseAndCreateTopicPath.call(this,topic);
-      delete element[dataPropertyKey];
+      let subtreeRoot = traverseAndCreateTopicPath.call(this,topic);
+      delete subtreeRoot[DATA_PROPERTY_KEY];
 
       cleanPath.call(this,topic);
     }
 
     /**
      * Does the the storage has the given topic?
-     * @param {String} topic Well formed topic string.
+     * @param {String[]} topic Array of unprefixed subtopic strings specifying the topic path.
      * @returns {Boolean} Returns whether the the storage has the given topic or not.
      */
     has(topic){
       // get topic path
-      const path = getTopicPathArray.call(this, topic);
+      const path = getTopicPathFromArray(topic);
 
       // traverse path
-      let element = this.storage;
+      let node = this.storage;
       const il = path.length;
       for(let i = 0; i < il; i++){
-        if(element.hasOwnProperty(path[i])){
-          element = element[path[i]];
+        if(node.hasOwnProperty(path[i])){
+          node = node[path[i]];
         }else{
           return false;
         }
@@ -87,84 +87,57 @@ const {topicPrefix, dataPropertyKey, topicSeparator} = require('./constants.js')
 
   /**
    * 
-   * @param {String} topic 
-   * @return returns the path target element
+   * @param {String[]} topic Array of unprefixed subtopic strings specifying the topic path.
+   * @return returns the path target subtree
    */
   let traverseAndCreateTopicPath = function(topic){
     // get topic path
-    const path = getTopicPathArray.call(this, topic);
+    const path = getTopicPathFromArray(topic);
 
     // traverse path and create if necessary
-    let element = this.storage;
+    let subtree = this.storage;
+
     const il = path.length;
     for(let i = 0; i < il; i++){
-      if(element.hasOwnProperty(path[i])){
-        element = element[path[i]];
+      if(subtree.hasOwnProperty(path[i])){
+        subtree = subtree[path[i]];
       }else{
-        element[path[i]] = {};
-        element = element[path[i]];
+        subtree[path[i]] = {};
+        subtree = subtree[path[i]];
       }
     }
-    return element;
+
+    return subtree;
   }
 
   let cleanPath = function(topic){
-    // Get the topic path.
-    const path = getTopicPathArray.call(this, topic);
+    const path = getTopicPathFromArray(topic);
 
     if(!recursiveIsRelevantCleanUp(this.storage[path[0]])){
       delete this.storage[path[0]];
     }
   }
 
-  let recursiveIsRelevantCleanUp = function(element){
-    let result = false;
-    let keys = Object.getOwnPropertyNames(element);
+  let recursiveIsRelevantCleanUp = function(node){
+    let rootIsRelevant = false;
+    let keys = Object.getOwnPropertyNames(node);
 
     const il = keys.length;
     for(let i = 0; i < il; i++){
-      if(keys[i] === dataPropertyKey){
-        result = true;
+      if(keys[i] === DATA_PROPERTY_KEY){
+        rootIsRelevant = true;
       }else{
-        // ToDo: Check for valid path element (starts with t:)
-        let intermediateResult = recursiveIsRelevantCleanUp(element[keys[i]]);
-        if(!intermediateResult){
-          delete element[keys[i]];
+        // ToDo: Check for valid path subtree (starts with t:)
+        let subtreeIsReleveant = recursiveIsRelevantCleanUp(subtree[keys[i]]);
+        if(!subtreeIsReleveant){
+          delete subtree[keys[i]];
         }
-        result = result || intermediateResult;
-      } 
-      
-    }
-    return result;
-  }
-
-  let getData = function(topic){
-    // get topic path
-    const path = getTopicPathArray.call(this, topic);
-
-    // check topic path
-    let storageElement = this.storage;
-    const il = path.length;
-    for(let i = 0; i < il; i++){
-      if(storageElement.hasOwnProperty(path[i])){
-        storageElement = storageElement[path[i]];
-      }else{
-        throw new Error("The specified topic does not exist in the storage.");
-        return null;
+        rootIsRelevant = rootIsRelevant || subtreeIsReleveant;
       }
     }
-
-    // return data object
-    return storageElement;
+    return rootIsRelevant;
   }
 
-  /**
-   * Returns 
-   * @param {String} topic 
-   */
-  let getTopicPathArray = function(topic){
-    return topic.toString().split(this.topicSeparator).map( t => '' + topicPrefix + t );
-  }
 
   module.exports = RuntimeTopicStorage;
 
