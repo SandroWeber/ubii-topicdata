@@ -13,7 +13,7 @@
     "node": ">=4"
   },
   "scripts": {
-    "test": "webpack && ava"
+    "test": "ava"
   },
   "keywords": [
     ""
