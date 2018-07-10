@@ -1,9 +1,11 @@
-let getTopicPathFromString = function(topicString, topicSeparator){
-    return topicString.toString().split(topicSeparator).map( t => '' + topicPrefix + t );
-  }
+const {TOPIC_PREFIX} = require('./constants.js');
 
-let getTopicPathFromArray = function(topic){
-    return topic.map( t => '' + topicPrefix + t );
+let getTopicPathFromString = function (topicString, topicSeparator) {
+    return topicString.toString().split(topicSeparator).map(t => '' + TOPIC_PREFIX + t);
+}
+
+let getTopicPathFromArray = function (topic) {
+    return topic.map(t => '' + TOPIC_PREFIX + t);
 }
 
 module.exports = {
