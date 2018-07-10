@@ -1,9 +1,9 @@
 const DATA_PREFIX = 'd:';
 const TOPIC_PREFIX = 't:';
-const DATA_PROPERTY_KEY = DATA_PREFIX+'data';
+const DATA_PROPERTY_KEY = DATA_PREFIX + 'data';
 const TOPIC_SEPARATOR = '->';
 
-module.exports =  {
+module.exports = {
     TOPIC_PREFIX: TOPIC_PREFIX,
     DATA_PREFIX: DATA_PREFIX,
     DATA_PROPERTY_KEY: DATA_PROPERTY_KEY,
