@@ -1,7 +1,7 @@
 import test from 'ava';
 import {RuntimeTopicData} from './../src/index.js';
 
-(function(){
+(function () {
 
     // Creates and returns deep copies of the specified topic arrays.
     const getTopicA = () => JSON.parse(JSON.stringify(['a']));
@@ -9,16 +9,16 @@ import {RuntimeTopicData} from './../src/index.js';
     const getTopicAXO = () => JSON.parse(JSON.stringify(['a', 'x', 'o']));
     const getTopicAY = () => JSON.parse(JSON.stringify(['a', 'y']));
     const getTopicB = () => JSON.parse(JSON.stringify(['b']));
-    
-    // Snapshots for comparison
-	let createTopicDataSnapshotOne = () => {
-		let raw = {};
 
-		return raw;
+    // Snapshots for comparison
+    let createTopicDataSnapshotOne = () => {
+        let raw = {};
+
+        return raw;
     }
-    
+
     let createTopicDataSnapshotTwo = () => {
-		let raw = {
+        let raw = {
             't:a': {
                 'd:data': 'awesome a',
                 't:x': {
@@ -36,11 +36,11 @@ import {RuntimeTopicData} from './../src/index.js';
             }
         };
 
-		return raw;
+        return raw;
     }
 
     let createTopicDataSnapshotThree = () => {
-		let raw = {
+        let raw = {
             't:a': {
                 'd:data': 'awesome a',
                 't:x': {
@@ -57,11 +57,11 @@ import {RuntimeTopicData} from './../src/index.js';
             }
         };
 
-		return raw;
+        return raw;
     }
 
     let createTopicDataSnapshotFour = () => {
-		let raw = {
+        let raw = {
             't:a': {
                 'd:data': 'awesome a',
                 't:y': {
@@ -73,11 +73,11 @@ import {RuntimeTopicData} from './../src/index.js';
             }
         };
 
-		return raw;
+        return raw;
     }
 
     let createTopicDataSnapshotFive = () => {
-		let raw = {
+        let raw = {
             't:a': {
                 'd:data': 'awesome a',
                 't:y': {
@@ -86,7 +86,7 @@ import {RuntimeTopicData} from './../src/index.js';
             }
         };
 
-		return raw;
+        return raw;
     }
 
     // Topic Data builder functions
@@ -101,18 +101,18 @@ import {RuntimeTopicData} from './../src/index.js';
 
         return topicData;
     }
-    
-    
 
 
-	test('empty', t => {
+
+
+    test('empty', t => {
         let snapshot = createTopicDataSnapshotOne();
         let topicData = new RuntimeTopicData();
 
         t.deepEqual(topicData.storage, snapshot);
 
     });
-    
+
     test('push', t => {
         let snapshot = createTopicDataSnapshotTwo();
         let topicData = createTopicDataTwo();
