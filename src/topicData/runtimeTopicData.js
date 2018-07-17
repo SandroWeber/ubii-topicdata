@@ -98,7 +98,7 @@ const {getTopicPathFromArray} = require('./utility.js');
 
     const il = path.length;
     for (let i = 0; i < il; i++) {
-      if (subtree[path[i]] !== undefined) {
+      if (subtree[path[i]] !== undefined) { // Propaply faster than hasOwnProperty (--> less safe)
         subtree = subtree[path[i]];
       } else {
         if (createOnTraverse) {
