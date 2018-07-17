@@ -71,7 +71,7 @@ const {getTopicPathFromArray} = require('./utility.js');
       let node = this.storage;
       const il = path.length;
       for (let i = 0; i < il; i++) {
-        if (node.hasOwnProperty(path[i])) {
+        if (node[path[i]] !== undefined) {
           node = node[path[i]];
         } else {
           return false;
@@ -98,7 +98,7 @@ const {getTopicPathFromArray} = require('./utility.js');
 
     const il = path.length;
     for (let i = 0; i < il; i++) {
-      if (subtree.hasOwnProperty(path[i])) {
+      if (subtree[path[i]] !== undefined) {
         subtree = subtree[path[i]];
       } else {
         if (createOnTraverse) {
