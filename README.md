@@ -33,4 +33,3 @@ The runtime topic storage uses a common javascript object as storage structure. 
 
 - This module uses the [AVA](https://github.com/avajs/ava) test runner.
 - You can add new tests to the test folder. Entry point for the test runner is test.js within the test folder. See the [AVA Documentation](https://github.com/avajs/ava#contents) for more details on how to create new test cases for AVA.
-- Run the tests with ```npm test```
