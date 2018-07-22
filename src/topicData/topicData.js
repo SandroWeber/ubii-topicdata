@@ -12,6 +12,14 @@ class TopicData {
       throw new TypeError("Must override pull");
     }
 
+    if (this.subscribe === undefined) {
+      throw new TypeError("Must override subscribe");
+    }
+
+    if (this.unsubscribe === undefined) {
+      throw new TypeError("Must override unsubscribe");
+    }
+
     if (this.remove === undefined) {
       throw new TypeError("Must override remove");
     }
