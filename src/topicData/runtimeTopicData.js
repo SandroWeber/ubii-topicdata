@@ -1,5 +1,8 @@
 const {TopicData} = require('./topicData.js');
-const {DATA_PROPERTY_KEY} = require('./constants.js');
+const {
+  DATA_PROPERTY_KEY, 
+  SUBSCRIBER_PROPERTY_KEY,
+} = require('./constants.js');
 const {getTopicPathFromArray} = require('./utility.js');
 
 (function () {
@@ -42,6 +45,19 @@ const {getTopicPathFromArray} = require('./utility.js');
       }
       let node = getTopicNode.call(this, topic);
       return node[DATA_PROPERTY_KEY];
+    }
+
+    subscribe(topic, callback) {
+      let node = getTopicNode.call(this, topic);
+      if(node[SUBSCRIBER_PROPERTY_KEY] === undefined){
+        node[SUBSCRIBER_PROPERTY_KEY]= [];
+      }
+      node[SUBSCRIBER_PROPERTY_KEY].push(callback);
+      // todo return object to unsubscribe --> switch from array to map with unique identifiers that are unique per runtimetopic (increasing integers e.g.)
+    }
+
+    unsubscribe() {
+     // todo
     }
 
     /**
