@@ -1,9 +1,13 @@
-const {TopicData} = require('./topicData.js');
 const {
-  DATA_PROPERTY_KEY, 
+  TopicData
+} = require('./topicData.js');
+const {
+  DATA_PROPERTY_KEY,
   SUBSCRIBER_PROPERTY_KEY,
 } = require('./constants.js');
-const {getTopicPathFromArray} = require('./utility.js');
+const {
+  getTopicPathFromArray
+} = require('./utility.js');
 
 (function () {
   /**
@@ -24,14 +28,19 @@ const {getTopicPathFromArray} = require('./utility.js');
     }
 
     /**
-     * Pushes data under the specified topic into the topic data
+     * Publishes data under the specified topic into the topic data
      * If there is already data under this topic, it will be overwritten.
      * @param {String[]} topic Array of unprefixed subtopic strings specifying the topic path.
      * @param {*} data 
      */
-    push(topic, data) {
+    publish(topic, data) {
       let node = getTopicNode.call(this, topic);
       node[DATA_PROPERTY_KEY] = data;
+
+      if (node[SUBSCRIBER_PROPERTY_KEY] !== undefined) {
+        notify.call(this, node[SUBSCRIBER_PROPERTY_KEY], node[DATA_PROPERTY_KEY]);
+      }
+
     }
 
     /**
@@ -49,15 +58,19 @@ const {getTopicPathFromArray} = require('./utility.js');
 
     subscribe(topic, callback) {
       let node = getTopicNode.call(this, topic);
-      if(node[SUBSCRIBER_PROPERTY_KEY] === undefined){
-        node[SUBSCRIBER_PROPERTY_KEY]= [];
+      if (node[SUBSCRIBER_PROPERTY_KEY] === undefined) {
+        node[SUBSCRIBER_PROPERTY_KEY] = [];
       }
-      node[SUBSCRIBER_PROPERTY_KEY].push(callback);
-      // todo return object to unsubscribe --> switch from array to map with unique identifiers that are unique per runtimetopic (increasing integers e.g.)
+      node[SUBSCRIBER_PROPERTY_KEY].publish(callback);
     }
 
     unsubscribe() {
-     // todo
+      let node = getTopicNode.call(this, topic);
+      if (node[SUBSCRIBER_PROPERTY_KEY] === undefined) {
+        return;
+      }
+      node[SUBSCRIBER_PROPERTY_KEY].publish(callback);
+      node[SUBSCRIBER_PROPERTY_KEY] = node[SUBSCRIBER_PROPERTY_KEY].filter(subscriber => subscriber !== f);
     }
 
     /**
@@ -159,6 +172,10 @@ const {getTopicPathFromArray} = require('./utility.js');
       }
     }
     return isRelevant;
+  }
+
+  let notify = function (observers, data) {
+    observers.forEach(observer => observer(data));
   }
 
   module.exports = RuntimeTopicData;
