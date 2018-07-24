@@ -93,11 +93,11 @@ import {RuntimeTopicData} from './../src/index.js';
     let createTopicDataTwo = () => {
         let topicData = new RuntimeTopicData();
 
-        topicData.push(getTopicA(), `awesome a`);
-        topicData.push(getTopicAX(), `awesome ax`);
-        topicData.push(getTopicAXO(), `awesome axo`);
-        topicData.push(getTopicAY(), `awesome ay`);
-        topicData.push(getTopicB(), `awesome b`);
+        topicData.publish(getTopicA(), `awesome a`);
+        topicData.publish(getTopicAX(), `awesome ax`);
+        topicData.publish(getTopicAXO(), `awesome axo`);
+        topicData.publish(getTopicAY(), `awesome ay`);
+        topicData.publish(getTopicB(), `awesome b`);
 
         return topicData;
     }
@@ -113,7 +113,7 @@ import {RuntimeTopicData} from './../src/index.js';
 
     });
 
-    test('push', t => {
+    test('publish', t => {
         let snapshot = createTopicDataSnapshotTwo();
         let topicData = createTopicDataTwo();
 
