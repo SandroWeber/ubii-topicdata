@@ -121,6 +121,74 @@ import {RuntimeTopicData} from './../src/index.js';
 
     });
 
+    test('subscribe', t => {
+        let topicData = createTopicDataTwo();
+        let one, two, three;
+        let functionOne = (topic, data) => {
+            one = 'hallo '+data;
+        }
+        let functionTwo = (topic, data) => {
+            two = 'hallo '+data;
+        }
+        let functionThree = (topic, data) => {
+            three = 'hei '+data;
+        }
+
+        topicData.subscribe(getTopicA(), functionOne);
+        topicData.subscribe(getTopicAX(), functionTwo);
+        topicData.subscribe(getTopicA(), functionThree);
+
+        topicData.publish(getTopicA(), `awesome a blubb`);
+        topicData.publish(getTopicAX(), `awesome ax blubb`);
+
+        t.deepEqual(one, 'hallo awesome a blubb');
+        t.deepEqual(two, 'hallo awesome ax blubb');
+        t.deepEqual(three, 'hei awesome a blubb');
+
+    });
+
+    test('unsubscribe', t => {
+        let topicData = createTopicDataTwo();
+        let one, two, three;
+        let functionOne = (topic, data) => {
+            one = 'hallo '+data;
+        }
+        let functionTwo = (topic, data) => {
+            two = 'hallo '+data;
+        }
+        let functionThree = (topic, data) => {
+            three = 'hei '+data;
+        }
+
+        let tokenOne = topicData.subscribe(getTopicA(), functionOne);
+        let tokenTwo = topicData.subscribe(getTopicA(), functionTwo);
+        let tokenThree = topicData.subscribe(getTopicA(), functionThree);
+
+        topicData.publish(getTopicA(), `awesome a blubb`);
+
+        t.deepEqual(one, 'hallo awesome a blubb');
+        t.deepEqual(two, 'hallo awesome a blubb');
+        t.deepEqual(three, 'hei awesome a blubb');
+
+        topicData.unsubscribe(tokenTwo);
+
+        topicData.publish(getTopicA(), `awesome a blubb2`);
+
+        t.deepEqual(one, 'hallo awesome a blubb2');
+        t.deepEqual(two, 'hallo awesome a blubb');
+        t.deepEqual(three, 'hei awesome a blubb2');
+
+        topicData.unsubscribe(tokenOne);
+        topicData.unsubscribe(tokenOne);
+
+        topicData.publish(getTopicA(), `awesome a blubb3`);
+
+        t.deepEqual(one, 'hallo awesome a blubb2');
+        t.deepEqual(two, 'hallo awesome a blubb');
+        t.deepEqual(three, 'hei awesome a blubb3');
+
+    });
+
     test('pull', t => {
         let snapshot = createTopicDataSnapshotTwo();
         let topicData = createTopicDataTwo();

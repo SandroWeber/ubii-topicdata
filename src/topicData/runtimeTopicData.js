@@ -25,6 +25,7 @@ const {
       super();
 
       this.storage = {};
+      this.currentTokenId = -1;
     }
 
     /**
@@ -38,7 +39,7 @@ const {
       node[DATA_PROPERTY_KEY] = data;
 
       if (node[SUBSCRIBER_PROPERTY_KEY] !== undefined) {
-        notify.call(this, node[SUBSCRIBER_PROPERTY_KEY], node[DATA_PROPERTY_KEY]);
+        notify.call(this, node[SUBSCRIBER_PROPERTY_KEY], topic, node[DATA_PROPERTY_KEY]);
       }
 
     }
@@ -56,21 +57,42 @@ const {
       return node[DATA_PROPERTY_KEY];
     }
 
+    /**
+     * Subscribes the callback function to the specified topic.
+     * The callback function is called with the topic and a data parameter whenever data is published to the specified topic.
+     * Returns a token which can be passed to the unsubscribe mthod in order to unsubscribe the callback from the topic.
+     * @param {String[]} topic Array of unprefixed subtopic strings specifying the topic path.
+     * @param {Function} callback Function called when subscriber is notified. Should accept a topic and a data parameter.
+     * @return Returns a token which can be passed to the unsubscribe mthod in order to unsubscribe the callback from the topic.
+     */
     subscribe(topic, callback) {
       let node = getTopicNode.call(this, topic);
       if (node[SUBSCRIBER_PROPERTY_KEY] === undefined) {
         node[SUBSCRIBER_PROPERTY_KEY] = [];
       }
-      node[SUBSCRIBER_PROPERTY_KEY].publish(callback);
+      let subscriberId = ++this.currentTokenId;
+      node[SUBSCRIBER_PROPERTY_KEY].push({
+        'callback': callback,
+        'id': subscriberId,
+      });
+
+      let token = {
+        'topic': topic,
+        'id': subscriberId,
+      }
+      return token;
     }
 
-    unsubscribe() {
-      let node = getTopicNode.call(this, topic);
+    /**
+     * Unsubscribes the callback specified by this token from the coresponding topic.
+     * @param {*} token 
+     */
+    unsubscribe(token) {
+      let node = getTopicNode.call(this, token.topic);
       if (node[SUBSCRIBER_PROPERTY_KEY] === undefined) {
         return;
       }
-      node[SUBSCRIBER_PROPERTY_KEY].publish(callback);
-      node[SUBSCRIBER_PROPERTY_KEY] = node[SUBSCRIBER_PROPERTY_KEY].filter(subscriber => subscriber !== f);
+      node[SUBSCRIBER_PROPERTY_KEY] = node[SUBSCRIBER_PROPERTY_KEY].filter(subscriber => subscriber.id !== token.id);
     }
 
     /**
@@ -174,8 +196,14 @@ const {
     return isRelevant;
   }
 
-  let notify = function (observers, data) {
-    observers.forEach(observer => observer(data));
+  /**
+   * Calls every callback function with the specified parameters.
+   * @param {Function[]} subscribers Array of subscribed callback functions
+   * @param {*} topic 
+   * @param {*} data 
+   */
+  let notify = function (subscribers, topic, data) {
+    subscribers.forEach(subscriber => subscriber.callback(topic, data));
   }
 
   module.exports = RuntimeTopicData;
