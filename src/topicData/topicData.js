@@ -4,8 +4,8 @@ class TopicData {
       throw new TypeError("Cannot construct TopicData instances directly");
     }
 
-    if (this.push === undefined) {
-      throw new TypeError("Must override push");
+    if (this.publish === undefined) {
+      throw new TypeError("Must override publish");
     }
 
     if (this.pull === undefined) {
