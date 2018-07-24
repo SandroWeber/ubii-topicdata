@@ -121,6 +121,17 @@ import {RuntimeTopicData} from './../src/index.js';
 
     });
 
+    test('has', t => {
+        let topicData = createTopicDataTwo();
+
+        t.is(topicData.has(getTopicA()), true);
+        t.is(topicData.has(getTopicAX()), true);
+        t.is(topicData.has(getTopicAXO()), true);
+        t.is(topicData.has(getTopicAY()), true);
+        t.is(topicData.has(getTopicB()), true);
+
+    });
+
     test('subscribe', t => {
         let topicData = createTopicDataTwo();
         let one, two, three;
