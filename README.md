@@ -6,9 +6,9 @@ Ubii topic data module.
 
 ## Table of Contents
 
-- [Topic Data](#Topic Data)
-- [Command Line Interfaces (CLIs)](#CLIs)
-- [Testing](#Testing)
+- [Topic Data](#topic-data)
+- [Command Line Interfaces (CLIs)](#clis)
+- [Testing](#testing)
 
 ## Topic Data
 
