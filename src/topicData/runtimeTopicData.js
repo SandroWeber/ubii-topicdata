@@ -6,7 +6,8 @@ const {
   SUBSCRIBER_PROPERTY_KEY,
 } = require('./constants.js');
 const {
-  getTopicPathFromArray
+  getTopicPathFromArray,
+  validateTopic
 } = require('./utility.js');
 
 (function () {
@@ -116,6 +117,7 @@ const {
      * @returns {Boolean} Returns whether the the storage has the given topic or not.
      */
     has(topic) {
+      validateTopic(topic);
       const path = getTopicPathFromArray(topic);
 
       // traverse path
@@ -142,6 +144,7 @@ const {
    * @return returns the node specified by the path or undefined.
    */
   let getTopicNode = function (topic, createOnTraverse = true) {
+    validateTopic(topic);
     const path = getTopicPathFromArray(topic);
 
     // traverse path and create if necessary
@@ -170,6 +173,7 @@ const {
    * @param {String[]} topic Array of unprefixed subtopic strings specifying the topic path.
    */
   let cleanUpPath = function (topic) {
+    validateTopic(topic);
     const path = getTopicPathFromArray(topic);
 
     if (!recursiveIsRelevantCleanUp(this.storage[path[0]])) {
