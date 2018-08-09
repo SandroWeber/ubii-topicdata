@@ -1,5 +1,8 @@
 import test from 'ava';
 import {RuntimeTopicData} from './../src/index.js';
+const {
+    validateTopic
+  } = require('./../src/topicData/utility.js');
 
 (function () {
 
@@ -240,5 +243,64 @@ import {RuntimeTopicData} from './../src/index.js';
         topicData.remove(getTopicAY());
         snapshot = createTopicDataSnapshotOne();
         t.deepEqual(topicData.storage, snapshot);
+    });
+
+    test('validateTopic', t => {
+        let valid, invalid;
+
+        valid = ['root', 'subtopic1', 'subtopic2', 'subtopic3', 'subtopic4'];
+        t.notThrows(()=>{
+            validateTopic(valid);
+        });
+
+        invalid = ['root', 'subtopic1', 'subtopic2', {}, 'subtopic4'];
+        t.throws(() => {
+            validateTopic(invalid);
+        });
+
+        invalid = ['root', 'subtopic1', 'subtopic2', () => {}, 'subtopic4'];
+        t.throws(() => {
+            validateTopic(invalid);
+        });
+
+        invalid = 'root,subtopic1,subtopic2,subtopic3,subtopic4';
+        t.throws(() => {
+            validateTopic(invalid);
+        });
+
+        invalid = 'root , subtopic1 , subtopic2 , subtopic3 , subtopic4';
+        t.throws(() => {
+            validateTopic(invalid);
+        });
+
+        invalid = 'rootsubtopic1subtopic2subtopic3subtopic4';
+        t.throws(() => {
+            validateTopic(invalid);
+        });
+
+        invalid = {};
+        t.throws(() => {
+            validateTopic(invalid);
+        });
+
+        invalid = {'root':'root', 'subtopic':'subtopic1'};
+        t.throws(() => {
+            validateTopic(invalid);
+        });
+
+        invalid = [{'root':'root', 'subtopic':'subtopic1'}, {}];
+        t.throws(() => {
+            validateTopic(invalid);
+        });
+
+        invalid = () => {};
+        t.throws(() => {
+            validateTopic(invalid);
+        });
+
+        invalid = [()=>{}, ()=>{}];
+        t.throws(() => {
+            validateTopic(invalid);
+        });
     });
 })();
