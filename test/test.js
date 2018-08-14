@@ -134,27 +134,48 @@ import {RuntimeTopicData} from './../src/index.js';
 
     test('subscribe', t => {
         let topicData = createTopicDataTwo();
-        let one, two, three;
+        let dataOne='', dataTwo = '', dataThree= '', dataFour='';
+        let topicOne='', topicTwo = '', topicThree= '', topicFour='';
         let functionOne = (topic, data) => {
-            one = 'hallo '+data;
+            dataOne = 'hallo '+data;
+            topicOne = topic;
         }
         let functionTwo = (topic, data) => {
-            two = 'hallo '+data;
+            dataTwo = 'hallo '+data;
+            topicTwo = topic;
         }
         let functionThree = (topic, data) => {
-            three = 'hei '+data;
+            dataThree = 'hei '+data;
+            topicThree = topic;
+        }
+        let functionFour = (topic, data) => {
+            throw new Error();
         }
 
         topicData.subscribe(getTopicA(), functionOne);
         topicData.subscribe(getTopicAX(), functionTwo);
         topicData.subscribe(getTopicA(), functionThree);
+        topicData.subscribe([], functionFour);
 
         topicData.publish(getTopicA(), `awesome a blubb`);
+
+        t.deepEqual(dataOne, 'hallo awesome a blubb');
+        t.deepEqual(dataTwo, '');
+        t.deepEqual(dataThree, 'hei awesome a blubb');
+
+        t.deepEqual(topicOne, getTopicA());
+        t.deepEqual(topicTwo, '');
+        t.deepEqual(topicThree, getTopicA());
+
         topicData.publish(getTopicAX(), `awesome ax blubb`);
 
-        t.deepEqual(one, 'hallo awesome a blubb');
-        t.deepEqual(two, 'hallo awesome ax blubb');
-        t.deepEqual(three, 'hei awesome a blubb');
+        t.deepEqual(dataOne, 'hallo awesome a blubb');
+        t.deepEqual(dataTwo, 'hallo awesome ax blubb');
+        t.deepEqual(dataThree, 'hei awesome a blubb');
+
+        t.deepEqual(JSONtopicOne, getTopicA());
+        t.deepEqual(topicTwo, getTopicAX());
+        t.deepEqual(topicThree, getTopicA());
 
     });
 
