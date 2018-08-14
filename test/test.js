@@ -1,5 +1,8 @@
 import test from 'ava';
 import {RuntimeTopicData} from './../src/index.js';
+const {
+    validateTopic
+  } = require('./../src/topicData/utility.js');
 
 (function () {
 
@@ -261,5 +264,65 @@ import {RuntimeTopicData} from './../src/index.js';
         topicData.remove(getTopicAY());
         snapshot = createTopicDataSnapshotOne();
         t.deepEqual(topicData.storage, snapshot);
+    });
+
+    test('validateTopic', t => {
+        let valid, invalid;
+        let topicData = createTopicDataTwo();
+        let invalidChecks = (invalid) => {
+            t.throws(() => {
+                validateTopic(invalid);
+            });
+            t.throws(() => {
+                topicData.publish(invalid, {});
+            });
+            t.throws(() => {
+                topicData.has(invalid);
+            });
+            t.throws(() => {
+                topicData.subscribe(invalid);
+            });
+            t.throws(() => {
+                topicData.pull(invalid);
+            });
+            t.throws(() => {
+                topicData.remove(invalid);
+            });
+        }
+
+        valid = ['root', 'subtopic1', 'subtopic2', 'subtopic3', 'subtopic4'];
+        t.notThrows(()=>{
+            validateTopic(valid);
+        });
+
+        invalid = ['root', 'subtopic1', 'subtopic2', {}, 'subtopic4'];
+        
+
+        invalid = ['root', 'subtopic1', 'subtopic2', () => {}, 'subtopic4'];
+        invalidChecks(invalid);
+
+        invalid = 'root,subtopic1,subtopic2,subtopic3,subtopic4';
+        invalidChecks(invalid);
+
+        invalid = 'root , subtopic1 , subtopic2 , subtopic3 , subtopic4';
+        invalidChecks(invalid);
+
+        invalid = 'rootsubtopic1subtopic2subtopic3subtopic4';
+        invalidChecks(invalid);
+
+        invalid = {};
+        invalidChecks(invalid);
+
+        invalid = {'root':'root', 'subtopic':'subtopic1'};
+        invalidChecks(invalid);
+
+        invalid = [{'root':'root', 'subtopic':'subtopic1'}, {}];
+        invalidChecks(invalid);
+
+        invalid = () => {};
+        invalidChecks(invalid);
+
+        invalid = [()=>{}, ()=>{}];
+        invalidChecks(invalid);
     });
 })();

@@ -16,6 +16,12 @@ Ubii topic data module.
 
 A topic is interpreted as array of unprefixed subtopic strings specifying the topic path.
 
+Example for a *valid* topic:
+```js
+valid = ['root', 'subtopic1', 'subtopic2', 'subtopic3', 'subtopic4'];
+```
+Only topics specified in this form are accepted by the Topic Data.
+
 ### Runtime Topic Data
 
 Local runtime implementaion of a topic data.
