@@ -173,7 +173,7 @@ import {RuntimeTopicData} from './../src/index.js';
         t.deepEqual(dataTwo, 'hallo awesome ax blubb');
         t.deepEqual(dataThree, 'hei awesome a blubb');
 
-        t.deepEqual(JSONtopicOne, getTopicA());
+        t.deepEqual(topicOne, getTopicA());
         t.deepEqual(topicTwo, getTopicAX());
         t.deepEqual(topicThree, getTopicA());
 
