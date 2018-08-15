@@ -1,17 +1,19 @@
-const {TOPIC_PREFIX} = require('./constants.js');
+const {
+    TOPIC_PREFIX
+} = require('./constants.js');
 
 let getTopicPathFromString = function (topicString, topicSeparator) {
     return topicString.toString().split(topicSeparator).map(t => '' + TOPIC_PREFIX + t);
 }
 
-let validateTopic = function(topic){
+let validateTopic = function (topic) {
     //topic is a string
-    if (!(typeof topic === 'string' || topic instanceof String)){
-        throw new Error('The specified topic is not valid: The topic is not a string: '+topic);
+    if (!(typeof topic === 'string' || topic instanceof String)) {
+        throw new Error('The specified topic is not valid: The topic is not a string: ' + topic);
     }
 }
 
 module.exports = {
     getTopicPathFromString: getTopicPathFromString,
-    validateTopic: validateTopic,
+    validateTopic: validateTopic
 }
