@@ -143,7 +143,16 @@ const {
         let topicData = createTopicDataTwo();
 
 
-
+        // invalid subscribtions:
+        t.throws(() => {
+            topicData.subscribe(getTopicA());
+        })
+        t.throws(() => {
+            topicData.subscribe(getTopicA(), {});
+        })
+        t.throws(() => {
+            topicData.subscribe(getTopicA(), 'foo');
+        })
 
 
         // correct subscribtion resolving after publishing on topics:
