@@ -6,7 +6,7 @@ const {
   SUBSCRIBER_PROPERTY_KEY,
 } = require('./constants.js');
 const {
-  getTopicPathFromArray,
+  getTopicPathFromString,
   validateTopic
 } = require('./utility.js');
 
@@ -118,7 +118,7 @@ const {
      */
     has(topic) {
       validateTopic(topic);
-      const path = getTopicPathFromArray(topic);
+      const path = getTopicPathFromString(topic);
 
       // traverse path
       let node = this.storage;
@@ -145,7 +145,7 @@ const {
    */
   let getTopicNode = function (topic, createOnTraverse = true) {
     validateTopic(topic);
-    const path = getTopicPathFromArray(topic);
+    const path = getTopicPathFromString(topic);
 
     // traverse path and create if necessary
     let subtree = this.storage;
@@ -174,7 +174,7 @@ const {
    */
   let cleanUpPath = function (topic) {
     validateTopic(topic);
-    const path = getTopicPathFromArray(topic);
+    const path = getTopicPathFromString(topic);
 
     if (!recursiveIsRelevantCleanUp(this.storage[path[0]])) {
       delete this.storage[path[0]];
