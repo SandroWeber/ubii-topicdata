@@ -1,10 +1,11 @@
 const {
     TOPIC_PREFIX,
-    TOPIC_SUFFIX
+    TOPIC_SUFFIX,
+    TOPIC_SEPARATOR
 } = require('./constants.js');
 
-let getTopicPathFromString = function (topicString, topicSeparator) {
-    return topicString.toString().split(topicSeparator).map(t => '' + TOPIC_PREFIX + t + TOPIC_SUFFIX);
+let getTopicPathFromString = function (topicString) {
+    return topicString.toString().split(TOPIC_SEPARATOR).map(t => '' + TOPIC_PREFIX + t + TOPIC_SUFFIX);
 }
 
 let validateTopic = function (topic) {
