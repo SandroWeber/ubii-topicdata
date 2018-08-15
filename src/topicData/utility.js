@@ -4,10 +4,6 @@ let getTopicPathFromString = function (topicString, topicSeparator) {
     return topicString.toString().split(topicSeparator).map(t => '' + TOPIC_PREFIX + t);
 }
 
-let getTopicPathFromArray = function (topic) {
-    return topic.map(t => '' + TOPIC_PREFIX + t);
-}
-
 let validateTopic = function(topic){
     //topic is a string
     if (!(typeof topic === 'string' || topic instanceof String)){
@@ -17,6 +13,5 @@ let validateTopic = function(topic){
 
 module.exports = {
     getTopicPathFromString: getTopicPathFromString,
-    getTopicPathFromArray: getTopicPathFromArray,
     validateTopic: validateTopic,
 }
