@@ -3,6 +3,10 @@ import {RuntimeTopicData} from './../src/index.js';
 const {
     validateTopic
   } = require('./../src/topicData/utility.js');
+  const {
+    TOPIC_PREFIX,
+    TOPIC_SUFFIX
+} = require('./../src/topicData/constants.js');
 
 (function () {
 
@@ -22,19 +26,19 @@ const {
 
     let createTopicDataSnapshotTwo = () => {
         let raw = {
-            't:a': {
+            't:a:t': {
                 'd:data': 'awesome a',
-                't:x': {
+                't:x:t': {
                     'd:data': 'awesome ax',
-                    't:o': {
+                    't:o:t': {
                         'd:data': 'awesome axo',
                     }
                 },
-                't:y': {
+                't:y:t': {
                     'd:data': 'awesome ay',
                 }
             },
-            't:b': {
+            't:b:t': {
                 'd:data': 'awesome b',
             }
         };
@@ -44,18 +48,18 @@ const {
 
     let createTopicDataSnapshotThree = () => {
         let raw = {
-            't:a': {
+            't:a:t': {
                 'd:data': 'awesome a',
-                't:x': {
-                    't:o': {
+                't:x:t': {
+                    't:o:t': {
                         'd:data': `awesome axo`,
                     }
                 },
-                't:y': {
+                't:y:t': {
                     'd:data': 'awesome ay',
                 }
             },
-            't:b': {
+            't:b:t': {
                 'd:data': 'awesome b',
             }
         };
@@ -65,13 +69,13 @@ const {
 
     let createTopicDataSnapshotFour = () => {
         let raw = {
-            't:a': {
+            't:a:t': {
                 'd:data': 'awesome a',
-                't:y': {
+                't:y:t': {
                     'd:data': `awesome ay`,
                 }
             },
-            't:b': {
+            't:b:t': {
                 'd:data': 'awesome b',
             }
         };
@@ -81,9 +85,9 @@ const {
 
     let createTopicDataSnapshotFive = () => {
         let raw = {
-            't:a': {
+            't:a:t': {
                 'd:data': 'awesome a',
-                't:y': {
+                't:y:t': {
                     'd:data': `awesome ay`,
                 }
             }
@@ -119,7 +123,7 @@ const {
     test('publish', t => {
         let snapshot = createTopicDataSnapshotTwo();
         let topicData = createTopicDataTwo();
-
+        
         t.deepEqual(topicData.storage, snapshot);
 
     });
@@ -137,6 +141,12 @@ const {
 
     test('subscribe', t => {
         let topicData = createTopicDataTwo();
+
+
+
+
+
+        // correct subscribtion resolving after publishing on topics:
         let dataOne='', dataTwo = '', dataThree= '', dataFour='';
         let topicOne='', topicTwo = '', topicThree= '', topicFour='';
         let functionOne = (topic, data) => {
@@ -155,10 +165,10 @@ const {
             throw new Error();
         }
 
-        topicData.subscribe(getTopicA(), functionOne);
+        topicData.subscribe(getTopicA(), functionOne);        
         topicData.subscribe(getTopicAX(), functionTwo);
         topicData.subscribe(getTopicA(), functionThree);
-        topicData.subscribe([], functionFour);
+        topicData.subscribe('', functionFour);
 
         topicData.publish(getTopicA(), `awesome a blubb`);
 
@@ -269,6 +279,7 @@ const {
     test('validateTopic', t => {
         let valid, invalid;
         let topicData = createTopicDataTwo();
+
         let invalidChecks = (invalid) => {
             t.throws(() => {
                 validateTopic(invalid);
@@ -280,7 +291,7 @@ const {
                 topicData.has(invalid);
             });
             t.throws(() => {
-                topicData.subscribe(invalid);
+                topicData.subscribe(invalid, ()=>{});
             });
             t.throws(() => {
                 topicData.pull(invalid);
@@ -290,39 +301,84 @@ const {
             });
         }
 
-        valid = ['root', 'subtopic1', 'subtopic2', 'subtopic3', 'subtopic4'];
-        t.notThrows(()=>{
-            validateTopic(valid);
-        });
+        let validChecks = (valid) => {
+            t.notThrows(() => {
+                validateTopic(valid);
+            });
+            t.notThrows(() => {
+                topicData.publish(valid, {});
+            });
+            t.notThrows(() => {
+                topicData.has(valid);
+            });
+            t.notThrows(() => {
+                topicData.subscribe(valid, ()=>{});
+            });
+            t.notThrows(() => {
+                topicData.pull(valid);
+            });
+            t.notThrows(() => {
+                //topicData.remove(valid);
+            });
+        }
 
-        invalid = ['root', 'subtopic1', 'subtopic2', {}, 'subtopic4'];
-        
+        // valid topic tests
 
-        invalid = ['root', 'subtopic1', 'subtopic2', () => {}, 'subtopic4'];
+        // simple valid topic
+        valid = 'root->subtopic1->subtopic2->subtopic3->subtopic4';
+        validChecks(valid);
+
+        // trailing space
+        valid = 'root->subtopic1 ->subtopic2 ->subtopic3 ->subtopic4';
+        validChecks(valid);
+
+        // trailing space (also on first)
+        valid = 'root->subtopic1 ->subtopic2 ->subtopic3 ->subtopic4';
+        validChecks(valid);
+
+        // prefixed space
+        valid = 'root-> subtopic1-> subtopic2->subtopic3->subtopic4';
+        validChecks(valid);
+
+        // prefixed space (also on first)
+        valid = ' root-> subtopic1-> subtopic2->subtopic3->subtopic4';
+        validChecks(valid);
+
+        // trailing and prefixed space
+        valid = 'root-> subtopic1 -> subtopic2 -> subtopic3 ->subtopic4';
+        validChecks(valid);
+
+        // trailing and prefixed space (also on first)
+        valid = ' root -> subtopic1 -> subtopic2 -> subtopic3 ->subtopic4';
+        validChecks(valid);
+
+
+        // invalid topic tests
+
+        // array of strings
+        invalid = ['root', 'subtopic1', 'subtopic2', 'subtopic4'];
         invalidChecks(invalid);
 
-        invalid = 'root,subtopic1,subtopic2,subtopic3,subtopic4';
+        // array of objects
+        invalid = [{'a': 'a'}, {'b': 'b'}, {}];
         invalidChecks(invalid);
 
-        invalid = 'root , subtopic1 , subtopic2 , subtopic3 , subtopic4';
+        // array of functions
+        invalid = [()=>{}, ()=>{}];
         invalidChecks(invalid);
 
-        invalid = 'rootsubtopic1subtopic2subtopic3subtopic4';
+        // object
+        invalid = {'a': 'a'};
         invalidChecks(invalid);
 
+        // empty object
         invalid = {};
         invalidChecks(invalid);
 
-        invalid = {'root':'root', 'subtopic':'subtopic1'};
-        invalidChecks(invalid);
-
-        invalid = [{'root':'root', 'subtopic':'subtopic1'}, {}];
-        invalidChecks(invalid);
-
+        // function
         invalid = () => {};
         invalidChecks(invalid);
 
-        invalid = [()=>{}, ()=>{}];
-        invalidChecks(invalid);
+
     });
 })();
