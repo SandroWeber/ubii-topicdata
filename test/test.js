@@ -7,11 +7,11 @@ const {
 (function () {
 
     // Creates and returns deep copies of the specified topic arrays.
-    const getTopicA = () => JSON.parse(JSON.stringify(['a']));
-    const getTopicAX = () => JSON.parse(JSON.stringify(['a', 'x']));
-    const getTopicAXO = () => JSON.parse(JSON.stringify(['a', 'x', 'o']));
-    const getTopicAY = () => JSON.parse(JSON.stringify(['a', 'y']));
-    const getTopicB = () => JSON.parse(JSON.stringify(['b']));
+    const getTopicA = () => 'a';
+    const getTopicAX = () => 'a->x';
+    const getTopicAXO = () => 'a->x->o';
+    const getTopicAY = () => 'a->y';
+    const getTopicB = () => 'b';
 
     // Snapshots for comparison
     let createTopicDataSnapshotOne = () => {
