@@ -32,7 +32,7 @@ const {
     /**
      * Publishes data under the specified topic into the topic data
      * If there is already data under this topic, it will be overwritten.
-     * @param {String[]} topic Array of unprefixed subtopic strings specifying the topic path.
+     * @param {String} topic Topic strings specifying the topic path.
      * @param {*} data 
      */
     publish(topic, data) {
@@ -47,7 +47,7 @@ const {
 
     /**
      * Pulls the data from topic data that is stored under the given topic.
-     * @param {String[]} topic Array of unprefixed subtopic strings specifying the topic path.
+     * @param {String} topic Topic strings specifying the topic path.
      * @returns Returns the data stored under the given topic. Returns undefined if the topic does not exist.
      */
     pull(topic) {
@@ -62,12 +62,15 @@ const {
      * Subscribes the callback function to the specified topic.
      * The callback function is called with the topic and a data parameter whenever data is published to the specified topic.
      * Returns a token which can be passed to the unsubscribe mthod in order to unsubscribe the callback from the topic.
-     * @param {String[]} topic Array of unprefixed subtopic strings specifying the topic path.
+     * @param {String} topic Topic strings specifying the topic path.
      * @param {Function} callback Function called when subscriber is notified. Should accept a topic and a data parameter.
      * @return Returns a token which can be passed to the unsubscribe mthod in order to unsubscribe the callback from the topic.
      */
     subscribe(topic, callback) {
       let node = getTopicNode.call(this, topic);
+      if (typeof callback !== "function") {
+        throw new Error('Subscribe: passed callback parameter is not a function.');
+      }
       if (node[SUBSCRIBER_PROPERTY_KEY] === undefined) {
         node[SUBSCRIBER_PROPERTY_KEY] = [];
       }
