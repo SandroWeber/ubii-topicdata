@@ -276,13 +276,13 @@ const {
         let topicData = createTopicDataTwo();
         let one, two, three, four = '4';
         let functionOne = (topic, data) => {
-            one = 'hallo '+data;
+            one = '1 '+data;
         }
         let functionTwo = (topic, data) => {
-            two = 'hallo '+data;
+            two = '2 '+data;
         }
         let functionThree = (topic, data) => {
-            three = 'hei '+data;
+            three = '3 '+data;
         }
         let functionFour = (topic, data) => {
             four = four+' '+data;
@@ -295,18 +295,18 @@ const {
 
         topicData.publish(getTopicA(), `ablubb`);
 
-        t.deepEqual(one, 'hallo ablubb');
-        t.deepEqual(two, 'hallo ablubb');
-        t.deepEqual(three, 'hei ablubb');
+        t.deepEqual(one, '1 ablubb');
+        t.deepEqual(two, '2 ablubb');
+        t.deepEqual(three, '3 ablubb');
         t.deepEqual(four, '4 ablubb');
 
         topicData.unsubscribe(tokenTwo);
 
         topicData.publish(getTopicA(), `ablubb2`);
 
-        t.deepEqual(one, 'hallo ablubb2');
-        t.deepEqual(two, 'hallo ablubb');
-        t.deepEqual(three, 'hei ablubb2');
+        t.deepEqual(one, '1 ablubb2');
+        t.deepEqual(two, '2 ablubb');
+        t.deepEqual(three, '3 ablubb2');
         t.deepEqual(four, '4 ablubb ablubb2');
 
         topicData.unsubscribe(tokenOne);
@@ -316,9 +316,9 @@ const {
 
         topicData.publish(getTopicA(), `ablubb3`);
 
-        t.deepEqual(one, 'hallo ablubb2');
-        t.deepEqual(two, 'hallo ablubb');
-        t.deepEqual(three, 'hei ablubb3');
+        t.deepEqual(one, '1 ablubb2');
+        t.deepEqual(two, '2 ablubb');
+        t.deepEqual(three, '3 ablubb3');
         t.deepEqual(four, '4 ablubb ablubb2');
 
     });
