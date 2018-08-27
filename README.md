@@ -14,13 +14,12 @@ Ubii topic data module.
 
 ### Topic
 
-A topic is interpreted as array of unprefixed subtopic strings specifying the topic path.
+A topic is simple string. The individual subtopics are separated by a special character ("->").
 
 Example for a *valid* topic:
 ```js
-valid = ['root', 'subtopic1', 'subtopic2', 'subtopic3', 'subtopic4'];
+valid = 'root->subtopic1->subtopic2->subtopic3->subtopic4';
 ```
-Only topics specified in this form are accepted by the Topic Data.
 
 ### Runtime Topic Data
 
