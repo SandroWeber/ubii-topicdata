@@ -27,6 +27,8 @@ const {
 
       this.storage = {};
       this.currentTokenId = -1;
+
+      this.universalSubscribtions = [];
     }
 
     /**
@@ -83,6 +85,36 @@ const {
       let token = {
         'topic': topic,
         'id': subscriberId,
+        'type':'topic'
+      }
+      return token;
+    }
+
+    /**
+     * Subscribes the callback function to the specified topic.
+     * The callback function is called with the topic and a data parameter whenever data is published to the specified topic.
+     * Returns a token which can be passed to the unsubscribe mthod in order to unsubscribe the callback from the topic.
+     * @param {String} topic Topic strings specifying the topic path.
+     * @param {Function} callback Function called when subscriber is notified. Should accept a topic and a data parameter.
+     * @return Returns a token which can be passed to the unsubscribe mthod in order to unsubscribe the callback from the topic.
+     */
+    subscribeAll(callback) {
+      if (typeof callback !== "function") {
+        throw new Error('Subscribe: passed callback parameter is not a function.');
+      }
+      if (this.universalSubscribtions === undefined) {
+        this.universalSubscribtions = [];
+      }
+      let subscriberId = ++this.currentTokenId;
+      this.universalSubscribtions.push({
+        'callback': callback,
+        'id': subscriberId,
+      });
+
+      let token = {
+        'topic': topic,
+        'id': subscriberId,
+        'type':'universal'
       }
       return token;
     }
@@ -92,11 +124,15 @@ const {
      * @param {*} token 
      */
     unsubscribe(token) {
-      let node = getTopicNode.call(this, token.topic);
-      if (node[SUBSCRIBER_PROPERTY_KEY] === undefined) {
-        return;
+      if(token.type === 'topic'){
+        let node = getTopicNode.call(this, token.topic);
+        if (node[SUBSCRIBER_PROPERTY_KEY] === undefined) {
+          return;
+        }
+        node[SUBSCRIBER_PROPERTY_KEY] = node[SUBSCRIBER_PROPERTY_KEY].filter(subscriber => subscriber.id !== token.id);
+      }else if(token.type === 'universal'){
+        this.universalSubscribtions = this.universalSubscribtions.filter(subscriber => subscriber.id !== token.id);
       }
-      node[SUBSCRIBER_PROPERTY_KEY] = node[SUBSCRIBER_PROPERTY_KEY].filter(subscriber => subscriber.id !== token.id);
     }
 
     /**
