@@ -201,9 +201,80 @@ const {
 
     });
 
+    test('subscribeAll', t => {
+        let topicData = createTopicDataTwo();
+
+        // invalid subscribtions:
+        t.throws(() => {
+            topicData.subscribeAll();
+        })
+        t.throws(() => {
+            topicData.subscribeAll( {});
+        })
+        t.throws(() => {
+            topicData.subscribeAll( 'foo');
+        })
+
+
+        // correct subscribtion resolving after publishing on topics:
+        let dataOne='', dataTwo = '', dataThree= '', dataFour='', dataFive='5';
+        let topicOne='', topicTwo = '', topicThree= '', topicFour='', topicFive='';
+        let functionOne = (topic, data) => {
+            dataOne = '1 '+data;
+            topicOne = topic;
+        }
+        let functionTwo = (topic, data) => {
+            dataTwo = '2 '+data;
+            topicTwo = topic;
+        }
+        let functionThree = (topic, data) => {
+            dataThree = '3 '+data;
+            topicThree = topic;
+        }
+        let functionFour = (topic, data) => {
+            throw new Error();
+        }
+        let functionFive = (topic, data) => {
+            dataFive = dataFive+' '+data;
+            topicFive = topic;
+        }
+
+        
+        topicData.subscribe(getTopicA(), functionOne);        
+        topicData.subscribe(getTopicAX(), functionTwo);
+        topicData.subscribe(getTopicA(), functionThree);
+        topicData.subscribe('', functionFour);
+        topicData.subscribeAll(functionFive);
+
+        topicData.publish(getTopicA(), `ablubb`);
+
+        t.deepEqual(dataOne, '1 ablubb');
+        t.deepEqual(dataTwo, '');
+        t.deepEqual(dataThree, '3 ablubb');
+        t.deepEqual(dataFive, '5 ablubb');
+
+        t.deepEqual(topicOne, getTopicA());
+        t.deepEqual(topicTwo, '');
+        t.deepEqual(topicThree, getTopicA());
+        t.deepEqual(topicFive, getTopicA());
+
+        topicData.publish(getTopicAX(), `axblubb`);
+
+        t.deepEqual(dataOne, '1 ablubb');
+        t.deepEqual(dataTwo, '2 axblubb');
+        t.deepEqual(dataThree, '3 ablubb');
+        t.deepEqual(dataFive, '5 ablubb axblubb');
+
+        t.deepEqual(topicOne, getTopicA());
+        t.deepEqual(topicTwo, getTopicAX());
+        t.deepEqual(topicThree, getTopicA());
+        t.deepEqual(topicFive, getTopicAX());
+
+    });
+
     test('unsubscribe', t => {
         let topicData = createTopicDataTwo();
-        let one, two, three;
+        let one, two, three, four = '4';
         let functionOne = (topic, data) => {
             one = 'hallo '+data;
         }
@@ -213,16 +284,21 @@ const {
         let functionThree = (topic, data) => {
             three = 'hei '+data;
         }
+        let functionFour = (topic, data) => {
+            four = four+' '+data;
+        }
 
         let tokenOne = topicData.subscribe(getTopicA(), functionOne);
         let tokenTwo = topicData.subscribe(getTopicA(), functionTwo);
         let tokenThree = topicData.subscribe(getTopicA(), functionThree);
+        let tokenFour = topicData.subscribeAll(functionFour);
 
         topicData.publish(getTopicA(), `awesome a blubb`);
 
         t.deepEqual(one, 'hallo awesome a blubb');
         t.deepEqual(two, 'hallo awesome a blubb');
         t.deepEqual(three, 'hei awesome a blubb');
+        t.deepEqual(four, '4 awesome a blubb');
 
         topicData.unsubscribe(tokenTwo);
 
@@ -231,15 +307,19 @@ const {
         t.deepEqual(one, 'hallo awesome a blubb2');
         t.deepEqual(two, 'hallo awesome a blubb');
         t.deepEqual(three, 'hei awesome a blubb2');
+        t.deepEqual(four, '4 awesome a blubb awesome a blubb2');
 
         topicData.unsubscribe(tokenOne);
         topicData.unsubscribe(tokenOne);
+
+        topicData.unsubscribe(tokenFour);
 
         topicData.publish(getTopicA(), `awesome a blubb3`);
 
         t.deepEqual(one, 'hallo awesome a blubb2');
         t.deepEqual(two, 'hallo awesome a blubb');
         t.deepEqual(three, 'hei awesome a blubb3');
+        t.deepEqual(four, '4 awesome a blubb awesome a blubb2');
 
     });
 
