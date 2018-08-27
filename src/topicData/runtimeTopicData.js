@@ -113,7 +113,7 @@ const {
       });
 
       let token = {
-        'topic': topic,
+        'topic': '',
         'id': subscriberId,
         'type':'universal'
       }
