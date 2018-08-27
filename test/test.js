@@ -293,33 +293,33 @@ const {
         let tokenThree = topicData.subscribe(getTopicA(), functionThree);
         let tokenFour = topicData.subscribeAll(functionFour);
 
-        topicData.publish(getTopicA(), `awesome a blubb`);
+        topicData.publish(getTopicA(), `ablubb`);
 
-        t.deepEqual(one, 'hallo awesome a blubb');
-        t.deepEqual(two, 'hallo awesome a blubb');
-        t.deepEqual(three, 'hei awesome a blubb');
-        t.deepEqual(four, '4 awesome a blubb');
+        t.deepEqual(one, 'hallo ablubb');
+        t.deepEqual(two, 'hallo ablubb');
+        t.deepEqual(three, 'hei ablubb');
+        t.deepEqual(four, '4 ablubb');
 
         topicData.unsubscribe(tokenTwo);
 
-        topicData.publish(getTopicA(), `awesome a blubb2`);
+        topicData.publish(getTopicA(), `ablubb2`);
 
-        t.deepEqual(one, 'hallo awesome a blubb2');
-        t.deepEqual(two, 'hallo awesome a blubb');
-        t.deepEqual(three, 'hei awesome a blubb2');
-        t.deepEqual(four, '4 awesome a blubb awesome a blubb2');
+        t.deepEqual(one, 'hallo ablubb2');
+        t.deepEqual(two, 'hallo ablubb');
+        t.deepEqual(three, 'hei ablubb2');
+        t.deepEqual(four, '4 ablubb ablubb2');
 
         topicData.unsubscribe(tokenOne);
         topicData.unsubscribe(tokenOne);
 
         topicData.unsubscribe(tokenFour);
 
-        topicData.publish(getTopicA(), `awesome a blubb3`);
+        topicData.publish(getTopicA(), `ablubb3`);
 
-        t.deepEqual(one, 'hallo awesome a blubb2');
-        t.deepEqual(two, 'hallo awesome a blubb');
-        t.deepEqual(three, 'hei awesome a blubb3');
-        t.deepEqual(four, '4 awesome a blubb awesome a blubb2');
+        t.deepEqual(one, 'hallo ablubb2');
+        t.deepEqual(two, 'hallo ablubb');
+        t.deepEqual(three, 'hei ablubb3');
+        t.deepEqual(four, '4 ablubb ablubb2');
 
     });
 
