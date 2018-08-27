@@ -43,6 +43,7 @@ const {
 
       if (node[SUBSCRIBER_PROPERTY_KEY] !== undefined) {
         notify.call(this, node[SUBSCRIBER_PROPERTY_KEY], topic, node[DATA_PROPERTY_KEY]);
+        notify.call(this, this.universalSubscribtions, topic, node[DATA_PROPERTY_KEY]);
       }
 
     }
