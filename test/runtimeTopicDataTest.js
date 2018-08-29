@@ -96,6 +96,34 @@ const {
         return raw;
     }
 
+    let createTopicDataRawSubtreeSnapshotOne = () => {
+        let raw = {
+            'd:data': 'awesome a',
+            't:x:t': {
+                'd:data': 'awesome ax',
+                't:o:t': {
+                    'd:data': 'awesome axo',
+                }
+            },
+            't:y:t': {
+                'd:data': 'awesome ay',
+            }
+        };
+
+        return raw;
+    }
+
+    let createTopicDataRawSubtreeSnapshotTwo = () => {
+        let raw = {
+            'd:data': 'awesome ax',
+            't:o:t': {
+                'd:data': 'awesome axo',
+            }
+        };
+
+        return raw;
+    }
+
     // Topic Data builder functions
     let createTopicDataTwoOrdered = () => {
         let topicData = new RuntimeTopicData();
@@ -486,5 +514,18 @@ const {
         invalidChecks(invalid);
 
 
+    });
+
+    test('getRawSubtree', t => {
+        let topicData = createTopicDataTwoOrdered();
+
+        let rawSubtree = topicData.getRawSubtree('');
+        t.deepEqual(rawSubtree, createTopicDataSnapshotTwo());
+
+        rawSubtree = topicData.getRawSubtree('a');
+        t.deepEqual(rawSubtree, createTopicDataRawSubtreeSnapshotOne());
+
+        rawSubtree = topicData.getRawSubtree('a->x');
+        t.deepEqual(rawSubtree, createTopicDataRawSubtreeSnapshotTwo());
     });
 })();
