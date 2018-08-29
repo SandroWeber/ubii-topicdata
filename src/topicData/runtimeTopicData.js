@@ -172,6 +172,14 @@ const {
       }
       return true;
     }
+
+    getRawSubtree(topic){
+      if (!this.has(topic)) {
+        return undefined;
+      }
+      let node = getTopicNode.call(this, topic);
+      return node;
+    }
   }
 
   // --- private methods
