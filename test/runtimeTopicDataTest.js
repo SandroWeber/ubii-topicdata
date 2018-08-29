@@ -97,7 +97,7 @@ const {
     }
 
     // Topic Data builder functions
-    let createTopicDataTwo = () => {
+    let createTopicDataTwoOrdered = () => {
         let topicData = new RuntimeTopicData();
 
         topicData.publish(getTopicA(), `awesome a`);
@@ -109,6 +109,18 @@ const {
         return topicData;
     }
 
+    let createTopicDataTwoUnordered = () => {
+        let topicData = new RuntimeTopicData();
+
+        topicData.publish(getTopicAY(), `awesome ay`);
+        topicData.publish(getTopicB(), `awesome b`);
+        topicData.publish(getTopicAXO(), `awesome axo`);
+        topicData.publish(getTopicA(), `awesome a`);
+        topicData.publish(getTopicAX(), `awesome ax`);
+        
+
+        return topicData;
+    }
 
 
 
@@ -122,14 +134,19 @@ const {
 
     test('publish', t => {
         let snapshot = createTopicDataSnapshotTwo();
-        let topicData = createTopicDataTwo();
+        let topicData = createTopicDataTwoOrdered();
+        
+        t.deepEqual(topicData.storage, snapshot);
+
+        snapshot = createTopicDataSnapshotTwo();
+        topicData = createTopicDataTwoUnordered();
         
         t.deepEqual(topicData.storage, snapshot);
 
     });
 
     test('has', t => {
-        let topicData = createTopicDataTwo();
+        let topicData = createTopicDataTwoOrdered();
 
         t.is(topicData.has(getTopicA()), true);
         t.is(topicData.has(getTopicAX()), true);
@@ -140,7 +157,7 @@ const {
     });
 
     test('subscribe', t => {
-        let topicData = createTopicDataTwo();
+        let topicData = createTopicDataTwoOrdered();
 
 
         // invalid subscribtions:
@@ -202,7 +219,7 @@ const {
     });
 
     test('subscribeAll', t => {
-        let topicData = createTopicDataTwo();
+        let topicData = createTopicDataTwoOrdered();
 
         // invalid subscribtions:
         t.throws(() => {
@@ -273,7 +290,7 @@ const {
     });
 
     test('unsubscribe', t => {
-        let topicData = createTopicDataTwo();
+        let topicData = createTopicDataTwoOrdered();
         let one, two, three, four = '4';
         let functionOne = (topic, data) => {
             one = '1 '+data;
@@ -325,7 +342,7 @@ const {
 
     test('pull', t => {
         let snapshot = createTopicDataSnapshotTwo();
-        let topicData = createTopicDataTwo();
+        let topicData = createTopicDataTwoOrdered();
 
         let dataA = topicData.pull(getTopicA());
         let dataB = topicData.pull(getTopicB());
@@ -343,7 +360,7 @@ const {
 
     test('remove', t => {
         let snapshot = createTopicDataSnapshotTwo();
-        let topicData = createTopicDataTwo();
+        let topicData = createTopicDataTwoOrdered();
 
         t.deepEqual(topicData.storage, snapshot);
 
@@ -367,7 +384,7 @@ const {
 
     test('validateTopic', t => {
         let valid, invalid;
-        let topicData = createTopicDataTwo();
+        let topicData = createTopicDataTwoOrdered();
 
         let invalidChecks = (invalid) => {
             t.throws(() => {
