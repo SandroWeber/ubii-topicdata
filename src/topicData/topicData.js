@@ -16,6 +16,10 @@ class TopicData {
       throw new TypeError("Must override subscribe");
     }
 
+    if (this.subscribeAll === undefined) {
+      throw new TypeError("Must override subscribeAll");
+    }
+
     if (this.unsubscribe === undefined) {
       throw new TypeError("Must override unsubscribe");
     }
@@ -26,6 +30,10 @@ class TopicData {
 
     if (this.has === undefined) {
       throw new TypeError("Must override has");
+    }
+
+    if (this.getRawSubtree === undefined) {
+      throw new TypeError("Must override getRawSubtree");
     }
   }
 }
