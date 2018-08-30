@@ -1,7 +1,8 @@
 import test from 'ava';
 import {RuntimeTopicData} from './../src/index.js';
 const {
-    validateTopic
+    validateTopic,
+    removeTopicPrefixAndSuffix,
   } = require('./../src/topicData/utility.js');
   const {
     TOPIC_PREFIX,
@@ -410,7 +411,7 @@ const {
         t.deepEqual(topicData.storage, snapshot);
     });
 
-    test('validateTopic', t => {
+    test('validateTopicInRuntimeTopicData', t => {
         let valid, invalid;
         let topicData = createTopicDataTwoOrdered();
 
@@ -527,5 +528,12 @@ const {
 
         rawSubtree = topicData.getRawSubtree('a->x');
         t.deepEqual(rawSubtree, createTopicDataRawSubtreeSnapshotTwo());
+    });
+
+    test('getAllTopicsWithData', t => {
+      //  let topicData = createTopicDataTwoOrdered();
+
+       // let topics = topicData.getAllTopicsWithData();
+       // t.deepEqual(topics, ['a', ''])
     });
 })();
