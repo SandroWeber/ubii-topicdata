@@ -7,7 +7,8 @@ const {
 } = require('./constants.js');
 const {
   getTopicPathFromString,
-  validateTopic
+  getTopicStringFromPath,
+  validateTopic,
 } = require('./utility.js');
 
 (function () {
@@ -173,6 +174,45 @@ const {
       return true;
     }
 
+    getAllTopicsWithData(){
+      let result = [];
+
+      let currentTopicPath = [];
+    
+      let recursiveIsRelevantTopicCollection = function (node) {
+        let isRelevant = false;
+        let keys = Object.getOwnPropertyNames(node);
+    
+        const il = keys.length;
+        for (let i = 0; i < il; i++) {
+          if (keys[i] === DATA_PROPERTY_KEY) {
+            isRelevant = true;
+          } else {
+            currentTopicPath.push(keys[i]);
+            let propertyIsRelevant = recursiveIsRelevantTopicCollection(node[keys[i]]);
+            if (propertyIsRelevant) {
+              result.push(getTopicStringFromPath(currentTopicPath));
+            }
+            currentTopicPath.pop();
+          }
+        }
+        return isRelevant;
+      }
+
+      let keys = Object.getOwnPropertyNames(this.storage);
+      const il = keys.length;
+      for (let i = 0; i < il; i++) {
+        currentTopicPath.push(keys[i]);
+        if (recursiveIsRelevantTopicCollection(this.storage[keys[i]])) {
+          result.push(getTopicStringFromPath(currentTopicPath));
+        }
+        currentTopicPath.pop();
+      }
+
+      return result;
+
+    }
+
     getRawSubtree(topic){
       if (!this.has(topic)) {
         return undefined;
@@ -181,6 +221,8 @@ const {
       return node;
     }
   }
+
+  
 
   // --- private methods
 
