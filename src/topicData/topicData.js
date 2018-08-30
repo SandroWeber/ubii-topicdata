@@ -32,6 +32,10 @@ class TopicData {
       throw new TypeError("Must override has");
     }
 
+    if (this.getAllTopicsWithData === undefined) {
+      throw new TypeError("Must override getAllTopicsWithData");
+    }
+
     if (this.getRawSubtree === undefined) {
       throw new TypeError("Must override getRawSubtree");
     }
