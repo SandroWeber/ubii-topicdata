@@ -1,12 +1,14 @@
 import test from 'ava';
-import {RuntimeTopicData} from './../src/index.js';
+import {
+    RuntimeTopicData
+} from './../src/index.js';
 const {
     validateTopic,
     removeTopicPrefixAndSuffix,
     getTopicPathFromString,
     getTopicStringFromPath,
-  } = require('./../src/topicData/utility.js');
-  const {
+} = require('./../src/topicData/utility.js');
+const {
     TOPIC_PREFIX,
     TOPIC_SUFFIX
 } = require('./../src/topicData/constants.js');
@@ -65,15 +67,21 @@ const {
         invalidChecks(invalid);
 
         // array of objects
-        invalid = [{'a': 'a'}, {'b': 'b'}, {}];
+        invalid = [{
+            'a': 'a'
+        }, {
+            'b': 'b'
+        }, {}];
         invalidChecks(invalid);
 
         // array of functions
-        invalid = [()=>{}, ()=>{}];
+        invalid = [() => {}, () => {}];
         invalidChecks(invalid);
 
         // object
-        invalid = {'a': 'a'};
+        invalid = {
+            'a': 'a'
+        };
         invalidChecks(invalid);
 
         // empty object
@@ -88,28 +96,28 @@ const {
     });
 
     test('removeTopicPrefixAndSuffix', t => {
-        let s = TOPIC_PREFIX+"abc"+TOPIC_SUFFIX;
+        let s = TOPIC_PREFIX + "abc" + TOPIC_SUFFIX;
         t.deepEqual(removeTopicPrefixAndSuffix(s), 'abc');
 
-        s = TOPIC_PREFIX+TOPIC_PREFIX+"abc"+TOPIC_SUFFIX;
-        t.deepEqual(removeTopicPrefixAndSuffix(s), TOPIC_PREFIX+'abc');
+        s = TOPIC_PREFIX + TOPIC_PREFIX + "abc" + TOPIC_SUFFIX;
+        t.deepEqual(removeTopicPrefixAndSuffix(s), TOPIC_PREFIX + 'abc');
 
-        s = TOPIC_PREFIX+"abc"+TOPIC_SUFFIX+TOPIC_SUFFIX;
-        t.deepEqual(removeTopicPrefixAndSuffix(s), 'abc'+TOPIC_SUFFIX);
+        s = TOPIC_PREFIX + "abc" + TOPIC_SUFFIX + TOPIC_SUFFIX;
+        t.deepEqual(removeTopicPrefixAndSuffix(s), 'abc' + TOPIC_SUFFIX);
 
-        s = TOPIC_PREFIX+TOPIC_PREFIX+"abc"+TOPIC_SUFFIX+TOPIC_SUFFIX;
-        t.deepEqual(removeTopicPrefixAndSuffix(s), TOPIC_PREFIX+'abc'+TOPIC_SUFFIX);
+        s = TOPIC_PREFIX + TOPIC_PREFIX + "abc" + TOPIC_SUFFIX + TOPIC_SUFFIX;
+        t.deepEqual(removeTopicPrefixAndSuffix(s), TOPIC_PREFIX + 'abc' + TOPIC_SUFFIX);
 
-        s = TOPIC_PREFIX+"a"+TOPIC_PREFIX+"abc"+TOPIC_SUFFIX+TOPIC_SUFFIX;
-        t.deepEqual(removeTopicPrefixAndSuffix(s), 'a'+TOPIC_PREFIX+'abc'+TOPIC_SUFFIX);
+        s = TOPIC_PREFIX + "a" + TOPIC_PREFIX + "abc" + TOPIC_SUFFIX + TOPIC_SUFFIX;
+        t.deepEqual(removeTopicPrefixAndSuffix(s), 'a' + TOPIC_PREFIX + 'abc' + TOPIC_SUFFIX);
     });
 
     let pathSnapshot = [
-        TOPIC_PREFIX+'a'+TOPIC_SUFFIX,
-        TOPIC_PREFIX+'b'+TOPIC_SUFFIX,
-        TOPIC_PREFIX+'c'+TOPIC_SUFFIX,
-        TOPIC_PREFIX+'d'+TOPIC_SUFFIX,
-        TOPIC_PREFIX+'e'+TOPIC_SUFFIX,
+        TOPIC_PREFIX + 'a' + TOPIC_SUFFIX,
+        TOPIC_PREFIX + 'b' + TOPIC_SUFFIX,
+        TOPIC_PREFIX + 'c' + TOPIC_SUFFIX,
+        TOPIC_PREFIX + 'd' + TOPIC_SUFFIX,
+        TOPIC_PREFIX + 'e' + TOPIC_SUFFIX,
     ];
     let stringSnapshot = 'a->b->c->d->e';
 
