@@ -531,9 +531,24 @@ const {
     });
 
     test('getAllTopicsWithData', t => {
-      //  let topicData = createTopicDataTwoOrdered();
+        let topicData = createTopicDataTwoOrdered();
 
-       // let topics = topicData.getAllTopicsWithData();
-       // t.deepEqual(topics, ['a', ''])
+        let topics = topicData.getAllTopicsWithData();
+        t.deepEqual(topics, [
+            'a->x->o',
+            'a->x',
+            'a->y',
+            'a',
+            'b'
+        ])
+
+        topicData.remove('a->x');
+        topics = topicData.getAllTopicsWithData();
+        t.deepEqual(topics, [
+            'a->x->o',
+            'a->y',
+            'a',
+            'b'
+        ])
     });
 })();
