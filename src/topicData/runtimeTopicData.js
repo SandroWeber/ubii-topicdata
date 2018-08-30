@@ -176,18 +176,20 @@ const {
 
     getAllTopicsWithData(){
       let result = [];
-
       let currentTopicPath = [];
     
+      // returns whether the currentTopicPath on call of this method has data and thus is relevant or not and 
+      // determines all relevant subtopics by recursively calling itself
       let recursiveIsRelevantTopicCollection = function (node) {
         let isRelevant = false;
+
         let keys = Object.getOwnPropertyNames(node);
-    
         const il = keys.length;
         for (let i = 0; i < il; i++) {
           if (keys[i] === DATA_PROPERTY_KEY) {
             isRelevant = true;
           } else {
+            // Process all subtopics
             currentTopicPath.push(keys[i]);
             let propertyIsRelevant = recursiveIsRelevantTopicCollection(node[keys[i]]);
             if (propertyIsRelevant) {
@@ -199,6 +201,7 @@ const {
         return isRelevant;
       }
 
+      // Call and resolve recursiveIsRelevantTopicCollection for all topics in the first layer
       let keys = Object.getOwnPropertyNames(this.storage);
       const il = keys.length;
       for (let i = 0; i < il; i++) {
