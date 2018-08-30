@@ -15,7 +15,7 @@ let getTopicPathFromString = function (topicString) {
 let getTopicStringFromPath = function (topicPath) {
     let result = '';
     let first = true;
-    topicPath.map(t => removeTopicPrefixAndSuffix(t));
+    topicPath = topicPath.map(t => removeTopicPrefixAndSuffix(t));
     topicPath.forEach(t => {
         if(!first){
             result = result + TOPIC_SEPARATOR;
