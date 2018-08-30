@@ -42,6 +42,7 @@ let validateTopic = function (topic) {
 
 module.exports = {
     getTopicPathFromString: getTopicPathFromString,
+    getTopicStringFromPath: getTopicStringFromPath,
     removeTopicPrefixAndSuffix: removeTopicPrefixAndSuffix,
     validateTopic: validateTopic
 }
