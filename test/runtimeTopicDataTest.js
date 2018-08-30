@@ -1,10 +1,12 @@
 import test from 'ava';
-import {RuntimeTopicData} from './../src/index.js';
+import {
+    RuntimeTopicData
+} from './../src/index.js';
 const {
     validateTopic,
     removeTopicPrefixAndSuffix,
-  } = require('./../src/topicData/utility.js');
-  const {
+} = require('./../src/topicData/utility.js');
+const {
     TOPIC_PREFIX,
     TOPIC_SUFFIX
 } = require('./../src/topicData/constants.js');
@@ -146,7 +148,7 @@ const {
         topicData.publish(getTopicAXO(), `awesome axo`);
         topicData.publish(getTopicA(), `awesome a`);
         topicData.publish(getTopicAX(), `awesome ax`);
-        
+
 
         return topicData;
     }
@@ -164,12 +166,12 @@ const {
     test('publish', t => {
         let snapshot = createTopicDataSnapshotTwo();
         let topicData = createTopicDataTwoOrdered();
-        
+
         t.deepEqual(topicData.storage, snapshot);
 
         snapshot = createTopicDataSnapshotTwo();
         topicData = createTopicDataTwoUnordered();
-        
+
         t.deepEqual(topicData.storage, snapshot);
 
     });
@@ -202,25 +204,31 @@ const {
 
 
         // correct subscribtion resolving after publishing on topics:
-        let dataOne='', dataTwo = '', dataThree= '', dataFour='';
-        let topicOne='', topicTwo = '', topicThree= '', topicFour='';
+        let dataOne = '',
+            dataTwo = '',
+            dataThree = '',
+            dataFour = '';
+        let topicOne = '',
+            topicTwo = '',
+            topicThree = '',
+            topicFour = '';
         let functionOne = (topic, data) => {
-            dataOne = 'hallo '+data;
+            dataOne = 'hallo ' + data;
             topicOne = topic;
         }
         let functionTwo = (topic, data) => {
-            dataTwo = 'hallo '+data;
+            dataTwo = 'hallo ' + data;
             topicTwo = topic;
         }
         let functionThree = (topic, data) => {
-            dataThree = 'hei '+data;
+            dataThree = 'hei ' + data;
             topicThree = topic;
         }
         let functionFour = (topic, data) => {
             throw new Error();
         }
 
-        topicData.subscribe(getTopicA(), functionOne);        
+        topicData.subscribe(getTopicA(), functionOne);
         topicData.subscribe(getTopicAX(), functionTwo);
         topicData.subscribe(getTopicA(), functionThree);
         topicData.subscribe('', functionFour);
@@ -255,38 +263,46 @@ const {
             topicData.subscribeAll();
         })
         t.throws(() => {
-            topicData.subscribeAll( {});
+            topicData.subscribeAll({});
         })
         t.throws(() => {
-            topicData.subscribeAll( 'foo');
+            topicData.subscribeAll('foo');
         })
 
 
         // correct subscribtion resolving after publishing on topics:
-        let dataOne='', dataTwo = '', dataThree= '', dataFour='', dataFive='5';
-        let topicOne='', topicTwo = '', topicThree= '', topicFour='', topicFive='';
+        let dataOne = '',
+            dataTwo = '',
+            dataThree = '',
+            dataFour = '',
+            dataFive = '5';
+        let topicOne = '',
+            topicTwo = '',
+            topicThree = '',
+            topicFour = '',
+            topicFive = '';
         let functionOne = (topic, data) => {
-            dataOne = '1 '+data;
+            dataOne = '1 ' + data;
             topicOne = topic;
         }
         let functionTwo = (topic, data) => {
-            dataTwo = '2 '+data;
+            dataTwo = '2 ' + data;
             topicTwo = topic;
         }
         let functionThree = (topic, data) => {
-            dataThree = '3 '+data;
+            dataThree = '3 ' + data;
             topicThree = topic;
         }
         let functionFour = (topic, data) => {
             throw new Error();
         }
         let functionFive = (topic, data) => {
-            dataFive = dataFive+' '+data;
+            dataFive = dataFive + ' ' + data;
             topicFive = topic;
         }
 
-        
-        topicData.subscribe(getTopicA(), functionOne);        
+
+        topicData.subscribe(getTopicA(), functionOne);
         topicData.subscribe(getTopicAX(), functionTwo);
         topicData.subscribe(getTopicA(), functionThree);
         topicData.subscribe('', functionFour);
@@ -322,16 +338,16 @@ const {
         let topicData = createTopicDataTwoOrdered();
         let one, two, three, four = '4';
         let functionOne = (topic, data) => {
-            one = '1 '+data;
+            one = '1 ' + data;
         }
         let functionTwo = (topic, data) => {
-            two = '2 '+data;
+            two = '2 ' + data;
         }
         let functionThree = (topic, data) => {
-            three = '3 '+data;
+            three = '3 ' + data;
         }
         let functionFour = (topic, data) => {
-            four = four+' '+data;
+            four = four + ' ' + data;
         }
 
         let tokenOne = topicData.subscribe(getTopicA(), functionOne);
@@ -426,7 +442,7 @@ const {
                 topicData.has(invalid);
             });
             t.throws(() => {
-                topicData.subscribe(invalid, ()=>{});
+                topicData.subscribe(invalid, () => {});
             });
             t.throws(() => {
                 topicData.pull(invalid);
@@ -447,7 +463,7 @@ const {
                 topicData.has(valid);
             });
             t.notThrows(() => {
-                topicData.subscribe(valid, ()=>{});
+                topicData.subscribe(valid, () => {});
             });
             t.notThrows(() => {
                 topicData.pull(valid);
@@ -495,15 +511,21 @@ const {
         invalidChecks(invalid);
 
         // array of objects
-        invalid = [{'a': 'a'}, {'b': 'b'}, {}];
+        invalid = [{
+            'a': 'a'
+        }, {
+            'b': 'b'
+        }, {}];
         invalidChecks(invalid);
 
         // array of functions
-        invalid = [()=>{}, ()=>{}];
+        invalid = [() => {}, () => {}];
         invalidChecks(invalid);
 
         // object
-        invalid = {'a': 'a'};
+        invalid = {
+            'a': 'a'
+        };
         invalidChecks(invalid);
 
         // empty object
