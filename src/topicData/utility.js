@@ -12,6 +12,15 @@ let getTopicPathFromString = function (topicString) {
     return topicString.toString().split(TOPIC_SEPARATOR).filter(t => t!=='').map(t => '' + TOPIC_PREFIX + t + TOPIC_SUFFIX);
 }
 
+let getTopicStringFromPath = function (topicPath) {
+    let result = '';
+    topicPath.map(t => removeTopicPrefixAndSuffix(t));
+    topicPath.forEach(t => {
+        result = result + t;
+    })
+    return result;
+}
+
 let removeTopicPrefixAndSuffix = function(key){
     let removePrefixRegex = new RegExp("^("+TOPIC_PREFIX+")");
     let removeSuffixRegex = new RegExp("("+TOPIC_SUFFIX+")$");
