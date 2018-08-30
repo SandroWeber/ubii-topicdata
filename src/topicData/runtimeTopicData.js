@@ -87,7 +87,7 @@ const {
       let token = {
         'topic': topic,
         'id': subscriberId,
-        'type':'topic'
+        'type': 'topic'
       }
       return token;
     }
@@ -116,7 +116,7 @@ const {
       let token = {
         'topic': '',
         'id': subscriberId,
-        'type':'universal'
+        'type': 'universal'
       }
       return token;
     }
@@ -126,13 +126,13 @@ const {
      * @param {*} token 
      */
     unsubscribe(token) {
-      if(token.type === 'topic'){
+      if (token.type === 'topic') {
         let node = getTopicNode.call(this, token.topic);
         if (node[SUBSCRIBER_PROPERTY_KEY] === undefined) {
           return;
         }
         node[SUBSCRIBER_PROPERTY_KEY] = node[SUBSCRIBER_PROPERTY_KEY].filter(subscriber => subscriber.id !== token.id);
-      }else if(token.type === 'universal'){
+      } else if (token.type === 'universal') {
         this.universalSubscribtions = this.universalSubscribtions.filter(subscriber => subscriber.id !== token.id);
       }
     }
@@ -174,10 +174,10 @@ const {
       return true;
     }
 
-    getAllTopicsWithData(){
+    getAllTopicsWithData() {
       let result = [];
       let currentTopicPath = [];
-    
+
       // returns whether the currentTopicPath on call of this method has data and thus is relevant or not and 
       // determines all relevant subtopics by recursively calling itself
       let recursiveIsRelevantTopicCollection = function (node) {
@@ -216,7 +216,7 @@ const {
 
     }
 
-    getRawSubtree(topic){
+    getRawSubtree(topic) {
       if (!this.has(topic)) {
         return undefined;
       }
@@ -225,7 +225,7 @@ const {
     }
   }
 
-  
+
 
   // --- private methods
 
