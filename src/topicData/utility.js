@@ -12,6 +12,12 @@ let getTopicPathFromString = function (topicString) {
     return topicString.toString().split(TOPIC_SEPARATOR).filter(t => t!=='').map(t => '' + TOPIC_PREFIX + t + TOPIC_SUFFIX);
 }
 
+let removeTopicPrefixAndSuffix = function(key){
+    let removePrefixRegex = new RegExp("^("+TOPIC_PREFIX+")");
+    let removeSuffixRegex = new RegExp("("+TOPIC_SUFFIX+")$");
+    return key.replace(removePrefixRegex,'').replace(removeSuffixRegex, '');
+}
+
 let validateTopic = function (topic) {
     //topic is a string
     if (!(typeof topic === 'string' || topic instanceof String)) {
@@ -21,5 +27,6 @@ let validateTopic = function (topic) {
 
 module.exports = {
     getTopicPathFromString: getTopicPathFromString,
+    removeTopicPrefixAndSuffix: removeTopicPrefixAndSuffix,
     validateTopic: validateTopic
 }
