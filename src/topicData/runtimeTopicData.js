@@ -180,8 +180,7 @@ const {
       let result = [];
       let currentTopicPath = [];
 
-      // returns whether the currentTopicPath on call of this method has data and thus is relevant or not and 
-      // determines all relevant subtopics by recursively calling itself
+      // recursive helper method that adds the currentTopic and the data to the result array and calls itself on all subtopics
       let recursiveAddRelevantTopicDataPairs = function (node) {
         let keys = Object.getOwnPropertyNames(node);
         const il = keys.length;
@@ -201,7 +200,7 @@ const {
         }
       }
 
-      // Call and resolve recursiveIsRelevantTopicCollection for all topics in the first layer
+      // start the procedure on all first layer topics (subtopics of root)
       let keys = Object.getOwnPropertyNames(this.storage);
       const il = keys.length;
       for (let i = 0; i < il; i++) {
@@ -211,7 +210,6 @@ const {
       }
 
       return result;
-
     }
 
     getRawSubtree(topic) {
