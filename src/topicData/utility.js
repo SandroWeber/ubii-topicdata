@@ -16,12 +16,16 @@ let getTopicPathFromString = function (topicString) {
 }
 
 let getTopicStringFromPath = function (topicPath) {
+    topicStringArray = topicPath.map(t => removeTopicPrefixAndSuffix(t));
+
+    return getTopicStringFromArray(topicStringArray);
+}
+
+let getTopicStringFromArray = function (stringArray) {
     let result = '';
     let first = true;
 
-    topicPath = topicPath.map(t => removeTopicPrefixAndSuffix(t));
-
-    topicPath.forEach(t => {
+    stringArray.forEach(t => {
         if (!first) {
             result = result + TOPIC_SEPARATOR;
         } else {
@@ -32,6 +36,7 @@ let getTopicStringFromPath = function (topicPath) {
 
     return result;
 }
+
 
 let removeTopicPrefixAndSuffix = function (key) {
     let removePrefixRegex = new RegExp("^(" + TOPIC_PREFIX + ")");
@@ -48,6 +53,7 @@ let validateTopic = function (topic) {
 module.exports = {
     getTopicPathFromString: getTopicPathFromString,
     getTopicStringFromPath: getTopicStringFromPath,
+    getTopicStringFromArray: getTopicStringFromArray,
     removeTopicPrefixAndSuffix: removeTopicPrefixAndSuffix,
     validateTopic: validateTopic
 }
