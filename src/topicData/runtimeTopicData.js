@@ -8,6 +8,8 @@ const {
 const {
   getTopicPathFromString,
   getTopicStringFromPath,
+  getTopicStringFromArray,
+  removeTopicPrefixAndSuffix,
   validateTopic,
 } = require('./utility.js');
 
@@ -180,35 +182,31 @@ const {
 
       // returns whether the currentTopicPath on call of this method has data and thus is relevant or not and 
       // determines all relevant subtopics by recursively calling itself
-      let recursiveIsRelevantTopicCollection = function (node) {
-        let isRelevant = false;
-
+      let recursiveAddRelevantTopicDataPairs = function (node) {
         let keys = Object.getOwnPropertyNames(node);
         const il = keys.length;
         for (let i = 0; i < il; i++) {
           if (keys[i] === DATA_PROPERTY_KEY) {
-            isRelevant = true;
+            // This topic is relevant because it has its own data property
+            result.push({
+              topic: getTopicStringFromPath(currentTopicPath),
+              data: node[DATA_PROPERTY_KEY],
+            });
           } else {
             // Process all subtopics
-            currentTopicPath.push(keys[i]);
-            let propertyIsRelevant = recursiveIsRelevantTopicCollection(node[keys[i]]);
-            if (propertyIsRelevant) {
-              result.push(getTopicStringFromPath(currentTopicPath));
-            }
+            currentTopicPath.push(removeTopicPrefixAndSuffix(keys[i]));
+            recursiveAddRelevantTopicDataPairs(node[keys[i]]);
             currentTopicPath.pop();
           }
         }
-        return isRelevant;
       }
 
       // Call and resolve recursiveIsRelevantTopicCollection for all topics in the first layer
       let keys = Object.getOwnPropertyNames(this.storage);
       const il = keys.length;
       for (let i = 0; i < il; i++) {
-        currentTopicPath.push(keys[i]);
-        if (recursiveIsRelevantTopicCollection(this.storage[keys[i]])) {
-          result.push(getTopicStringFromPath(currentTopicPath));
-        }
+        currentTopicPath.push(removeTopicPrefixAndSuffix(keys[i]));
+        recursiveAddRelevantTopicDataPairs(this.storage[keys[i]]);        
         currentTopicPath.pop();
       }
 
