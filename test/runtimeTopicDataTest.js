@@ -557,20 +557,29 @@ const {
 
         let topics = topicData.getAllTopicsWithData();
         t.deepEqual(topics, [
-            'a->x->o',
-            'a->x',
-            'a->y',
-            'a',
-            'b'
+            {topic: 'a',
+            data: 'awesome a'},
+            {topic: 'a->x',
+            data: 'awesome ax'},
+            {topic: 'a->x->o',
+            data: 'awesome axo'},
+            {topic: 'a->y',
+            data: 'awesome ay'},
+            {topic: 'b',
+            data: 'awesome b'},
         ])
 
         topicData.remove('a->x');
         topics = topicData.getAllTopicsWithData();
         t.deepEqual(topics, [
-            'a->x->o',
-            'a->y',
-            'a',
-            'b'
+            {topic: 'a',
+            data: 'awesome a'},
+            {topic: 'a->x->o',
+            data: 'awesome axo'},
+            {topic: 'a->y',
+            data: 'awesome ay'},
+            {topic: 'b',
+            data: 'awesome b'},
         ])
     });
 })();
