@@ -2,8 +2,6 @@
 
 Ubii topic data module.
 
-- This project is managed as [Jira instance of the FAR group at the Technical Unitversity of Munich (TUM)](https://jira.far.in.tum.de/).
-
 ## Table of Contents
 
 - [Topic Data](#topic-data)
