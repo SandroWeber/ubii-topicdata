@@ -3,13 +3,8 @@ import {
     RuntimeTopicData
 } from './../src/index.js';
 const {
-    validateTopic,
-    removeTopicPrefixAndSuffix,
+    validateTopic
 } = require('./../src/topicData/utility.js');
-const {
-    TOPIC_PREFIX,
-    TOPIC_SUFFIX
-} = require('./../src/topicData/constants.js');
 
 (function () {
     // Creates and returns deep copies of the specified topic arrays.
