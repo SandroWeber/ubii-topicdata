@@ -175,6 +175,9 @@ const {
       return true;
     }
 
+    /**
+     * Get an array of all topics that have data associated to it.
+     */
     getAllTopicsWithData() {
       let result = [];
       let currentTopicPath = [];
@@ -257,7 +260,8 @@ const {
   }
 
   /**
-   * Removes all properties that do not have any data key in its subtree.
+   * Cleans up the path by removing all properties that do not have any data key in its subtree (None of its
+   *  subtopics has data associated to it).
    * @param {String[]} topic Array of unprefixed subtopic strings specifying the topic path.
    */
   let cleanUpPath = function (topic) {
