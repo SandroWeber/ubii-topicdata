@@ -140,8 +140,7 @@ const {
     }
 
     /**
-     * Removes the topic and data from topic data that is stored under the given topic if the topic exists. 
-     * Cleans up the path afterwards.
+     * Removes the topic and the associated data from the topic data if the topic exists. Cleans up the path afterwards.
      * @param {String[]} topic Array of unprefixed subtopic strings specifying the topic path.
      */
     remove(topic) {
