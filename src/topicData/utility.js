@@ -15,6 +15,10 @@ let getTopicPathFromString = function (topicString) {
         .map(t => '' + TOPIC_PREFIX + t + TOPIC_SUFFIX);
 }
 
+/**
+ * Creates a topic string from a path array Removes the topic prefix and suffix of each subtopic of the path array.
+ * @param {*} topicPath 
+ */
 let getTopicStringFromPath = function (topicPath) {
     topicStringArray = topicPath.map(t => removeTopicPrefixAndSuffix(t));
 
