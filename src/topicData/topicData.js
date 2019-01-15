@@ -1,3 +1,6 @@
+/**
+ * Abstarct topic data base class.
+ */
 class TopicData {
   constructor() {
     if (new.target === TopicData) {
