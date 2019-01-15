@@ -53,9 +53,9 @@ const {
     }
 
     /**
-     * Pulls the data from topic data that is stored under the given topic.
+     * Pulls the data from topic data that is associated with specified topic.
      * @param {String} topic Topic strings specifying the topic path.
-     * @returns Returns the data stored under the given topic. Returns undefined if the topic does not exist.
+     * @returns Returns the data associated with the specified topic. Returns undefined if the topic does not exist.
      */
     pull(topic) {
       if (!this.has(topic)) {
@@ -68,7 +68,7 @@ const {
     /**
      * Subscribes the callback function to the specified topic.
      * The callback function is called with the topic and a data parameter whenever data is published to the specified topic.
-     * Returns a token which can be passed to the unsubscribe mthod in order to unsubscribe the callback from the topic.
+     * Returns a token which can be passed to the unsubscribe method in order to unsubscribe the callback from the topic.
      * @param {String} topic Topic strings specifying the topic path.
      * @param {Function} callback Function called when subscriber is notified. Should accept a topic and a data parameter.
      * @return Returns a token which can be passed to the unsubscribe mthod in order to unsubscribe the callback from the topic.
