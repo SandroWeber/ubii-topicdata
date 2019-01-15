@@ -1,7 +1,4 @@
 import test from 'ava';
-import {
-    RuntimeTopicData
-} from './../src/index.js';
 const {
     validateTopic,
     removeTopicPrefixAndSuffix,
