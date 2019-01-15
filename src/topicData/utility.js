@@ -55,6 +55,10 @@ let removeTopicPrefixAndSuffix = function (key) {
     return key.replace(removePrefixRegex, '').replace(removeSuffixRegex, '');
 }
 
+/**
+ * Validates a topic string.
+ * @param {*} topic 
+ */
 let validateTopic = function (topic) {
     if (!(typeof topic === 'string' || topic instanceof String)) {
         throw new Error('The specified topic is not valid: The topic is not a string: ' + topic);
