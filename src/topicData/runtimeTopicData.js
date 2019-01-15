@@ -124,7 +124,7 @@ const {
     }
 
     /**
-     * Unsubscribes the callback specified by this token from the coresponding topic.
+     * Unsubscribes the callback specified by this token.
      * @param {*} token 
      */
     unsubscribe(token) {
