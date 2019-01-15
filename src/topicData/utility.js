@@ -45,7 +45,10 @@ let getTopicStringFromArray = function (stringArray) {
     return result;
 }
 
-
+/**
+ * Removes the prefix and suffix of a string and returns the new string.
+ * @param {String} key 
+ */
 let removeTopicPrefixAndSuffix = function (key) {
     let removePrefixRegex = new RegExp("^(" + TOPIC_PREFIX + ")");
     let removeSuffixRegex = new RegExp("(" + TOPIC_SUFFIX + ")$");
