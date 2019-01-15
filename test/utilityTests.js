@@ -112,20 +112,20 @@ const {
         t.deepEqual(removeTopicPrefixAndSuffix(s), 'a' + TOPIC_PREFIX + 'abc' + TOPIC_SUFFIX);
     });
 
-    let pathSnapshot = [
+    let pathMock = [
         TOPIC_PREFIX + 'a' + TOPIC_SUFFIX,
         TOPIC_PREFIX + 'b' + TOPIC_SUFFIX,
         TOPIC_PREFIX + 'c' + TOPIC_SUFFIX,
         TOPIC_PREFIX + 'd' + TOPIC_SUFFIX,
         TOPIC_PREFIX + 'e' + TOPIC_SUFFIX,
     ];
-    let stringSnapshot = 'a->b->c->d->e';
+    let stringMock = 'a->b->c->d->e';
 
     test('getTopicPathFromString', t => {
-        t.deepEqual(getTopicPathFromString(stringSnapshot), pathSnapshot);
+        t.deepEqual(getTopicPathFromString(stringMock), pathMock);
     });
 
     test('getTopicStringFromPath', t => {
-        t.deepEqual(getTopicStringFromPath(pathSnapshot), stringSnapshot);
+        t.deepEqual(getTopicStringFromPath(pathMock), stringMock);
     });
 })();
