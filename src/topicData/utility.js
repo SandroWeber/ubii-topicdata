@@ -16,7 +16,7 @@ let getTopicPathFromString = function (topicString) {
 }
 
 /**
- * Creates a topic string from a path array Removes the topic prefix and suffix of each subtopic of the path array.
+ * Creates a topic string from a path array. Removes the topic prefix and suffix of each subtopic of the path array.
  * @param {*} topicPath 
  */
 let getTopicStringFromPath = function (topicPath) {
@@ -25,6 +25,10 @@ let getTopicStringFromPath = function (topicPath) {
     return getTopicStringFromArray(topicStringArray);
 }
 
+/**
+ * Creates a topic string from a array.
+ * @param {String[]} stringArray 
+ */
 let getTopicStringFromArray = function (stringArray) {
     let result = '';
     let first = true;
