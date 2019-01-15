@@ -1,7 +1,5 @@
 # ubii-topic-data
 
-Ubii topic data module.
-
 ## Table of Contents
 
 - [Topic Data](#topic-data)
@@ -10,11 +8,13 @@ Ubii topic data module.
 
 ## Topic Data
 
+A `Topic Data` is a key-value store with `Topic` strings as keys and arbitrary data as value.
+
 ### Topic
 
-A topic is simple string. The individual subtopics are separated by a special character ("->").
+A `Topic` is simple string indicating a chain of topics that are in a parent-child relation. Childs can be seen as subtopics of the previous one. The individual (sub-)topics are separated by a special character ("->").
 
-Example for a *valid* topic:
+The follwoing string is an example for a *valid* `Topic`:
 ```js
 valid = 'root->subtopic1->subtopic2->subtopic3->subtopic4';
 ```
