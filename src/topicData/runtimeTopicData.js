@@ -8,7 +8,6 @@ const {
 const {
   getTopicPathFromString,
   getTopicStringFromPath,
-  getTopicStringFromArray,
   removeTopicPrefixAndSuffix,
   validateTopic,
 } = require('./utility.js');
@@ -35,8 +34,8 @@ const {
     }
 
     /**
-     * Publishes data under the specified topic into the topic data
-     * If there is already data under this topic, it will be overwritten.
+     * Publishes data under the specified topic to the topic data
+     * If there is already data associated with this topic, it will be overwritten.
      * @param {String} topic Topic strings specifying the topic path.
      * @param {*} data 
      */
