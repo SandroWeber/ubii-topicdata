@@ -8,9 +8,15 @@
 
 ## Topic Data
 
-A `Topic Data` is a key-value store with `Topic` strings as keys and arbitrary data as value.
+A `Topic Data` is a key-value store with `Topic` strings as keys and arbitrary data as values.
 
-### Topic
+### Runtime Topic Data
+
+The `RuntimeTopicData` is a runtime implementaion of a `topicData`. "Runtime" means the data is only available at runtime and is not permanently stored in a persistent medium such as a local file or database. The data lives only in the program memory.
+
+The `RuntimeTopicData` uses a common javascript object as storage structure that resembles the topic hierarchy. This is the most performant way to find key-value pairs.
+
+## Topic
 
 A `Topic` is simple string indicating a chain of topics that are in a parent-child relation. Childs can be seen as subtopics of the previous one. The individual (sub-)topics are separated by a special character ("->").
 
@@ -18,13 +24,6 @@ The follwoing string is an example for a *valid* `Topic`:
 ```js
 valid = 'root->subtopic1->subtopic2->subtopic3->subtopic4';
 ```
-
-### Runtime Topic Data
-
-Local runtime implementaion of a topic data.
-The data is only available at runtime and is not permanently stored. No local file or database involved. The data is only in the program memory.
-
-The runtime topic storage uses a common javascript object as storage structure. This is the most performant way to find key-value pairs.
 
 ## CLIs
 
