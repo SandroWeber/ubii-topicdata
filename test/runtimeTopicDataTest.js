@@ -12,7 +12,6 @@ const {
 } = require('./../src/topicData/constants.js');
 
 (function () {
-
     // Creates and returns deep copies of the specified topic arrays.
     const getTopicA = () => 'a';
     const getTopicAX = () => 'a->x';
