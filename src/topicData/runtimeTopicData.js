@@ -96,12 +96,11 @@ const {
     }
 
     /**
-     * Subscribes the callback function to the specified topic.
-     * The callback function is called with the topic and a data parameter whenever data is published to the specified topic.
-     * Returns a token which can be passed to the unsubscribe mthod in order to unsubscribe the callback from the topic.
-     * @param {String} topic Topic strings specifying the topic path.
+     * Subscribes the callback function to all topics.
+     * The callback function is called with the topic and a data parameter whenever data is published to any topic of the topicData.
+     * Returns a token which can be passed to the unsubscribe mthod in order to unsubscribe the callback.
      * @param {Function} callback Function called when subscriber is notified. Should accept a topic and a data parameter.
-     * @return Returns a token which can be passed to the unsubscribe mthod in order to unsubscribe the callback from the topic.
+     * @return Returns a token which can be passed to the unsubscribe mthod in order to unsubscribe the callback.
      */
     subscribeAll(callback) {
       if (typeof callback !== "function") {
