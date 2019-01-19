@@ -3,18 +3,19 @@
 ## Table of Contents
 
 - [Topic Data](#topic-data)
+- [Topic](#topic)
 - [Command Line Interfaces (CLIs)](#clis)
 - [Testing](#testing)
 
 ## Topic Data
 
-A `Topic Data` is a key-value store with `Topic` strings as keys and arbitrary data as values.
+A `Topic Data` is a key-value store. Keys are specified as `Topic` strings and values can be arbitrary data.
 
 ### Runtime Topic Data
 
-The `RuntimeTopicData` is a runtime implementaion of a `topicData`. "Runtime" means the data is only available at runtime and is not permanently stored in a persistent medium such as a local file or database. The data lives only in the program memory.
+The `RuntimeTopicData` is a runtime implementaion of a `topicData`. "Runtime" means the data is only available at runtime and is not permanently stored in a persistent medium such as a local file or a database. The data lives only in the program memory.
 
-The `RuntimeTopicData` uses a common javascript object as storage structure that resembles the topic hierarchy. This is the most performant way to find key-value pairs.
+The `RuntimeTopicData` uses a common javascript object as storage structure that resembles the topic hierarchy. This is a very performant way to find key-value pairs.
 
 ## Topic
 
