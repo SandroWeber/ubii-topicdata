@@ -44,19 +44,19 @@ const {
      * @param {String} type Type of the data.
      */
     publish(topic, data, type) {
-      // Get node.
-      let node = getTopicNode.call(this, topic);
+      // Get the entry.
+      let entry = getTopicNode.call(this, topic);
 
       // Set property values.
-      node[DATA_PROPERTY_KEY] = data;
-      node[TYPE_PROPERTY_KEY] = type;
+      entry[DATA_PROPERTY_KEY] = data;
+      entry[TYPE_PROPERTY_KEY] = type;
 
       // Notify subscribers
-      if (node[SUBSCRIBER_PROPERTY_KEY] !== undefined) {
-        notify.call(this, node[SUBSCRIBER_PROPERTY_KEY], topic, node);
+      if (entry[SUBSCRIBER_PROPERTY_KEY] !== undefined) {
+        notify.call(this, entry[SUBSCRIBER_PROPERTY_KEY], topic, entry);
       }
       if(this.universalSubscribtions.length > 0){
-        notify.call(this, this.universalSubscribtions, topic, node);
+        notify.call(this, this.universalSubscribtions, topic, entry);
       }
 
     }
@@ -71,11 +71,11 @@ const {
         return undefined;
       }
 
-      let node = getTopicNode.call(this, topic);
+      let entry = getTopicNode.call(this, topic);
 
       let raw = {};
-      raw[DATA_SPECIFIER] = node[DATA_PROPERTY_KEY];
-      raw[TYPE_SPECIFIER] = node[TYPE_PROPERTY_KEY];
+      raw[DATA_SPECIFIER] = entry[DATA_PROPERTY_KEY];
+      raw[TYPE_SPECIFIER] = entry[TYPE_PROPERTY_KEY];
 
       return raw;
     }
@@ -89,15 +89,15 @@ const {
      * @return Returns a token which can be passed to the unsubscribe mthod in order to unsubscribe the callback from the topic.
      */
     subscribe(topic, callback) {
-      let node = getTopicNode.call(this, topic);
+      let entry = getTopicNode.call(this, topic);
       if (typeof callback !== "function") {
         throw new Error('Subscribe: passed callback parameter is not a function.');
       }
-      if (node[SUBSCRIBER_PROPERTY_KEY] === undefined) {
-        node[SUBSCRIBER_PROPERTY_KEY] = [];
+      if (entry[SUBSCRIBER_PROPERTY_KEY] === undefined) {
+        entry[SUBSCRIBER_PROPERTY_KEY] = [];
       }
       let subscriberId = ++this.currentTokenId;
-      node[SUBSCRIBER_PROPERTY_KEY].push({
+      entry[SUBSCRIBER_PROPERTY_KEY].push({
         'callback': callback,
         'id': subscriberId,
       });
@@ -144,11 +144,11 @@ const {
      */
     unsubscribe(token) {
       if (token.type === 'topic') {
-        let node = getTopicNode.call(this, token.topic);
-        if (node[SUBSCRIBER_PROPERTY_KEY] === undefined) {
+        let entry = getTopicNode.call(this, token.topic);
+        if (entry[SUBSCRIBER_PROPERTY_KEY] === undefined) {
           return;
         }
-        node[SUBSCRIBER_PROPERTY_KEY] = node[SUBSCRIBER_PROPERTY_KEY].filter(subscriber => subscriber.id !== token.id);
+        entry[SUBSCRIBER_PROPERTY_KEY] = entry[SUBSCRIBER_PROPERTY_KEY].filter(subscriber => subscriber.id !== token.id);
       } else if (token.type === 'universal') {
         this.universalSubscribtions = this.universalSubscribtions.filter(subscriber => subscriber.id !== token.id);
       }
@@ -162,9 +162,9 @@ const {
       if (!this.has(topic)) {
         return;
       }
-      let node = getTopicNode.call(this, topic);
-      delete node[DATA_PROPERTY_KEY];
-      delete node[TYPE_PROPERTY_KEY];
+      let entry = getTopicNode.call(this, topic);
+      delete entry[DATA_PROPERTY_KEY];
+      delete entry[TYPE_PROPERTY_KEY];
 
       cleanUpPath.call(this, topic);
     }
@@ -179,11 +179,11 @@ const {
       const path = getTopicPathFromString(topic);
 
       // traverse path
-      let node = this.storage;
+      let entry = this.storage;
       const il = path.length;
       for (let i = 0; i < il; i++) {
-        if (node[path[i]] !== undefined) {
-          node = node[path[i]];
+        if (entry[path[i]] !== undefined) {
+          entry = entry[path[i]];
         } else {
           return false;
         }
@@ -199,21 +199,21 @@ const {
       let currentTopicPath = [];
 
       // recursive helper method that adds the currentTopic and the data to the result array and calls itself on all subtopics
-      let recursiveAddRelevantTopicDataPairs = function (node) {
-        let keys = Object.getOwnPropertyNames(node);
+      let recursiveAddRelevantTopicDataPairs = function (entry) {
+        let keys = Object.getOwnPropertyNames(entry);
         const il = keys.length;
         for (let i = 0; i < il; i++) {
           if (keys[i] === DATA_PROPERTY_KEY) {
             // This topic is relevant because it has its own data property
             let raw = {};
             raw['topic'] = getTopicStringFromPath(currentTopicPath);
-            raw[DATA_SPECIFIER] = node[DATA_PROPERTY_KEY];
-            raw[TYPE_SPECIFIER] = node[TYPE_PROPERTY_KEY];
+            raw[DATA_SPECIFIER] = entry[DATA_PROPERTY_KEY];
+            raw[TYPE_SPECIFIER] = entry[TYPE_PROPERTY_KEY];
             result.push(raw);
           } else if(keys[i] !== SUBSCRIBER_PROPERTY_KEY && keys[i] !== TYPE_PROPERTY_KEY){
             // Process all subtopics
             currentTopicPath.push(removeTopicPrefixAndSuffix(keys[i]));
-            recursiveAddRelevantTopicDataPairs(node[keys[i]]);
+            recursiveAddRelevantTopicDataPairs(entry[keys[i]]);
             currentTopicPath.pop();
           }
         }
@@ -235,8 +235,8 @@ const {
       if (!this.has(topic)) {
         return undefined;
       }
-      let node = getTopicNode.call(this, topic);
-      return node;
+      let entry = getTopicNode.call(this, topic);
+      return entry;
     }
   }
 
@@ -245,11 +245,11 @@ const {
   // --- private methods
 
   /**
-   * Retruns the node and its corresponding subtree with the specified topic as root.
+   * Retruns the entry and its corresponding subentries with the specified topic as root.
    * If the spcified topic does not exist, its topic path is created if createOnTraverse is true.
    * @param {String[]} topic Array of unprefixed subtopic strings specifying the topic path.
    * @param {Boolean} createOnTraverse Should the path be created if it does not exist?
-   * @return returns the node specified by the path or undefined.
+   * @return returns the entry specified by the path or undefined.
    */
   let getTopicNode = function (topic, createOnTraverse = true) {
     validateTopic(topic);
@@ -290,9 +290,9 @@ const {
     }
   }
 
-  let recursiveIsRelevantCleanUp = function (node) {
+  let recursiveIsRelevantCleanUp = function (entry) {
     let isRelevant = false;
-    let keys = Object.getOwnPropertyNames(node);
+    let keys = Object.getOwnPropertyNames(entry);
 
     const il = keys.length;
     for (let i = 0; i < il; i++) {
@@ -301,9 +301,9 @@ const {
       } else {
         // Check other subtopics, Therefore exclude special properties.
         if(keys[i] !== SUBSCRIBER_PROPERTY_KEY && keys[i] !== TYPE_PROPERTY_KEY){
-          let subtreeIsReleveant = recursiveIsRelevantCleanUp(node[keys[i]]);
+          let subtreeIsReleveant = recursiveIsRelevantCleanUp(entry[keys[i]]);
           if (!subtreeIsReleveant) {
-            delete node[keys[i]];
+            delete entry[keys[i]];
           }
           isRelevant = isRelevant || subtreeIsReleveant;
         }
