@@ -511,31 +511,31 @@ const {
         // valid topic tests
 
         // simple valid topic
-        valid = 'root->subtopic1->subtopic2->subtopic3->subtopic4';
+        valid = `root${TOPIC_SEPARATOR}subtopic1${TOPIC_SEPARATOR}subtopic2${TOPIC_SEPARATOR}subtopic3${TOPIC_SEPARATOR}subtopic4`;
         validChecks(valid);
 
         // trailing space
-        valid = 'root->subtopic1 ->subtopic2 ->subtopic3 ->subtopic4';
+        valid = `root${TOPIC_SEPARATOR}subtopic1 ${TOPIC_SEPARATOR}subtopic2 ${TOPIC_SEPARATOR}subtopic3 ${TOPIC_SEPARATOR}subtopic4`;
         validChecks(valid);
 
         // trailing space (also on first)
-        valid = 'root->subtopic1 ->subtopic2 ->subtopic3 ->subtopic4';
+        valid = `root${TOPIC_SEPARATOR}subtopic1 ${TOPIC_SEPARATOR}subtopic2 ${TOPIC_SEPARATOR}subtopic3 ${TOPIC_SEPARATOR}subtopic4`;
         validChecks(valid);
 
         // prefixed space
-        valid = 'root-> subtopic1-> subtopic2->subtopic3->subtopic4';
+        valid = `root${TOPIC_SEPARATOR} subtopic1${TOPIC_SEPARATOR} subtopic2${TOPIC_SEPARATOR}subtopic3${TOPIC_SEPARATOR}subtopic4`;
         validChecks(valid);
 
         // prefixed space (also on first)
-        valid = ' root-> subtopic1-> subtopic2->subtopic3->subtopic4';
+        valid = ` root${TOPIC_SEPARATOR} subtopic1${TOPIC_SEPARATOR} subtopic2${TOPIC_SEPARATOR}subtopic3${TOPIC_SEPARATOR}subtopic4`;
         validChecks(valid);
 
         // trailing and prefixed space
-        valid = 'root-> subtopic1 -> subtopic2 -> subtopic3 ->subtopic4';
+        valid = `root${TOPIC_SEPARATOR} subtopic1 ${TOPIC_SEPARATOR} subtopic2 ${TOPIC_SEPARATOR} subtopic3 ${TOPIC_SEPARATOR}subtopic4`;
         validChecks(valid);
 
         // trailing and prefixed space (also on first)
-        valid = ' root -> subtopic1 -> subtopic2 -> subtopic3 ->subtopic4';
+        valid = ` root ${TOPIC_SEPARATOR} subtopic1 ${TOPIC_SEPARATOR} subtopic2 ${TOPIC_SEPARATOR} subtopic3 ${TOPIC_SEPARATOR}subtopic4`;
         validChecks(valid);
 
 
@@ -580,10 +580,10 @@ const {
         let rawSubtree = topicData.getRawSubtree('');
         t.deepEqual(rawSubtree, createTopicDataSnapshotTwo());
 
-        rawSubtree = topicData.getRawSubtree('a');
+        rawSubtree = topicData.getRawSubtree(`a`);
         t.deepEqual(rawSubtree, createTopicDataRawSubtreeSnapshotOne());
 
-        rawSubtree = topicData.getRawSubtree('a->x');
+        rawSubtree = topicData.getRawSubtree(`a${TOPIC_SEPARATOR}x`);
         t.deepEqual(rawSubtree, createTopicDataRawSubtreeSnapshotTwo());
     });
 
@@ -591,55 +591,63 @@ const {
         let topicData = createTopicDataTwoOrdered();
 
         let topics = topicData.getAllTopicsWithData();
-        t.deepEqual(topics, [{
-                topic: 'a',
-                data: 'awesome a',
-                type: 'string'
-            },
-            {
-                topic: 'a->x',
-                data: 'awesome ax',
-                type: 'string'
-            },
-            {
-                topic: 'a->x->o',
-                data: 'awesome axo',
-                type: 'string'
-            },
-            {
-                topic: 'a->y',
-                data: 'awesome ay',
-                type: 'string'
-            },
-            {
-                topic: 'b',
-                data: 'awesome b',
-                type: 'string'
-            },
-        ])
 
-        topicData.remove('a->x');
+        let compare = [];
+        let raw = {};
+
+        raw['topic'] = `a`;
+        raw[DATA_SPECIFIER]= 'awesome a';
+        raw[TYPE_SPECIFIER]= 'string';
+        compare.push(raw);
+        raw={};
+        raw['topic'] = `a${TOPIC_SEPARATOR}x`;
+        raw[DATA_SPECIFIER]= 'awesome ax';
+        raw[TYPE_SPECIFIER]= 'string';
+        compare.push(raw);
+        raw={};
+        raw['topic'] = `a${TOPIC_SEPARATOR}x${TOPIC_SEPARATOR}o`;
+        raw[DATA_SPECIFIER]= 'awesome axo';
+        raw[TYPE_SPECIFIER]= 'string';
+        compare.push(raw);
+        raw={};
+        raw['topic'] = `a${TOPIC_SEPARATOR}y`;
+        raw[DATA_SPECIFIER]= 'awesome ay';
+        raw[TYPE_SPECIFIER]= 'string';
+        compare.push(raw);
+        raw={};
+        raw['topic'] = `b`;
+        raw[DATA_SPECIFIER]= 'awesome b';
+        raw[TYPE_SPECIFIER]= 'string';
+        compare.push(raw);
+
+        t.deepEqual(topics, compare)
+
+        topicData.remove(`a${TOPIC_SEPARATOR}x`);
         topics = topicData.getAllTopicsWithData();
-        t.deepEqual(topics, [{
-                topic: 'a',
-                data: 'awesome a',
-                type: 'string'
-            },
-            {
-                topic: 'a->x->o',
-                data: 'awesome axo',
-                type: 'string'
-            },
-            {
-                topic: 'a->y',
-                data: 'awesome ay',
-                type: 'string'
-            },
-            {
-                topic: 'b',
-                data: 'awesome b',
-                type: 'string'
-            },
-        ])
+
+        compare = [];
+        raw = {};
+
+        raw['topic'] = `a`;
+        raw[DATA_SPECIFIER]= 'awesome a';
+        raw[TYPE_SPECIFIER]= 'string';
+        compare.push(raw);
+        raw={};
+        raw['topic'] = `a${TOPIC_SEPARATOR}x${TOPIC_SEPARATOR}o`;
+        raw[DATA_SPECIFIER]= 'awesome axo';
+        raw[TYPE_SPECIFIER]= 'string';
+        compare.push(raw);
+        raw={};
+        raw['topic'] = `a${TOPIC_SEPARATOR}y`;
+        raw[DATA_SPECIFIER]= 'awesome ay';
+        raw[TYPE_SPECIFIER]= 'string';
+        compare.push(raw);
+        raw={};
+        raw['topic'] = `b`;
+        raw[DATA_SPECIFIER]= 'awesome b';
+        raw[TYPE_SPECIFIER]= 'string';
+        compare.push(raw);
+
+        t.deepEqual(topics, compare);
     });
 })();
