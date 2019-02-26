@@ -53,10 +53,10 @@ const {
 
       // Notify subscribers
       if (node[SUBSCRIBER_PROPERTY_KEY] !== undefined) {
-        notify.call(this, node[SUBSCRIBER_PROPERTY_KEY], topic, node[DATA_PROPERTY_KEY]);
+        notify.call(this, node[SUBSCRIBER_PROPERTY_KEY], topic, node);
       }
       if(this.universalSubscribtions.length > 0){
-        notify.call(this, this.universalSubscribtions, topic, node[DATA_PROPERTY_KEY]);
+        notify.call(this, this.universalSubscribtions, topic, node);
       }
 
     }
@@ -164,6 +164,7 @@ const {
       }
       let node = getTopicNode.call(this, topic);
       delete node[DATA_PROPERTY_KEY];
+      delete node[TYPE_PROPERTY_KEY];
 
       cleanUpPath.call(this, topic);
     }
@@ -209,7 +210,7 @@ const {
             raw[DATA_SPECIFIER] = node[DATA_PROPERTY_KEY];
             raw[TYPE_SPECIFIER] = node[TYPE_PROPERTY_KEY];
             result.push(raw);
-          } else {
+          } else if(keys[i] !== SUBSCRIBER_PROPERTY_KEY && keys[i] !== TYPE_PROPERTY_KEY){
             // Process all subtopics
             currentTopicPath.push(removeTopicPrefixAndSuffix(keys[i]));
             recursiveAddRelevantTopicDataPairs(node[keys[i]]);
@@ -298,11 +299,14 @@ const {
       if (keys[i] === DATA_PROPERTY_KEY) {
         isRelevant = true;
       } else {
-        let subtreeIsReleveant = recursiveIsRelevantCleanUp(node[keys[i]]);
-        if (!subtreeIsReleveant) {
-          delete node[keys[i]];
+        // Check other subtopics, Therefore exclude special properties.
+        if(keys[i] !== SUBSCRIBER_PROPERTY_KEY && keys[i] !== TYPE_PROPERTY_KEY){
+          let subtreeIsReleveant = recursiveIsRelevantCleanUp(node[keys[i]]);
+          if (!subtreeIsReleveant) {
+            delete node[keys[i]];
+          }
+          isRelevant = isRelevant || subtreeIsReleveant;
         }
-        isRelevant = isRelevant || subtreeIsReleveant;
       }
     }
     return isRelevant;
