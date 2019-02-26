@@ -3,7 +3,10 @@ const {
 } = require('./topicData.js');
 const {
   DATA_PROPERTY_KEY,
+  DATA_SPECIFIER,
   SUBSCRIBER_PROPERTY_KEY,
+  TYPE_PROPERTY_KEY,
+  TYPE_SPECIFIER,
 } = require('./constants.js');
 const {
   getTopicPathFromString,
@@ -38,11 +41,17 @@ const {
      * If there is already data associated with this topic, it will be overwritten.
      * @param {String} topic Topic strings specifying the topic path.
      * @param {*} data 
+     * @param {String} type Type of the data.
      */
-    publish(topic, data) {
+    publish(topic, data, type) {
+      // Get node.
       let node = getTopicNode.call(this, topic);
-      node[DATA_PROPERTY_KEY] = data;
 
+      // Set property values.
+      node[DATA_PROPERTY_KEY] = data;
+      node[TYPE_PROPERTY_KEY] = type;
+
+      // Notify subscribers
       if (node[SUBSCRIBER_PROPERTY_KEY] !== undefined) {
         notify.call(this, node[SUBSCRIBER_PROPERTY_KEY], topic, node[DATA_PROPERTY_KEY]);
       }
@@ -61,8 +70,14 @@ const {
       if (!this.has(topic)) {
         return undefined;
       }
+
       let node = getTopicNode.call(this, topic);
-      return node[DATA_PROPERTY_KEY];
+
+      let raw = {};
+      raw[DATA_SPECIFIER] = node[DATA_PROPERTY_KEY];
+      raw[TYPE_SPECIFIER] = node[TYPE_PROPERTY_KEY];
+
+      return raw;
     }
 
     /**
@@ -70,7 +85,7 @@ const {
      * The callback function is called with the topic and a data parameter whenever data is published to the specified topic.
      * Returns a token which can be passed to the unsubscribe method in order to unsubscribe the callback from the topic.
      * @param {String} topic Topic strings specifying the topic path.
-     * @param {Function} callback Function called when subscriber is notified. Should accept a topic and a data parameter.
+     * @param {Function} callback Function called when subscriber is notified. Should accept a topic and a entry parameter.
      * @return Returns a token which can be passed to the unsubscribe mthod in order to unsubscribe the callback from the topic.
      */
     subscribe(topic, callback) {
@@ -99,7 +114,7 @@ const {
      * Subscribes the callback function to all topics.
      * The callback function is called with the topic and a data parameter whenever data is published to any topic of the topicData.
      * Returns a token which can be passed to the unsubscribe mthod in order to unsubscribe the callback.
-     * @param {Function} callback Function called when subscriber is notified. Should accept a topic and a data parameter.
+     * @param {Function} callback Function called when subscriber is notified. Should accept a topic and a entry parameter.
      * @return Returns a token which can be passed to the unsubscribe mthod in order to unsubscribe the callback.
      */
     subscribeAll(callback) {
@@ -189,10 +204,11 @@ const {
         for (let i = 0; i < il; i++) {
           if (keys[i] === DATA_PROPERTY_KEY) {
             // This topic is relevant because it has its own data property
-            result.push({
-              topic: getTopicStringFromPath(currentTopicPath),
-              data: node[DATA_PROPERTY_KEY],
-            });
+            let raw = {};
+            raw['topic'] = getTopicStringFromPath(currentTopicPath);
+            raw[DATA_SPECIFIER] = node[DATA_PROPERTY_KEY];
+            raw[TYPE_SPECIFIER] = node[TYPE_PROPERTY_KEY];
+            result.push(raw);
           } else {
             // Process all subtopics
             currentTopicPath.push(removeTopicPrefixAndSuffix(keys[i]));
@@ -296,10 +312,14 @@ const {
    * Calls every callback function with the specified parameters.
    * @param {Function[]} subscribers Array of subscribed callback functions
    * @param {*} topic 
-   * @param {*} data 
+   * @param {*} entry
    */
-  let notify = function (subscribers, topic, data) {
-    subscribers.forEach(subscriber => subscriber.callback(topic, data));
+  let notify = function (subscribers, topic, entry) {
+    let raw = {};
+    raw[DATA_SPECIFIER] = entry[DATA_PROPERTY_KEY];
+    raw[TYPE_SPECIFIER] = entry[TYPE_PROPERTY_KEY];
+
+    subscribers.forEach(subscriber => subscriber.callback(topic, raw));
   }
 
   module.exports = RuntimeTopicData;
