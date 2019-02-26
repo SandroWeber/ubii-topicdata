@@ -2,6 +2,7 @@ const {
   TopicData
 } = require('./topicData.js');
 const {
+  TOPIC_SPECIFIER,
   DATA_PROPERTY_KEY,
   DATA_SPECIFIER,
   SUBSCRIBER_PROPERTY_KEY,
@@ -105,7 +106,7 @@ const {
       let token = {
         'topic': topic,
         'id': subscriberId,
-        'type': 'topic'
+        'type': 'single'
       }
       return token;
     }
@@ -143,7 +144,7 @@ const {
      * @param {*} token 
      */
     unsubscribe(token) {
-      if (token.type === 'topic') {
+      if (token.type === 'single') {
         let entry = getTopicNode.call(this, token.topic);
         if (entry[SUBSCRIBER_PROPERTY_KEY] === undefined) {
           return;
@@ -206,7 +207,7 @@ const {
           if (keys[i] === DATA_PROPERTY_KEY) {
             // This topic is relevant because it has its own data property
             let raw = {};
-            raw['topic'] = getTopicStringFromPath(currentTopicPath);
+            raw[TOPIC_SPECIFIER] = getTopicStringFromPath(currentTopicPath);
             raw[DATA_SPECIFIER] = entry[DATA_PROPERTY_KEY];
             raw[TYPE_SPECIFIER] = entry[TYPE_PROPERTY_KEY];
             result.push(raw);

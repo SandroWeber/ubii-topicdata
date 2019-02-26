@@ -2,6 +2,7 @@
 const TOPIC_PREFIX = 't:';
 const TOPIC_SUFFIX = ':t';  // Topic suffix allows the use of sub-topics with spaces at the end without encouraging bugs and human error.
 const TOPIC_SEPARATOR = '->';
+const TOPIC_SPECIFIER = 'topic';
 
 // Data constants.
 const DATA_PREFIX = 'd:';
@@ -22,6 +23,7 @@ module.exports = {
     TOPIC_PREFIX: TOPIC_PREFIX,
     TOPIC_SUFFIX: TOPIC_SUFFIX,
     TOPIC_SEPARATOR: TOPIC_SEPARATOR,
+    TOPIC_SPECIFIER: TOPIC_SPECIFIER,
     DATA_PREFIX: DATA_PREFIX,
     DATA_SPECIFIER: DATA_SPECIFIER,
     DATA_PROPERTY_KEY: DATA_PROPERTY_KEY,

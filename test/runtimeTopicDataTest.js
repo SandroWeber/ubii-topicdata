@@ -6,6 +6,7 @@ import {
     TOPIC_PREFIX,
     TOPIC_SUFFIX,
     TOPIC_SEPARATOR,
+    TOPIC_SPECIFIER,
     DATA_PROPERTY_KEY,
     DATA_SPECIFIER,
     TYPE_PROPERTY_KEY,
@@ -608,27 +609,27 @@ const {
         let compare = [];
         let raw = {};
 
-        raw['topic'] = `a`;
+        raw[TOPIC_SPECIFIER] = `a`;
         raw[DATA_SPECIFIER]= 'awesome a';
         raw[TYPE_SPECIFIER]= 'string';
         compare.push(raw);
         raw={};
-        raw['topic'] = `a${TOPIC_SEPARATOR}x`;
+        raw[TOPIC_SPECIFIER] = `a${TOPIC_SEPARATOR}x`;
         raw[DATA_SPECIFIER]= 'awesome ax';
         raw[TYPE_SPECIFIER]= 'string';
         compare.push(raw);
         raw={};
-        raw['topic'] = `a${TOPIC_SEPARATOR}x${TOPIC_SEPARATOR}o`;
+        raw[TOPIC_SPECIFIER] = `a${TOPIC_SEPARATOR}x${TOPIC_SEPARATOR}o`;
         raw[DATA_SPECIFIER]= 'awesome axo';
         raw[TYPE_SPECIFIER]= 'string';
         compare.push(raw);
         raw={};
-        raw['topic'] = `a${TOPIC_SEPARATOR}y`;
+        raw[TOPIC_SPECIFIER] = `a${TOPIC_SEPARATOR}y`;
         raw[DATA_SPECIFIER]= 'awesome ay';
         raw[TYPE_SPECIFIER]= 'string';
         compare.push(raw);
         raw={};
-        raw['topic'] = `b`;
+        raw[TOPIC_SPECIFIER] = `b`;
         raw[DATA_SPECIFIER]= 'awesome b';
         raw[TYPE_SPECIFIER]= 'string';
         compare.push(raw);
@@ -641,22 +642,22 @@ const {
         compare = [];
         raw = {};
 
-        raw['topic'] = `a`;
+        raw[TOPIC_SPECIFIER] = `a`;
         raw[DATA_SPECIFIER]= 'awesome a';
         raw[TYPE_SPECIFIER]= 'string';
         compare.push(raw);
         raw={};
-        raw['topic'] = `a${TOPIC_SEPARATOR}x${TOPIC_SEPARATOR}o`;
+        raw[TOPIC_SPECIFIER] = `a${TOPIC_SEPARATOR}x${TOPIC_SEPARATOR}o`;
         raw[DATA_SPECIFIER]= 'awesome axo';
         raw[TYPE_SPECIFIER]= 'string';
         compare.push(raw);
         raw={};
-        raw['topic'] = `a${TOPIC_SEPARATOR}y`;
+        raw[TOPIC_SPECIFIER] = `a${TOPIC_SEPARATOR}y`;
         raw[DATA_SPECIFIER]= 'awesome ay';
         raw[TYPE_SPECIFIER]= 'string';
         compare.push(raw);
         raw={};
-        raw['topic'] = `b`;
+        raw[TOPIC_SPECIFIER] = `b`;
         raw[DATA_SPECIFIER]= 'awesome b';
         raw[TYPE_SPECIFIER]= 'string';
         compare.push(raw);
