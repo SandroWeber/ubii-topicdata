@@ -32,123 +32,136 @@ const {
     }
 
     let createTopicDataSnapshotTwo = () => {
-        let raw = {
-            't:a:t': {
-                'd:data': 'awesome a',
-                'tp:type': 'string',
-                't:x:t': {
-                    'd:data': 'awesome ax',
-                    'tp:type': 'string',
-                    't:o:t': {
-                        'd:data': 'awesome axo',
-                        'tp:type': 'string',
-                    }
-                },
-                't:y:t': {
-                    'd:data': 'awesome ay',
-                    'tp:type': 'string',
-                }
-            },
-            't:b:t': {
-                'd:data': 'awesome b',
-                'tp:type': 'string',
-            }
-        };
+        let o = {};
+        o[DATA_PROPERTY_KEY] = 'awesome axo';
+        o[TYPE_PROPERTY_KEY] = 'string';
+
+        let x = {};
+        x[DATA_PROPERTY_KEY] = 'awesome ax';
+        x[TYPE_PROPERTY_KEY] = 'string';
+        x[`${TOPIC_PREFIX}o${TOPIC_SUFFIX}`] = o;
+
+        let y = {};
+        y[DATA_PROPERTY_KEY] = 'awesome ay';
+        y[TYPE_PROPERTY_KEY] = 'string';
+
+        let a = {};
+        a[DATA_PROPERTY_KEY] = 'awesome a';
+        a[TYPE_PROPERTY_KEY] = 'string';
+        a[`${TOPIC_PREFIX}x${TOPIC_SUFFIX}`] = x;
+        a[`${TOPIC_PREFIX}y${TOPIC_SUFFIX}`] = y;
+
+        let b = {};
+        b[DATA_PROPERTY_KEY] = 'awesome b';
+        b[TYPE_PROPERTY_KEY] = 'string';
+
+        let raw = {};
+        raw[`${TOPIC_PREFIX}a${TOPIC_SUFFIX}`] = a;
+        raw[`${TOPIC_PREFIX}b${TOPIC_SUFFIX}`] = b;
 
         return raw;
     }
 
     let createTopicDataSnapshotThree = () => {
-        let raw = {
-            't:a:t': {
-                'd:data': 'awesome a',
-                'tp:type': 'string',
-                't:x:t': {
-                    't:o:t': {
-                        'd:data': `awesome axo`,
-                        'tp:type': 'string',
-                    }
-                },
-                't:y:t': {
-                    'd:data': 'awesome ay',
-                    'tp:type': 'string',
-                }
-            },
-            't:b:t': {
-                'd:data': 'awesome b',
-                'tp:type': 'string',
-            }
-        };
+        let o = {};
+        o[DATA_PROPERTY_KEY] = 'awesome axo';
+        o[TYPE_PROPERTY_KEY] = 'string';
+
+        let x = {};
+        x[`${TOPIC_PREFIX}o${TOPIC_SUFFIX}`] = o;
+
+        let y = {};
+        y[DATA_PROPERTY_KEY] = 'awesome ay';
+        y[TYPE_PROPERTY_KEY] = 'string';
+
+        let a = {};
+        a[DATA_PROPERTY_KEY] = 'awesome a';
+        a[TYPE_PROPERTY_KEY] = 'string';
+        a[`${TOPIC_PREFIX}x${TOPIC_SUFFIX}`] = x;
+        a[`${TOPIC_PREFIX}y${TOPIC_SUFFIX}`] = y;
+
+        let b = {};
+        b[DATA_PROPERTY_KEY] = 'awesome b';
+        b[TYPE_PROPERTY_KEY] = 'string';
+
+        let raw = {};
+        raw[`${TOPIC_PREFIX}a${TOPIC_SUFFIX}`] = a;
+        raw[`${TOPIC_PREFIX}b${TOPIC_SUFFIX}`] = b;
 
         return raw;
     }
 
     let createTopicDataSnapshotFour = () => {
-        let raw = {
-            't:a:t': {
-                'd:data': 'awesome a',
-                'tp:type': 'string',
-                't:y:t': {
-                    'd:data': `awesome ay`,
-                    'tp:type': 'string',
-                }
-            },
-            't:b:t': {
-                'd:data': 'awesome b',
-                'tp:type': 'string',
-            }
-        };
+        let y = {};
+        y[DATA_PROPERTY_KEY] = 'awesome ay';
+        y[TYPE_PROPERTY_KEY] = 'string';
+
+        let a = {};
+        a[DATA_PROPERTY_KEY] = 'awesome a';
+        a[TYPE_PROPERTY_KEY] = 'string';
+        a[`${TOPIC_PREFIX}y${TOPIC_SUFFIX}`] = y;
+
+        let b = {};
+        b[DATA_PROPERTY_KEY] = 'awesome b';
+        b[TYPE_PROPERTY_KEY] = 'string';
+
+        let raw = {};
+        raw[`${TOPIC_PREFIX}a${TOPIC_SUFFIX}`] = a;
+        raw[`${TOPIC_PREFIX}b${TOPIC_SUFFIX}`] = b;
 
         return raw;
     }
 
     let createTopicDataSnapshotFive = () => {
-        let raw = {
-            't:a:t': {
-                'd:data': 'awesome a',
-                'tp:type': 'string',
-                't:y:t': {
-                    'd:data': `awesome ay`,
-                    'tp:type': 'string',
-                }
-            }
-        };
+        let y = {};
+        y[DATA_PROPERTY_KEY] = 'awesome ay';
+        y[TYPE_PROPERTY_KEY] = 'string';
+
+        let a = {};
+        a[DATA_PROPERTY_KEY] = 'awesome a';
+        a[TYPE_PROPERTY_KEY] = 'string';
+        a[`${TOPIC_PREFIX}y${TOPIC_SUFFIX}`] = y;
+
+        let raw = {};
+        raw[`${TOPIC_PREFIX}a${TOPIC_SUFFIX}`] = a;
 
         return raw;
     }
 
     let createTopicDataRawSubtreeSnapshotOne = () => {
-        let raw = {
-            'd:data': 'awesome a',
-            'tp:type': 'string',
-            't:x:t': {
-                'd:data': 'awesome ax',
-                'tp:type': 'string',
-                't:o:t': {
-                    'd:data': 'awesome axo',
-                    'tp:type': 'string',
-                }
-            },
-            't:y:t': {
-                'd:data': 'awesome ay',
-                'tp:type': 'string',
-            }
-        };
+        let o = {};
+        o[DATA_PROPERTY_KEY] = 'awesome axo';
+        o[TYPE_PROPERTY_KEY] = 'string';
 
-        return raw;
+        let x = {};
+        x[DATA_PROPERTY_KEY] = 'awesome ax';
+        x[TYPE_PROPERTY_KEY] = 'string';
+        x[`${TOPIC_PREFIX}o${TOPIC_SUFFIX}`] = o;
+
+        let y = {};
+        y[DATA_PROPERTY_KEY] = 'awesome ay';
+        y[TYPE_PROPERTY_KEY] = 'string';
+
+        let a = {};
+        a[DATA_PROPERTY_KEY] = 'awesome a';
+        a[TYPE_PROPERTY_KEY] = 'string';
+        a[`${TOPIC_PREFIX}x${TOPIC_SUFFIX}`] = x;
+        a[`${TOPIC_PREFIX}y${TOPIC_SUFFIX}`] = y;
+
+        return a;
     }
 
     let createTopicDataRawSubtreeSnapshotTwo = () => {
-        let raw = {
-            'd:data': 'awesome ax',
-            'tp:type': 'string',
-            't:o:t': {
-                'd:data': 'awesome axo',
-                'tp:type': 'string',
-            }
-        };
+        let o = {};
+        o[DATA_PROPERTY_KEY] = 'awesome axo';
+        o[TYPE_PROPERTY_KEY] = 'string';
 
-        return raw;
+        let x = {};
+        x[DATA_PROPERTY_KEY] = 'awesome ax';
+        x[TYPE_PROPERTY_KEY] = 'string';
+        x[`${TOPIC_PREFIX}o${TOPIC_SUFFIX}`] = o;
+
+        return x;
     }
 
     // Topic Data builder functions
