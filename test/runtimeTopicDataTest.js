@@ -2,6 +2,17 @@ import test from 'ava';
 import {
     RuntimeTopicData
 } from './../src/index.js';
+import {
+    TOPIC_PREFIX,
+    TOPIC_SUFFIX,
+    TOPIC_SEPARATOR,
+    TOPIC_SPECIFIER,
+    DATA_PROPERTY_KEY,
+    DATA_SPECIFIER,
+    TYPE_PROPERTY_KEY,
+    TYPE_SPECIFIER
+
+} from './../src/topicData/constants.js';
 const {
     validateTopic
 } = require('./../src/topicData/utility.js');
@@ -9,9 +20,9 @@ const {
 (function () {
     // Creates and returns deep copies of the specified topic arrays.
     const getTopicA = () => 'a';
-    const getTopicAX = () => 'a->x';
-    const getTopicAXO = () => 'a->x->o';
-    const getTopicAY = () => 'a->y';
+    const getTopicAX = () => `a${TOPIC_SEPARATOR}x`;
+    const getTopicAXO = () => `a${TOPIC_SEPARATOR}x${TOPIC_SEPARATOR}o`;
+    const getTopicAY = () => `a${TOPIC_SEPARATOR}y`;
     const getTopicB = () => 'b';
 
     // Snapshots for comparison
@@ -22,114 +33,147 @@ const {
     }
 
     let createTopicDataSnapshotTwo = () => {
-        let raw = {
-            't:a:t': {
-                'd:data': 'awesome a',
-                't:x:t': {
-                    'd:data': 'awesome ax',
-                    't:o:t': {
-                        'd:data': 'awesome axo',
-                    }
-                },
-                't:y:t': {
-                    'd:data': 'awesome ay',
-                }
-            },
-            't:b:t': {
-                'd:data': 'awesome b',
-            }
-        };
+        let o = {};
+        o[DATA_PROPERTY_KEY] = 'awesome axo';
+        o[TYPE_PROPERTY_KEY] = 'string';
+
+        let x = {};
+        x[DATA_PROPERTY_KEY] = 'awesome ax';
+        x[TYPE_PROPERTY_KEY] = 'string';
+        x[`${TOPIC_PREFIX}o${TOPIC_SUFFIX}`] = o;
+
+        let y = {};
+        y[DATA_PROPERTY_KEY] = 'awesome ay';
+        y[TYPE_PROPERTY_KEY] = 'string';
+
+        let a = {};
+        a[DATA_PROPERTY_KEY] = 'awesome a';
+        a[TYPE_PROPERTY_KEY] = 'string';
+        a[`${TOPIC_PREFIX}x${TOPIC_SUFFIX}`] = x;
+        a[`${TOPIC_PREFIX}y${TOPIC_SUFFIX}`] = y;
+
+        let b = {};
+        b[DATA_PROPERTY_KEY] = 'awesome b';
+        b[TYPE_PROPERTY_KEY] = 'string';
+
+        let raw = {};
+        raw[`${TOPIC_PREFIX}a${TOPIC_SUFFIX}`] = a;
+        raw[`${TOPIC_PREFIX}b${TOPIC_SUFFIX}`] = b;
 
         return raw;
     }
 
     let createTopicDataSnapshotThree = () => {
-        let raw = {
-            't:a:t': {
-                'd:data': 'awesome a',
-                't:x:t': {
-                    't:o:t': {
-                        'd:data': `awesome axo`,
-                    }
-                },
-                't:y:t': {
-                    'd:data': 'awesome ay',
-                }
-            },
-            't:b:t': {
-                'd:data': 'awesome b',
-            }
-        };
+        let o = {};
+        o[DATA_PROPERTY_KEY] = 'awesome axo';
+        o[TYPE_PROPERTY_KEY] = 'string';
+
+        let x = {};
+        x[`${TOPIC_PREFIX}o${TOPIC_SUFFIX}`] = o;
+
+        let y = {};
+        y[DATA_PROPERTY_KEY] = 'awesome ay';
+        y[TYPE_PROPERTY_KEY] = 'string';
+
+        let a = {};
+        a[DATA_PROPERTY_KEY] = 'awesome a';
+        a[TYPE_PROPERTY_KEY] = 'string';
+        a[`${TOPIC_PREFIX}x${TOPIC_SUFFIX}`] = x;
+        a[`${TOPIC_PREFIX}y${TOPIC_SUFFIX}`] = y;
+
+        let b = {};
+        b[DATA_PROPERTY_KEY] = 'awesome b';
+        b[TYPE_PROPERTY_KEY] = 'string';
+
+        let raw = {};
+        raw[`${TOPIC_PREFIX}a${TOPIC_SUFFIX}`] = a;
+        raw[`${TOPIC_PREFIX}b${TOPIC_SUFFIX}`] = b;
 
         return raw;
     }
 
     let createTopicDataSnapshotFour = () => {
-        let raw = {
-            't:a:t': {
-                'd:data': 'awesome a',
-                't:y:t': {
-                    'd:data': `awesome ay`,
-                }
-            },
-            't:b:t': {
-                'd:data': 'awesome b',
-            }
-        };
+        let y = {};
+        y[DATA_PROPERTY_KEY] = 'awesome ay';
+        y[TYPE_PROPERTY_KEY] = 'string';
+
+        let a = {};
+        a[DATA_PROPERTY_KEY] = 'awesome a';
+        a[TYPE_PROPERTY_KEY] = 'string';
+        a[`${TOPIC_PREFIX}y${TOPIC_SUFFIX}`] = y;
+
+        let b = {};
+        b[DATA_PROPERTY_KEY] = 'awesome b';
+        b[TYPE_PROPERTY_KEY] = 'string';
+
+        let raw = {};
+        raw[`${TOPIC_PREFIX}a${TOPIC_SUFFIX}`] = a;
+        raw[`${TOPIC_PREFIX}b${TOPIC_SUFFIX}`] = b;
 
         return raw;
     }
 
     let createTopicDataSnapshotFive = () => {
-        let raw = {
-            't:a:t': {
-                'd:data': 'awesome a',
-                't:y:t': {
-                    'd:data': `awesome ay`,
-                }
-            }
-        };
+        let y = {};
+        y[DATA_PROPERTY_KEY] = 'awesome ay';
+        y[TYPE_PROPERTY_KEY] = 'string';
+
+        let a = {};
+        a[DATA_PROPERTY_KEY] = 'awesome a';
+        a[TYPE_PROPERTY_KEY] = 'string';
+        a[`${TOPIC_PREFIX}y${TOPIC_SUFFIX}`] = y;
+
+        let raw = {};
+        raw[`${TOPIC_PREFIX}a${TOPIC_SUFFIX}`] = a;
 
         return raw;
     }
 
     let createTopicDataRawSubtreeSnapshotOne = () => {
-        let raw = {
-            'd:data': 'awesome a',
-            't:x:t': {
-                'd:data': 'awesome ax',
-                't:o:t': {
-                    'd:data': 'awesome axo',
-                }
-            },
-            't:y:t': {
-                'd:data': 'awesome ay',
-            }
-        };
+        let o = {};
+        o[DATA_PROPERTY_KEY] = 'awesome axo';
+        o[TYPE_PROPERTY_KEY] = 'string';
 
-        return raw;
+        let x = {};
+        x[DATA_PROPERTY_KEY] = 'awesome ax';
+        x[TYPE_PROPERTY_KEY] = 'string';
+        x[`${TOPIC_PREFIX}o${TOPIC_SUFFIX}`] = o;
+
+        let y = {};
+        y[DATA_PROPERTY_KEY] = 'awesome ay';
+        y[TYPE_PROPERTY_KEY] = 'string';
+
+        let a = {};
+        a[DATA_PROPERTY_KEY] = 'awesome a';
+        a[TYPE_PROPERTY_KEY] = 'string';
+        a[`${TOPIC_PREFIX}x${TOPIC_SUFFIX}`] = x;
+        a[`${TOPIC_PREFIX}y${TOPIC_SUFFIX}`] = y;
+
+        return a;
     }
 
     let createTopicDataRawSubtreeSnapshotTwo = () => {
-        let raw = {
-            'd:data': 'awesome ax',
-            't:o:t': {
-                'd:data': 'awesome axo',
-            }
-        };
+        let o = {};
+        o[DATA_PROPERTY_KEY] = 'awesome axo';
+        o[TYPE_PROPERTY_KEY] = 'string';
 
-        return raw;
+        let x = {};
+        x[DATA_PROPERTY_KEY] = 'awesome ax';
+        x[TYPE_PROPERTY_KEY] = 'string';
+        x[`${TOPIC_PREFIX}o${TOPIC_SUFFIX}`] = o;
+
+        return x;
     }
 
     // Topic Data builder functions
     let createTopicDataTwoOrdered = () => {
         let topicData = new RuntimeTopicData();
 
-        topicData.publish(getTopicA(), `awesome a`);
-        topicData.publish(getTopicAX(), `awesome ax`);
-        topicData.publish(getTopicAXO(), `awesome axo`);
-        topicData.publish(getTopicAY(), `awesome ay`);
-        topicData.publish(getTopicB(), `awesome b`);
+        topicData.publish(getTopicA(), `awesome a`, 'string');
+        topicData.publish(getTopicAX(), `awesome ax`, 'string');
+        topicData.publish(getTopicAXO(), `awesome axo`, 'string');
+        topicData.publish(getTopicAY(), `awesome ay`, 'string');
+        topicData.publish(getTopicB(), `awesome b`, 'string');
 
         return topicData;
     }
@@ -137,11 +181,11 @@ const {
     let createTopicDataTwoUnordered = () => {
         let topicData = new RuntimeTopicData();
 
-        topicData.publish(getTopicAY(), `awesome ay`);
-        topicData.publish(getTopicB(), `awesome b`);
-        topicData.publish(getTopicAXO(), `awesome axo`);
-        topicData.publish(getTopicA(), `awesome a`);
-        topicData.publish(getTopicAX(), `awesome ax`);
+        topicData.publish(getTopicAY(), `awesome ay`, 'string');
+        topicData.publish(getTopicB(), `awesome b`, 'string');
+        topicData.publish(getTopicAXO(), `awesome axo`, 'string');
+        topicData.publish(getTopicA(), `awesome a`, 'string');
+        topicData.publish(getTopicAX(), `awesome ax`, 'string');
 
 
         return topicData;
@@ -206,19 +250,19 @@ const {
             topicTwo = '',
             topicThree = '',
             topicFour = '';
-        let functionOne = (topic, data) => {
-            dataOne = 'hallo ' + data;
+        let functionOne = (topic, entry) => {
+            dataOne = 'hallo ' + entry[DATA_SPECIFIER];
             topicOne = topic;
         }
-        let functionTwo = (topic, data) => {
-            dataTwo = 'hallo ' + data;
+        let functionTwo = (topic, entry) => {
+            dataTwo = 'hallo ' + entry[DATA_SPECIFIER];
             topicTwo = topic;
         }
-        let functionThree = (topic, data) => {
-            dataThree = 'hei ' + data;
+        let functionThree = (topic, entry) => {
+            dataThree = 'hei ' + entry[DATA_SPECIFIER];
             topicThree = topic;
         }
-        let functionFour = (topic, data) => {
+        let functionFour = (topic, entry) => {
             throw new Error();
         }
 
@@ -275,23 +319,23 @@ const {
             topicThree = '',
             topicFour = '',
             topicFive = '';
-        let functionOne = (topic, data) => {
-            dataOne = '1 ' + data;
+        let functionOne = (topic, entry) => {
+            dataOne = '1 ' + entry[DATA_SPECIFIER];
             topicOne = topic;
         }
-        let functionTwo = (topic, data) => {
-            dataTwo = '2 ' + data;
+        let functionTwo = (topic, entry) => {
+            dataTwo = '2 ' + entry[DATA_SPECIFIER];
             topicTwo = topic;
         }
-        let functionThree = (topic, data) => {
-            dataThree = '3 ' + data;
+        let functionThree = (topic, entry) => {
+            dataThree = '3 ' + entry[DATA_SPECIFIER];
             topicThree = topic;
         }
-        let functionFour = (topic, data) => {
+        let functionFour = (topic, entry) => {
             throw new Error();
         }
-        let functionFive = (topic, data) => {
-            dataFive = dataFive + ' ' + data;
+        let functionFive = (topic, entry) => {
+            dataFive = dataFive + ' ' + entry[DATA_SPECIFIER];
             topicFive = topic;
         }
 
@@ -331,17 +375,17 @@ const {
     test('unsubscribe', t => {
         let topicData = createTopicDataTwoOrdered();
         let one, two, three, four = '4';
-        let functionOne = (topic, data) => {
-            one = '1 ' + data;
+        let functionOne = (topic, entry) => {
+            one = '1 ' + entry.data;
         }
-        let functionTwo = (topic, data) => {
-            two = '2 ' + data;
+        let functionTwo = (topic, entry) => {
+            two = '2 ' + entry.data;
         }
-        let functionThree = (topic, data) => {
-            three = '3 ' + data;
+        let functionThree = (topic, entry) => {
+            three = '3 ' + entry.data;
         }
-        let functionFour = (topic, data) => {
-            four = four + ' ' + data;
+        let functionFour = (topic, entry) => {
+            four = four + ' ' + entry.data;
         }
 
         let tokenOne = topicData.subscribe(getTopicA(), functionOne);
@@ -383,18 +427,29 @@ const {
         let snapshot = createTopicDataSnapshotTwo();
         let topicData = createTopicDataTwoOrdered();
 
-        let dataA = topicData.pull(getTopicA());
-        let dataB = topicData.pull(getTopicB());
-        let dataAX = topicData.pull(getTopicAX());
-        let dataAY = topicData.pull(getTopicAY());
-        let dataAXO = topicData.pull(getTopicAXO());
+        let entryA = topicData.pull(getTopicA());
+        let entryB = topicData.pull(getTopicB());
+        let entryAX = topicData.pull(getTopicAX());
+        let entryAY = topicData.pull(getTopicAY());
+        let entryAXO = topicData.pull(getTopicAXO());
 
-        t.is(dataA, 'awesome a');
-        t.is(dataB, 'awesome b');
-        t.is(dataAX, 'awesome ax');
-        t.is(dataAY, 'awesome ay');
-        t.is(dataAXO, 'awesome axo');
+        let raw = {};
+        raw[TYPE_SPECIFIER] = 'string';
 
+        raw[DATA_SPECIFIER] = 'awesome a';
+        t.deepEqual(entryA, raw);
+
+        raw[DATA_SPECIFIER] = 'awesome b';
+        t.deepEqual(entryB, raw);
+
+        raw[DATA_SPECIFIER] = 'awesome ax';
+        t.deepEqual(entryAX, raw);
+
+        raw[DATA_SPECIFIER] = 'awesome ay';
+        t.deepEqual(entryAY, raw);
+
+        raw[DATA_SPECIFIER] = 'awesome axo';
+        t.deepEqual(entryAXO, raw);
     });
 
     test('remove', t => {
@@ -470,31 +525,31 @@ const {
         // valid topic tests
 
         // simple valid topic
-        valid = 'root->subtopic1->subtopic2->subtopic3->subtopic4';
+        valid = `root${TOPIC_SEPARATOR}subtopic1${TOPIC_SEPARATOR}subtopic2${TOPIC_SEPARATOR}subtopic3${TOPIC_SEPARATOR}subtopic4`;
         validChecks(valid);
 
         // trailing space
-        valid = 'root->subtopic1 ->subtopic2 ->subtopic3 ->subtopic4';
+        valid = `root${TOPIC_SEPARATOR}subtopic1 ${TOPIC_SEPARATOR}subtopic2 ${TOPIC_SEPARATOR}subtopic3 ${TOPIC_SEPARATOR}subtopic4`;
         validChecks(valid);
 
         // trailing space (also on first)
-        valid = 'root->subtopic1 ->subtopic2 ->subtopic3 ->subtopic4';
+        valid = `root${TOPIC_SEPARATOR}subtopic1 ${TOPIC_SEPARATOR}subtopic2 ${TOPIC_SEPARATOR}subtopic3 ${TOPIC_SEPARATOR}subtopic4`;
         validChecks(valid);
 
         // prefixed space
-        valid = 'root-> subtopic1-> subtopic2->subtopic3->subtopic4';
+        valid = `root${TOPIC_SEPARATOR} subtopic1${TOPIC_SEPARATOR} subtopic2${TOPIC_SEPARATOR}subtopic3${TOPIC_SEPARATOR}subtopic4`;
         validChecks(valid);
 
         // prefixed space (also on first)
-        valid = ' root-> subtopic1-> subtopic2->subtopic3->subtopic4';
+        valid = ` root${TOPIC_SEPARATOR} subtopic1${TOPIC_SEPARATOR} subtopic2${TOPIC_SEPARATOR}subtopic3${TOPIC_SEPARATOR}subtopic4`;
         validChecks(valid);
 
         // trailing and prefixed space
-        valid = 'root-> subtopic1 -> subtopic2 -> subtopic3 ->subtopic4';
+        valid = `root${TOPIC_SEPARATOR} subtopic1 ${TOPIC_SEPARATOR} subtopic2 ${TOPIC_SEPARATOR} subtopic3 ${TOPIC_SEPARATOR}subtopic4`;
         validChecks(valid);
 
         // trailing and prefixed space (also on first)
-        valid = ' root -> subtopic1 -> subtopic2 -> subtopic3 ->subtopic4';
+        valid = ` root ${TOPIC_SEPARATOR} subtopic1 ${TOPIC_SEPARATOR} subtopic2 ${TOPIC_SEPARATOR} subtopic3 ${TOPIC_SEPARATOR}subtopic4`;
         validChecks(valid);
 
 
@@ -539,10 +594,10 @@ const {
         let rawSubtree = topicData.getRawSubtree('');
         t.deepEqual(rawSubtree, createTopicDataSnapshotTwo());
 
-        rawSubtree = topicData.getRawSubtree('a');
+        rawSubtree = topicData.getRawSubtree(`a`);
         t.deepEqual(rawSubtree, createTopicDataRawSubtreeSnapshotOne());
 
-        rawSubtree = topicData.getRawSubtree('a->x');
+        rawSubtree = topicData.getRawSubtree(`a${TOPIC_SEPARATOR}x`);
         t.deepEqual(rawSubtree, createTopicDataRawSubtreeSnapshotTwo());
     });
 
@@ -550,46 +605,63 @@ const {
         let topicData = createTopicDataTwoOrdered();
 
         let topics = topicData.getAllTopicsWithData();
-        t.deepEqual(topics, [{
-                topic: 'a',
-                data: 'awesome a'
-            },
-            {
-                topic: 'a->x',
-                data: 'awesome ax'
-            },
-            {
-                topic: 'a->x->o',
-                data: 'awesome axo'
-            },
-            {
-                topic: 'a->y',
-                data: 'awesome ay'
-            },
-            {
-                topic: 'b',
-                data: 'awesome b'
-            },
-        ])
 
-        topicData.remove('a->x');
+        let compare = [];
+        let raw = {};
+
+        raw[TOPIC_SPECIFIER] = `a`;
+        raw[DATA_SPECIFIER]= 'awesome a';
+        raw[TYPE_SPECIFIER]= 'string';
+        compare.push(raw);
+        raw={};
+        raw[TOPIC_SPECIFIER] = `a${TOPIC_SEPARATOR}x`;
+        raw[DATA_SPECIFIER]= 'awesome ax';
+        raw[TYPE_SPECIFIER]= 'string';
+        compare.push(raw);
+        raw={};
+        raw[TOPIC_SPECIFIER] = `a${TOPIC_SEPARATOR}x${TOPIC_SEPARATOR}o`;
+        raw[DATA_SPECIFIER]= 'awesome axo';
+        raw[TYPE_SPECIFIER]= 'string';
+        compare.push(raw);
+        raw={};
+        raw[TOPIC_SPECIFIER] = `a${TOPIC_SEPARATOR}y`;
+        raw[DATA_SPECIFIER]= 'awesome ay';
+        raw[TYPE_SPECIFIER]= 'string';
+        compare.push(raw);
+        raw={};
+        raw[TOPIC_SPECIFIER] = `b`;
+        raw[DATA_SPECIFIER]= 'awesome b';
+        raw[TYPE_SPECIFIER]= 'string';
+        compare.push(raw);
+
+        t.deepEqual(topics, compare)
+
+        topicData.remove(`a${TOPIC_SEPARATOR}x`);
         topics = topicData.getAllTopicsWithData();
-        t.deepEqual(topics, [{
-                topic: 'a',
-                data: 'awesome a'
-            },
-            {
-                topic: 'a->x->o',
-                data: 'awesome axo'
-            },
-            {
-                topic: 'a->y',
-                data: 'awesome ay'
-            },
-            {
-                topic: 'b',
-                data: 'awesome b'
-            },
-        ])
+
+        compare = [];
+        raw = {};
+
+        raw[TOPIC_SPECIFIER] = `a`;
+        raw[DATA_SPECIFIER]= 'awesome a';
+        raw[TYPE_SPECIFIER]= 'string';
+        compare.push(raw);
+        raw={};
+        raw[TOPIC_SPECIFIER] = `a${TOPIC_SEPARATOR}x${TOPIC_SEPARATOR}o`;
+        raw[DATA_SPECIFIER]= 'awesome axo';
+        raw[TYPE_SPECIFIER]= 'string';
+        compare.push(raw);
+        raw={};
+        raw[TOPIC_SPECIFIER] = `a${TOPIC_SEPARATOR}y`;
+        raw[DATA_SPECIFIER]= 'awesome ay';
+        raw[TYPE_SPECIFIER]= 'string';
+        compare.push(raw);
+        raw={};
+        raw[TOPIC_SPECIFIER] = `b`;
+        raw[DATA_SPECIFIER]= 'awesome b';
+        raw[TYPE_SPECIFIER]= 'string';
+        compare.push(raw);
+
+        t.deepEqual(topics, compare);
     });
 })();
