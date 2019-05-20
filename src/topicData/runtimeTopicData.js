@@ -1,3 +1,5 @@
+const EventEmitter = require('events');
+
 const {
   TopicData
 } = require('./topicData.js');
@@ -35,6 +37,8 @@ const {
       this.currentTokenId = -1;
 
       this.universalSubscribtions = [];
+
+      this.events = new EventEmitter();
     }
 
     /**
