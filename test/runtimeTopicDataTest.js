@@ -1,4 +1,6 @@
 import test from 'ava';
+import sinon from 'sinon';
+
 import {
     RuntimeTopicData
 } from './../src/index.js';
@@ -10,8 +12,8 @@ import {
     DATA_PROPERTY_KEY,
     DATA_SPECIFIER,
     TYPE_PROPERTY_KEY,
-    TYPE_SPECIFIER
-
+    TYPE_SPECIFIER,
+    EVENTS
 } from './../src/topicData/constants.js';
 const {
     validateTopic
@@ -491,7 +493,7 @@ const {
                 topicData.has(invalid);
             });
             t.throws(() => {
-                topicData.subscribe(invalid, () => {});
+                topicData.subscribe(invalid, () => { });
             });
             t.throws(() => {
                 topicData.pull(invalid);
@@ -512,7 +514,7 @@ const {
                 topicData.has(valid);
             });
             t.notThrows(() => {
-                topicData.subscribe(valid, () => {});
+                topicData.subscribe(valid, () => { });
             });
             t.notThrows(() => {
                 topicData.pull(valid);
@@ -568,7 +570,7 @@ const {
         invalidChecks(invalid);
 
         // array of functions
-        invalid = [() => {}, () => {}];
+        invalid = [() => { }, () => { }];
         invalidChecks(invalid);
 
         // object
@@ -582,7 +584,7 @@ const {
         invalidChecks(invalid);
 
         // function
-        invalid = () => {};
+        invalid = () => { };
         invalidChecks(invalid);
 
 
@@ -610,28 +612,28 @@ const {
         let raw = {};
 
         raw[TOPIC_SPECIFIER] = `a`;
-        raw[DATA_SPECIFIER]= 'awesome a';
-        raw[TYPE_SPECIFIER]= 'string';
+        raw[DATA_SPECIFIER] = 'awesome a';
+        raw[TYPE_SPECIFIER] = 'string';
         compare.push(raw);
-        raw={};
+        raw = {};
         raw[TOPIC_SPECIFIER] = `a${TOPIC_SEPARATOR}x`;
-        raw[DATA_SPECIFIER]= 'awesome ax';
-        raw[TYPE_SPECIFIER]= 'string';
+        raw[DATA_SPECIFIER] = 'awesome ax';
+        raw[TYPE_SPECIFIER] = 'string';
         compare.push(raw);
-        raw={};
+        raw = {};
         raw[TOPIC_SPECIFIER] = `a${TOPIC_SEPARATOR}x${TOPIC_SEPARATOR}o`;
-        raw[DATA_SPECIFIER]= 'awesome axo';
-        raw[TYPE_SPECIFIER]= 'string';
+        raw[DATA_SPECIFIER] = 'awesome axo';
+        raw[TYPE_SPECIFIER] = 'string';
         compare.push(raw);
-        raw={};
+        raw = {};
         raw[TOPIC_SPECIFIER] = `a${TOPIC_SEPARATOR}y`;
-        raw[DATA_SPECIFIER]= 'awesome ay';
-        raw[TYPE_SPECIFIER]= 'string';
+        raw[DATA_SPECIFIER] = 'awesome ay';
+        raw[TYPE_SPECIFIER] = 'string';
         compare.push(raw);
-        raw={};
+        raw = {};
         raw[TOPIC_SPECIFIER] = `b`;
-        raw[DATA_SPECIFIER]= 'awesome b';
-        raw[TYPE_SPECIFIER]= 'string';
+        raw[DATA_SPECIFIER] = 'awesome b';
+        raw[TYPE_SPECIFIER] = 'string';
         compare.push(raw);
 
         t.deepEqual(topics, compare)
@@ -643,25 +645,39 @@ const {
         raw = {};
 
         raw[TOPIC_SPECIFIER] = `a`;
-        raw[DATA_SPECIFIER]= 'awesome a';
-        raw[TYPE_SPECIFIER]= 'string';
+        raw[DATA_SPECIFIER] = 'awesome a';
+        raw[TYPE_SPECIFIER] = 'string';
         compare.push(raw);
-        raw={};
+        raw = {};
         raw[TOPIC_SPECIFIER] = `a${TOPIC_SEPARATOR}x${TOPIC_SEPARATOR}o`;
-        raw[DATA_SPECIFIER]= 'awesome axo';
-        raw[TYPE_SPECIFIER]= 'string';
+        raw[DATA_SPECIFIER] = 'awesome axo';
+        raw[TYPE_SPECIFIER] = 'string';
         compare.push(raw);
-        raw={};
+        raw = {};
         raw[TOPIC_SPECIFIER] = `a${TOPIC_SEPARATOR}y`;
-        raw[DATA_SPECIFIER]= 'awesome ay';
-        raw[TYPE_SPECIFIER]= 'string';
+        raw[DATA_SPECIFIER] = 'awesome ay';
+        raw[TYPE_SPECIFIER] = 'string';
         compare.push(raw);
-        raw={};
+        raw = {};
         raw[TOPIC_SPECIFIER] = `b`;
-        raw[DATA_SPECIFIER]= 'awesome b';
-        raw[TYPE_SPECIFIER]= 'string';
+        raw[DATA_SPECIFIER] = 'awesome b';
+        raw[TYPE_SPECIFIER] = 'string';
         compare.push(raw);
 
         t.deepEqual(topics, compare);
+    });
+
+    test('emit "new topic" event on first publish', t => {
+        let topicData = new RuntimeTopicData();
+
+        let callback = sinon.fake();
+        topicData.events.on(EVENTS.NEW_TOPIC, callback);
+        t.is(callback.callCount, 0);
+
+        topicData.publish('/new/topic', true, 'bool');
+        t.is(callback.callCount, 1);
+
+        topicData.publish('/new/topic', false, 'bool');
+        t.is(callback.callCount, 1);
     });
 })();
