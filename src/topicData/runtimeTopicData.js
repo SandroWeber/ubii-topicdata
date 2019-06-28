@@ -10,7 +10,7 @@ const {
   SUBSCRIBER_PROPERTY_KEY,
   TYPE_PROPERTY_KEY,
   TYPE_SPECIFIER,
-  EVENTS
+  TOPIC_EVENTS
 } = require('./constants.js');
 const {
   getTopicPathFromString,
@@ -51,7 +51,7 @@ const {
      */
     publish(topic, data, type) {
       if (!this.has(topic)) {
-        this.events.emit(EVENTS.NEW_TOPIC);
+        this.events.emit(TOPIC_EVENTS.NEW_TOPIC);
       }
 
       // Get the entry.

@@ -2,7 +2,8 @@ import test from 'ava';
 import sinon from 'sinon';
 
 import {
-    RuntimeTopicData
+    RuntimeTopicData,
+    TOPIC_EVENTS
 } from './../src/index.js';
 import {
     TOPIC_PREFIX,
@@ -12,8 +13,7 @@ import {
     DATA_PROPERTY_KEY,
     DATA_SPECIFIER,
     TYPE_PROPERTY_KEY,
-    TYPE_SPECIFIER,
-    EVENTS
+    TYPE_SPECIFIER
 } from './../src/topicData/constants.js';
 const {
     validateTopic
@@ -671,7 +671,7 @@ const {
         let topicData = new RuntimeTopicData();
 
         let callback = sinon.fake();
-        topicData.events.on(EVENTS.NEW_TOPIC, callback);
+        topicData.events.on(TOPIC_EVENTS.NEW_TOPIC, callback);
         t.is(callback.callCount, 0);
 
         topicData.publish('/new/topic', true, 'bool');
