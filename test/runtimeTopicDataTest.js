@@ -669,15 +669,17 @@ const {
 
     test('emit "new topic" event on first publish', t => {
         let topicData = new RuntimeTopicData();
+        let topicName = '/new/topic';
 
         let callback = sinon.fake();
         topicData.events.on(TOPIC_EVENTS.NEW_TOPIC, callback);
         t.is(callback.callCount, 0);
 
-        topicData.publish('/new/topic', true, 'bool');
+        topicData.publish(topicName, true, 'bool');
         t.is(callback.callCount, 1);
+        t.is(callback.lastCall.args[0], topicName);
 
-        topicData.publish('/new/topic', false, 'bool');
+        topicData.publish(topicName, false, 'bool');
         t.is(callback.callCount, 1);
     });
 })();

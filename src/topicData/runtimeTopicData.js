@@ -51,7 +51,7 @@ const {
      */
     publish(topic, data, type) {
       if (!this.has(topic)) {
-        this.events.emit(TOPIC_EVENTS.NEW_TOPIC);
+        this.events.emit(TOPIC_EVENTS.NEW_TOPIC, topic);
       }
 
       // Get the entry.
