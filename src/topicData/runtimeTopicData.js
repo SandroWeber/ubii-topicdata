@@ -10,6 +10,7 @@ const {
   SUBSCRIBER_PROPERTY_KEY,
   TYPE_PROPERTY_KEY,
   TYPE_SPECIFIER,
+  TOPIC_EVENTS
 } = require('./constants.js');
 const {
   getTopicPathFromString,
@@ -49,6 +50,10 @@ const {
      * @param {String} type Type of the data.
      */
     publish(topic, data, type) {
+      if (!this.has(topic)) {
+        this.events.emit(TOPIC_EVENTS.NEW_TOPIC);
+      }
+
       // Get the entry.
       let entry = getTopicNode.call(this, topic);
 
@@ -60,7 +65,7 @@ const {
       if (entry[SUBSCRIBER_PROPERTY_KEY] !== undefined) {
         notify.call(this, entry[SUBSCRIBER_PROPERTY_KEY], topic, entry);
       }
-      if(this.universalSubscribtions.length > 0){
+      if (this.universalSubscribtions.length > 0) {
         notify.call(this, this.universalSubscribtions, topic, entry);
       }
 
@@ -215,7 +220,7 @@ const {
             raw[DATA_SPECIFIER] = entry[DATA_PROPERTY_KEY];
             raw[TYPE_SPECIFIER] = entry[TYPE_PROPERTY_KEY];
             result.push(raw);
-          } else if(keys[i] !== SUBSCRIBER_PROPERTY_KEY && keys[i] !== TYPE_PROPERTY_KEY){
+          } else if (keys[i] !== SUBSCRIBER_PROPERTY_KEY && keys[i] !== TYPE_PROPERTY_KEY) {
             // Process all subtopics
             currentTopicPath.push(removeTopicPrefixAndSuffix(keys[i]));
             recursiveAddRelevantTopicDataPairs(entry[keys[i]]);
@@ -229,7 +234,7 @@ const {
       const il = keys.length;
       for (let i = 0; i < il; i++) {
         currentTopicPath.push(removeTopicPrefixAndSuffix(keys[i]));
-        recursiveAddRelevantTopicDataPairs(this.storage[keys[i]]);        
+        recursiveAddRelevantTopicDataPairs(this.storage[keys[i]]);
         currentTopicPath.pop();
       }
 
@@ -305,7 +310,7 @@ const {
         isRelevant = true;
       } else {
         // Check other subtopics, Therefore exclude special properties.
-        if(keys[i] !== SUBSCRIBER_PROPERTY_KEY && keys[i] !== TYPE_PROPERTY_KEY){
+        if (keys[i] !== SUBSCRIBER_PROPERTY_KEY && keys[i] !== TYPE_PROPERTY_KEY) {
           let subtreeIsReleveant = recursiveIsRelevantCleanUp(entry[keys[i]]);
           if (!subtreeIsReleveant) {
             delete entry[keys[i]];
