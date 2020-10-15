@@ -335,6 +335,7 @@ const {
     let raw = {};
     raw[DATA_SPECIFIER] = entry[DATA_PROPERTY_KEY];
     raw[TYPE_SPECIFIER] = entry[TYPE_PROPERTY_KEY];
+    raw[TIMESTAMP_SPECIFIER] = entry[TIMESTAMP_PROPERTY_KEY];
 
     subscribers.forEach(subscriber => subscriber.callback(topic, raw));
   }
