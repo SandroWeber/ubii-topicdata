@@ -29,6 +29,17 @@ const TYPE_SPECIFIER = 'type';
  */
 const TYPE_PROPERTY_KEY = TYPE_PREFIX + TYPE_SPECIFIER;
 
+// Timestamp constants.
+const TIMESTAMP_PREFIX = 'ts:';
+/**
+ * Used for internal representation and for the property names of the entry objects returned by some methods.
+ */
+const TIMESTAMP_SPECIFIER = 'timestamp';
+/**
+ * Propertey key for internal representation.
+ */
+const TIMESTAMP_PROPERTY_KEY = TIMESTAMP_PREFIX + TIMESTAMP_SPECIFIER;
+
 // Subscriber constants.
 const SUBSCRIBER_PREFIX = 's:';
 const SUBSCRIBER_SPECIFIER = 'subscriber';
@@ -54,6 +65,9 @@ module.exports = {
   TYPE_PREFIX: TYPE_PREFIX,
   TYPE_SPECIFIER: TYPE_SPECIFIER,
   TYPE_PROPERTY_KEY: TYPE_PROPERTY_KEY,
+  TIMESTAMP_PREFIX: TIMESTAMP_PREFIX,
+  TIMESTAMP_SPECIFIER: TIMESTAMP_SPECIFIER,
+  TIMESTAMP_PROPERTY_KEY: TIMESTAMP_PROPERTY_KEY,
   SUBSCRIBER_PREFIX: SUBSCRIBER_PREFIX,
   SUBSCRIBER_SPECIFIER: SUBSCRIBER_SPECIFIER,
   SUBSCRIBER_PROPERTY_KEY: SUBSCRIBER_PROPERTY_KEY,
