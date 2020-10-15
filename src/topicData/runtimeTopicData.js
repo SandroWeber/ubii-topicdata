@@ -10,7 +10,9 @@ const {
   SUBSCRIBER_PROPERTY_KEY,
   TYPE_PROPERTY_KEY,
   TYPE_SPECIFIER,
-  TOPIC_EVENTS
+  TOPIC_EVENTS,
+  TIMESTAMP_PROPERTY_KEY,
+  TIMESTAMP_SPECIFIER
 } = require('./constants.js');
 const {
   getTopicPathFromString,
@@ -49,7 +51,7 @@ const {
      * @param {*} data 
      * @param {String} type Type of the data.
      */
-    publish(topic, data, type) {
+    publish(topic, data, type, timestamp) {
       if (!this.has(topic)) {
         this.events.emit(TOPIC_EVENTS.NEW_TOPIC, topic);
       }
@@ -60,6 +62,7 @@ const {
       // Set property values.
       entry[DATA_PROPERTY_KEY] = data;
       entry[TYPE_PROPERTY_KEY] = type;
+      entry[TIMESTAMP_PROPERTY_KEY] = timestamp;
 
       // Notify subscribers
       if (entry[SUBSCRIBER_PROPERTY_KEY] !== undefined) {
@@ -68,7 +71,6 @@ const {
       if (this.universalSubscribtions.length > 0) {
         notify.call(this, this.universalSubscribtions, topic, entry);
       }
-
     }
 
     /**
@@ -86,6 +88,7 @@ const {
       let raw = {};
       raw[DATA_SPECIFIER] = entry[DATA_PROPERTY_KEY];
       raw[TYPE_SPECIFIER] = entry[TYPE_PROPERTY_KEY];
+      raw[TIMESTAMP_SPECIFIER] = entry[TIMESTAMP_PROPERTY_KEY];
 
       return raw;
     }

@@ -13,7 +13,9 @@ import {
     DATA_PROPERTY_KEY,
     DATA_SPECIFIER,
     TYPE_PROPERTY_KEY,
-    TYPE_SPECIFIER
+    TYPE_SPECIFIER,
+    TIMESTAMP_PROPERTY_KEY,
+    TIMESTAMP_SPECIFIER
 } from './../src/topicData/constants.js';
 const {
     validateTopic
@@ -38,25 +40,30 @@ const {
         let o = {};
         o[DATA_PROPERTY_KEY] = 'awesome axo';
         o[TYPE_PROPERTY_KEY] = 'string';
+        o[TIMESTAMP_PROPERTY_KEY] = {seconds: 1, nanos: 2};
 
         let x = {};
         x[DATA_PROPERTY_KEY] = 'awesome ax';
         x[TYPE_PROPERTY_KEY] = 'string';
+        x[TIMESTAMP_PROPERTY_KEY] = {seconds: 1, nanos: 2};
         x[`${TOPIC_PREFIX}o${TOPIC_SUFFIX}`] = o;
 
         let y = {};
         y[DATA_PROPERTY_KEY] = 'awesome ay';
         y[TYPE_PROPERTY_KEY] = 'string';
+        y[TIMESTAMP_PROPERTY_KEY] = {seconds: 1, nanos: 2};
 
         let a = {};
         a[DATA_PROPERTY_KEY] = 'awesome a';
         a[TYPE_PROPERTY_KEY] = 'string';
+        a[TIMESTAMP_PROPERTY_KEY] = {seconds: 1, nanos: 2};
         a[`${TOPIC_PREFIX}x${TOPIC_SUFFIX}`] = x;
         a[`${TOPIC_PREFIX}y${TOPIC_SUFFIX}`] = y;
 
         let b = {};
         b[DATA_PROPERTY_KEY] = 'awesome b';
         b[TYPE_PROPERTY_KEY] = 'string';
+        b[TIMESTAMP_PROPERTY_KEY] = {seconds: 1, nanos: 2};
 
         let raw = {};
         raw[`${TOPIC_PREFIX}a${TOPIC_SUFFIX}`] = a;
@@ -86,6 +93,7 @@ const {
         let b = {};
         b[DATA_PROPERTY_KEY] = 'awesome b';
         b[TYPE_PROPERTY_KEY] = 'string';
+        b[TIMESTAMP_PROPERTY_KEY] = {seconds: 1, nanos: 2};
 
         let raw = {};
         raw[`${TOPIC_PREFIX}a${TOPIC_SUFFIX}`] = a;
@@ -107,6 +115,7 @@ const {
         let b = {};
         b[DATA_PROPERTY_KEY] = 'awesome b';
         b[TYPE_PROPERTY_KEY] = 'string';
+        b[TIMESTAMP_PROPERTY_KEY] = {seconds: 1, nanos: 2};
 
         let raw = {};
         raw[`${TOPIC_PREFIX}a${TOPIC_SUFFIX}`] = a;
@@ -135,19 +144,23 @@ const {
         let o = {};
         o[DATA_PROPERTY_KEY] = 'awesome axo';
         o[TYPE_PROPERTY_KEY] = 'string';
+        o[TIMESTAMP_PROPERTY_KEY] = {seconds: 1, nanos: 2};
 
         let x = {};
         x[DATA_PROPERTY_KEY] = 'awesome ax';
         x[TYPE_PROPERTY_KEY] = 'string';
+        x[TIMESTAMP_PROPERTY_KEY] = {seconds: 1, nanos: 2};
         x[`${TOPIC_PREFIX}o${TOPIC_SUFFIX}`] = o;
 
         let y = {};
         y[DATA_PROPERTY_KEY] = 'awesome ay';
         y[TYPE_PROPERTY_KEY] = 'string';
+        y[TIMESTAMP_PROPERTY_KEY] = {seconds: 1, nanos: 2};
 
         let a = {};
         a[DATA_PROPERTY_KEY] = 'awesome a';
         a[TYPE_PROPERTY_KEY] = 'string';
+        a[TIMESTAMP_PROPERTY_KEY] = {seconds: 1, nanos: 2};
         a[`${TOPIC_PREFIX}x${TOPIC_SUFFIX}`] = x;
         a[`${TOPIC_PREFIX}y${TOPIC_SUFFIX}`] = y;
 
@@ -158,10 +171,12 @@ const {
         let o = {};
         o[DATA_PROPERTY_KEY] = 'awesome axo';
         o[TYPE_PROPERTY_KEY] = 'string';
+        o[TIMESTAMP_PROPERTY_KEY] = {seconds: 1, nanos: 2};
 
         let x = {};
         x[DATA_PROPERTY_KEY] = 'awesome ax';
         x[TYPE_PROPERTY_KEY] = 'string';
+        x[TIMESTAMP_PROPERTY_KEY] = {seconds: 1, nanos: 2};
         x[`${TOPIC_PREFIX}o${TOPIC_SUFFIX}`] = o;
 
         return x;
@@ -171,11 +186,11 @@ const {
     let createTopicDataTwoOrdered = () => {
         let topicData = new RuntimeTopicData();
 
-        topicData.publish(getTopicA(), `awesome a`, 'string');
-        topicData.publish(getTopicAX(), `awesome ax`, 'string');
-        topicData.publish(getTopicAXO(), `awesome axo`, 'string');
-        topicData.publish(getTopicAY(), `awesome ay`, 'string');
-        topicData.publish(getTopicB(), `awesome b`, 'string');
+        topicData.publish(getTopicA(), `awesome a`, 'string', {seconds: 1, nanos: 2});
+        topicData.publish(getTopicAX(), `awesome ax`, 'string', {seconds: 1, nanos: 2});
+        topicData.publish(getTopicAXO(), `awesome axo`, 'string', {seconds: 1, nanos: 2});
+        topicData.publish(getTopicAY(), `awesome ay`, 'string', {seconds: 1, nanos: 2});
+        topicData.publish(getTopicB(), `awesome b`, 'string', {seconds: 1, nanos: 2});
 
         return topicData;
     }
@@ -183,11 +198,11 @@ const {
     let createTopicDataTwoUnordered = () => {
         let topicData = new RuntimeTopicData();
 
-        topicData.publish(getTopicAY(), `awesome ay`, 'string');
-        topicData.publish(getTopicB(), `awesome b`, 'string');
-        topicData.publish(getTopicAXO(), `awesome axo`, 'string');
-        topicData.publish(getTopicA(), `awesome a`, 'string');
-        topicData.publish(getTopicAX(), `awesome ax`, 'string');
+        topicData.publish(getTopicAY(), `awesome ay`, 'string', {seconds: 1, nanos: 2});
+        topicData.publish(getTopicB(), `awesome b`, 'string', {seconds: 1, nanos: 2});
+        topicData.publish(getTopicAXO(), `awesome axo`, 'string', {seconds: 1, nanos: 2});
+        topicData.publish(getTopicA(), `awesome a`, 'string', {seconds: 1, nanos: 2});
+        topicData.publish(getTopicAX(), `awesome ax`, 'string', {seconds: 1, nanos: 2});
 
 
         return topicData;
@@ -213,7 +228,6 @@ const {
         topicData = createTopicDataTwoUnordered();
 
         t.deepEqual(topicData.storage, snapshot);
-
     });
 
     test('has', t => {
@@ -437,6 +451,7 @@ const {
 
         let raw = {};
         raw[TYPE_SPECIFIER] = 'string';
+        raw[TIMESTAMP_SPECIFIER] = {seconds: 1, nanos: 2};
 
         raw[DATA_SPECIFIER] = 'awesome a';
         t.deepEqual(entryA, raw);
