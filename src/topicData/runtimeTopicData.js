@@ -225,7 +225,7 @@ const {
             raw[TYPE_SPECIFIER] = entry[TYPE_PROPERTY_KEY];
             raw[TIMESTAMP_SPECIFIER] = entry[TIMESTAMP_PROPERTY_KEY];
             result.push(raw);
-          } else if (keys[i] !== SUBSCRIBER_PROPERTY_KEY && keys[i] !== TYPE_PROPERTY_KEY) {
+          } else if (keys[i] !== SUBSCRIBER_PROPERTY_KEY && keys[i] !== TYPE_PROPERTY_KEY && keys[i] !== TIMESTAMP_PROPERTY_KEY) {
             // Process all subtopics
             currentTopicPath.push(removeTopicPrefixAndSuffix(keys[i]));
             recursiveAddRelevantTopicDataPairs(entry[keys[i]]);
