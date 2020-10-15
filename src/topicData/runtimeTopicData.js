@@ -178,6 +178,7 @@ const {
       let entry = getTopicNode.call(this, topic);
       delete entry[DATA_PROPERTY_KEY];
       delete entry[TYPE_PROPERTY_KEY];
+      delete entry[TIMESTAMP_PROPERTY_KEY];
 
       cleanUpPath.call(this, topic);
     }
@@ -222,6 +223,7 @@ const {
             raw[TOPIC_SPECIFIER] = getTopicStringFromPath(currentTopicPath);
             raw[DATA_SPECIFIER] = entry[DATA_PROPERTY_KEY];
             raw[TYPE_SPECIFIER] = entry[TYPE_PROPERTY_KEY];
+            raw[TIMESTAMP_SPECIFIER] = entry[TIMESTAMP_PROPERTY_KEY];
             result.push(raw);
           } else if (keys[i] !== SUBSCRIBER_PROPERTY_KEY && keys[i] !== TYPE_PROPERTY_KEY) {
             // Process all subtopics
