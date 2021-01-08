@@ -246,6 +246,16 @@ const {
       return result;
     }
 
+    /**
+     * Get all subscriptions tokens for the topic.
+     * @param {string} topic 
+     * @returns {Array} The list of subscription tokens
+     */
+    getSubscriptionTokens(topic) {
+      let entry = getTopicNode.call(this, topic);
+      return entry[SUBSCRIBER_PROPERTY_KEY];
+    }
+
     getRawSubtree(topic) {
       if (!this.has(topic)) {
         return undefined;
@@ -315,7 +325,7 @@ const {
         isRelevant = true;
       } else {
         // Check other subtopics, Therefore exclude special properties.
-        if (keys[i] !== SUBSCRIBER_PROPERTY_KEY && keys[i] !== TYPE_PROPERTY_KEY) {
+        if (keys[i] !== SUBSCRIBER_PROPERTY_KEY && keys[i] !== TYPE_PROPERTY_KEY && keys[i] !== TIMESTAMP_PROPERTY_KEY) {
           let subtreeIsReleveant = recursiveIsRelevantCleanUp(entry[keys[i]]);
           if (!subtreeIsReleveant) {
             delete entry[keys[i]];
