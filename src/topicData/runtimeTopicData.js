@@ -52,10 +52,6 @@ const {
      * @param {String} type Type of the data.
      */
     publish(topic, data, type, timestamp) {
-      if (!this.has(topic)) {
-        this.events.emit(TOPIC_EVENTS.NEW_TOPIC, topic);
-      }
-
       // Get the entry.
       let entry = getTopicNode.call(this, topic);
 
@@ -283,6 +279,7 @@ const {
     // traverse path and create if necessary
     let subtree = this.storage;
 
+    let newTopic = false;
     const il = path.length;
     for (let i = 0; i < il; i++) {
       if (subtree[path[i]] !== undefined) { // Propaply faster than hasOwnProperty (--> less safe)
@@ -291,11 +288,16 @@ const {
         if (createOnTraverse) {
           subtree[path[i]] = {};
           subtree = subtree[path[i]];
+          newTopic = true;
         } else {
           subtree = undefined;
           break;
         }
       }
+    }
+
+    if (newTopic) {
+      this.events.emit(TOPIC_EVENTS.NEW_TOPIC, topic);
     }
 
     return subtree;
