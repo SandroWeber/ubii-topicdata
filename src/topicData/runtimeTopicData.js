@@ -1,8 +1,6 @@
 const EventEmitter = require('events');
 
-const {
-  TopicData
-} = require('./topicData.js');
+const { InterfaceTopicData } = require('./interfaceTopicData.js');
 const {
   TOPIC_SPECIFIER,
   DATA_PROPERTY_KEY,
@@ -31,7 +29,7 @@ const {
    * This is the most performant way to find key-value pairs.
    * The topic of queries is split and used as property keys.
    */
-  class RuntimeTopicData extends TopicData {
+  class RuntimeTopicData extends InterfaceTopicData {
 
     constructor() {
       super();
@@ -119,6 +117,8 @@ const {
       return token;
     }
 
+    subscribeRegex(topic, callback) {}
+
     /**
      * Subscribes the callback function to all topics.
      * The callback function is called with the topic and a data parameter whenever data is published to any topic of the topicData.
@@ -162,6 +162,8 @@ const {
         this.universalSubscribtions = this.universalSubscribtions.filter(subscriber => subscriber.id !== token.id);
       }
     }
+
+    unsubscribeRegex(topic, callback) {}
 
     /**
      * Removes the topic and the associated data from the topic data if the topic exists. Cleans up the path afterwards.

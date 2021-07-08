@@ -1,8 +1,8 @@
-import test from 'ava';
-import sinon from 'sinon';
+const test = require('ava');
+const sinon = require('sinon');
 
-import { RuntimeTopicData, TOPIC_EVENTS } from './../src/index.js';
-import {
+const { RuntimeTopicData, TOPIC_EVENTS } = require('./../src/index.js');
+const {
   TOPIC_PREFIX,
   TOPIC_SUFFIX,
   TOPIC_SEPARATOR,
@@ -13,7 +13,7 @@ import {
   TYPE_SPECIFIER,
   TIMESTAMP_PROPERTY_KEY,
   TIMESTAMP_SPECIFIER,
-} from './../src/topicData/constants.js';
+} = require('./../src/topicData/constants.js');
 const { validateTopic } = require('./../src/topicData/utility.js');
 
 (function () {
