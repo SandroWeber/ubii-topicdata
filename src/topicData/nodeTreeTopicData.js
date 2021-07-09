@@ -29,7 +29,7 @@ const {
    * This is the most performant way to find key-value pairs.
    * The topic of queries is split and used as property keys.
    */
-  class RuntimeTopicData extends InterfaceTopicData {
+  class NodeTreeTopicData extends InterfaceTopicData {
 
     constructor() {
       super();
@@ -356,5 +356,5 @@ const {
     subscribers.forEach(subscriber => subscriber.callback(topic, raw));
   }
 
-  module.exports = RuntimeTopicData;
+  module.exports = NodeTreeTopicData;
 })();

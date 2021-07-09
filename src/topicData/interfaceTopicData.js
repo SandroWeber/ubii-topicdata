@@ -46,10 +46,6 @@ class InterfaceTopicData {
     if (this.getAllTopicsWithData === undefined) {
       throw new TypeError("Must override getAllTopicsWithData");
     }
-
-    if (this.getRawSubtree === undefined) {
-      throw new TypeError("Must override getRawSubtree");
-    }
   }
 }
 
