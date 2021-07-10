@@ -20,6 +20,8 @@ class MapTopicData extends InterfaceTopicData {
     super();
 
     this.topicDataBuffer = new Map();
+    this.regexSubscriptions = [];
+
     this.events = new EventEmitter();
     this.events.on(TOPIC_EVENTS.NEW_TOPIC, (topic) => {
       this.onEventNewTopic(topic);
@@ -49,10 +51,14 @@ class MapTopicData extends InterfaceTopicData {
 
   getAllTopicsWithData() {
     return Array.from(this.topicDataBuffer.values())
-      .filter(record => record[ENTRY_PROPERTY_DATA])
-      .map(record => Object.assign(
-        {data: record[ENTRY_PROPERTY_DATA][record[ENTRY_PROPERTY_DATA].type]},
-        record[ENTRY_PROPERTY_DATA])
+      .filter((record) => record[ENTRY_PROPERTY_DATA])
+      .map((record) =>
+        Object.assign(
+          {
+            data: record[ENTRY_PROPERTY_DATA][record[ENTRY_PROPERTY_DATA].type],
+          },
+          record[ENTRY_PROPERTY_DATA]
+        )
       );
   }
 
@@ -71,7 +77,6 @@ class MapTopicData extends InterfaceTopicData {
     } else {
       entry[ENTRY_PROPERTY_DATA] = data;
     }
-    
 
     // Notify subscribers
     notifySubscribers(entry);
@@ -87,9 +92,7 @@ class MapTopicData extends InterfaceTopicData {
    */
   subscribe(topic, callback) {
     if (!topic || topic === '') {
-      throw new Error(
-        'Subscribe: passed topic parameter is ' + topic
-      );
+      throw new Error('Subscribe: passed topic parameter is ' + topic);
     }
     if (typeof callback !== 'function') {
       throw new Error(
@@ -101,30 +104,68 @@ class MapTopicData extends InterfaceTopicData {
     if (!entry) {
       entry = createEntry(topic, this.topicDataBuffer);
       this.events.emit(TOPIC_EVENTS.NEW_TOPIC, topic);
-    } 
+    }
 
-    let token = generateSubscriptionToken(topic, MapTopicData.SUBSCRIPTION_TYPES.SINGLE, callback);
+    let token = generateSubscriptionToken(
+      topic,
+      MapTopicData.SUBSCRIPTION_TYPES.TOPIC,
+      callback
+    );
     entry[ENTRY_PROPERTY_SUBSCRIPTIONS].push(token);
 
     return token;
   }
 
-  unsubscribe(token) {
+  unsubscribeTopic(token) {
     let entry = this.topicDataBuffer.get(token.topic);
-    entry[ENTRY_PROPERTY_SUBSCRIPTIONS] = entry[ENTRY_PROPERTY_SUBSCRIPTIONS].filter(sub => sub.id !== token.id);
+    entry[ENTRY_PROPERTY_SUBSCRIPTIONS] = entry[
+      ENTRY_PROPERTY_SUBSCRIPTIONS
+    ].filter((sub) => sub.id !== token.id);
   }
 
-  subscribeRegex(regex, callback) {}
+  subscribeRegex(regex, callback) {
+    let token = generateSubscriptionToken(
+      regex,
+      MapTopicData.SUBSCRIPTION_TYPES.REGEX,
+      callback
+    );
+    this.regexSubscriptions.push(token);
+    for (const [topic, entry] of this.topicDataBuffer) {
+      if (token.regex.test(topic)) {
+        entry[ENTRY_PROPERTY_SUBSCRIPTIONS].push(token);
+        token.regexTopicMatches.push(topic);
+      }
+    }
 
-  unsubscribeRegex(topic, callback) {}
+    return token;
+  }
+
+  unsubscribeRegex(token) {
+    for (const topic of token.regexTopicMatches) {
+      let entry = this.topicDataBuffer.get(topic);
+      entry[ENTRY_PROPERTY_SUBSCRIPTIONS] = entry[ENTRY_PROPERTY_SUBSCRIPTIONS].filter(sub => sub.id !== token.id);
+    }
+  }
 
   subscribeAll(callback) {
     this.subscribeRegex('*', callback);
   }
 
+  unsubscribe(token) {
+    if (token.type === MapTopicData.SUBSCRIPTION_TYPES.TOPIC) {
+      this.unsubscribeTopic(token);
+    } else if (token.type === MapTopicData.SUBSCRIPTION_TYPES.REGEX || token.type === MapTopicData.SUBSCRIPTION_TYPES.ALL) {
+      this.unsubscribeRegex(token);
+    }
+  }
+
   onEventNewTopic(topic) {
-    this.regexSubscriptions.forEach(token => {
-      
+    this.regexSubscriptions.forEach((token) => {
+      if (token.regex.test(topic)) {
+        let entry = this.topicDataBuffer.get(topic);
+        entry[ENTRY_PROPERTY_SUBSCRIPTIONS].push(token);
+        token.regexTopicMatches.push(topic);
+      }
     });
   }
 }
@@ -145,26 +186,34 @@ let createEntry = (topic, topicDataBuffer, data = undefined) => {
  * @param {*} entry
  */
 let notifySubscribers = (topicDataEntry) => {
-  topicDataEntry && topicDataEntry[ENTRY_PROPERTY_SUBSCRIPTIONS].forEach(token => {
-    token.callback(topicDataEntry[ENTRY_PROPERTY_DATA]);
-  });
+  topicDataEntry &&
+    topicDataEntry[ENTRY_PROPERTY_SUBSCRIPTIONS].forEach((token) => {
+      token.callback(topicDataEntry[ENTRY_PROPERTY_DATA]);
+    });
 };
 
 let subscriptionTokenID = -1;
 let generateSubscriptionToken = (topic, subscriptionType, callback) => {
   let tokenID = ++this.subscriptionTokenID;
-  return {
-      id: tokenID,
-      topic: topic,
-      type: subscriptionType,
-      callback: callback
+
+  let token = {
+    id: tokenID,
+    topic: topic,
+    type: subscriptionType,
+    callback: callback,
+  };
+  if (subscriptionType === MapTopicData.SUBSCRIPTION_TYPES.REGEX) {
+    token.regex = new RegExp(topic);
+    token.regexTopicMatches = [];
   }
-}
+
+  return token;
+};
 
 MapTopicData.SUBSCRIPTION_TYPES = Object.freeze({
-  SINGLE: 0,
+  TOPIC: 0,
   REGEX: 1,
-  ALL: 2
+  ALL: 2,
 });
 
 module.exports = MapTopicData;

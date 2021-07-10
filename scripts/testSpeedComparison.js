@@ -202,5 +202,5 @@ let getAllTopicsWithDataCheck = () => {
 (function() {
   comparePublishSubscribeSpeed();
   comparePullSpeed();
-  getAllTopicsWithDataCheck();
+  //getAllTopicsWithDataCheck();
 })();
