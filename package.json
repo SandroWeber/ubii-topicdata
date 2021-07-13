@@ -29,6 +29,7 @@
   ],
   "devDependencies": {
     "ava": "3.15.0",
+    "@ava/babel": "2.0.0",
     "sinon": "11.1.1"
   }
 }

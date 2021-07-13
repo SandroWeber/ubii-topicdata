@@ -69,6 +69,17 @@ class MapTopicData extends InterfaceTopicData {
    * @param {Object} object Type of the data.
    */
   publish(topic, data) {
+    if (!topic || topic === '') {
+      throw new Error(
+        'MapTopicData.publish(): passed topic parameter is ' + topic
+      );
+    }
+    if (data === undefined) {
+      throw new Error(
+        'MapTopicData.publish(): passed data parameter is ' + data + '.'
+      );
+    }
+
     // Get the entry.
     let entry = this.topicDataBuffer.get(topic);
     if (!entry) {
@@ -92,11 +103,11 @@ class MapTopicData extends InterfaceTopicData {
    */
   subscribe(topic, callback) {
     if (!topic || topic === '') {
-      throw new Error('Subscribe: passed topic parameter is ' + topic);
+      throw new Error('MapTopicData.subscribe(): passed topic parameter is ' + topic);
     }
     if (typeof callback !== 'function') {
       throw new Error(
-        'Subscribe: passed callback parameter is not a function.'
+        'MapTopicData.subscribe(): passed callback parameter is not a function.'
       );
     }
 
@@ -143,18 +154,26 @@ class MapTopicData extends InterfaceTopicData {
   unsubscribeRegex(token) {
     for (const topic of token.regexTopicMatches) {
       let entry = this.topicDataBuffer.get(topic);
-      entry[ENTRY_PROPERTY_SUBSCRIPTIONS] = entry[ENTRY_PROPERTY_SUBSCRIPTIONS].filter(sub => sub.id !== token.id);
+      entry[ENTRY_PROPERTY_SUBSCRIPTIONS] = entry[
+        ENTRY_PROPERTY_SUBSCRIPTIONS
+      ].filter((sub) => sub.id !== token.id);
     }
+    this.regexSubscriptions = this.regexSubscriptions.filter(
+      (sub) => sub.id !== token.id
+    );
   }
 
   subscribeAll(callback) {
-    this.subscribeRegex('*', callback);
+    return this.subscribeRegex('.*', callback);
   }
 
   unsubscribe(token) {
     if (token.type === MapTopicData.SUBSCRIPTION_TYPES.TOPIC) {
       this.unsubscribeTopic(token);
-    } else if (token.type === MapTopicData.SUBSCRIPTION_TYPES.REGEX || token.type === MapTopicData.SUBSCRIPTION_TYPES.ALL) {
+    } else if (
+      token.type === MapTopicData.SUBSCRIPTION_TYPES.REGEX ||
+      token.type === MapTopicData.SUBSCRIPTION_TYPES.ALL
+    ) {
       this.unsubscribeRegex(token);
     }
   }
@@ -194,7 +213,7 @@ let notifySubscribers = (topicDataEntry) => {
 
 let subscriptionTokenID = -1;
 let generateSubscriptionToken = (topic, subscriptionType, callback) => {
-  let tokenID = ++this.subscriptionTokenID;
+  let tokenID = ++subscriptionTokenID;
 
   let token = {
     id: tokenID,

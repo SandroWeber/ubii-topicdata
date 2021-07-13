@@ -5,57 +5,27 @@ const {
   NodeTreeTopicData,
   MapTopicData
 } = require('../src/index.js');
+const { generateRandomTopics, pickRandomTopicFromList, generateTopicDataRecord } = require('../test/utility');
 
 const TOPIC_STRING_LIMITS = {
   LOWER: 4,
   UPPER: 50,
 };
 
-let generateRandomTopics = (numTopics) => {
-  let topics = [];
-  for (let i = 0; i < numTopics; i++) {
-    let length =
-      TOPIC_STRING_LIMITS.LOWER +
-      Math.floor(
-        Math.random() * (TOPIC_STRING_LIMITS.UPPER - TOPIC_STRING_LIMITS.LOWER)
-      );
-    topics.push(generateRandomTopicString(length));
-  }
-
-  return topics;
-};
-
-const randomStringChars =
-  'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-let generateRandomTopicString = (length) => {
-  // Pick characers randomly
-  let str = '';
-  for (let i = 0; i < length; i++) {
-    str += randomStringChars.charAt(
-      Math.floor(Math.random() * randomStringChars.length)
-    );
-  }
-
-  return str;
-};
-
-let pickTopicFromList = (topics) => {
-    return topics[Math.floor(Math.random() * topics.length)];
-};
-
-const templateTopicDataRecord = {
+/*const templateTopicDataRecord = {
   int32: 42,
   type: 'int32',
   timestamp: {
     millis: Date.now()
   }
-};
+};*/
+const templateTopicDataRecord = generateTopicDataRecord('string');
 
 let comparePublishSubscribeSpeed = () => {
   const MEASUREMENT_TIME_MS = 5000;
   console.info('\n... running speed comparison: publish & subscribe (time / run: ' + MEASUREMENT_TIME_MS + 'ms)');
   const NUM_TOPICS = 50;
-  const topics = generateRandomTopics(NUM_TOPICS);
+  const topics = generateRandomTopics(NUM_TOPICS, TOPIC_STRING_LIMITS.LOWER, TOPIC_STRING_LIMITS.UPPER);
 
   let callbackCounter = 0;
   let callback = () => {
@@ -78,7 +48,7 @@ let comparePublishSubscribeSpeed = () => {
 
   let tStartNodeTreeTopicData = Date.now();
   while (Date.now() - tStartNodeTreeTopicData <= MEASUREMENT_TIME_MS) {
-      let topic = pickTopicFromList(topics);
+      let topic = pickRandomTopicFromList(topics);
       let record = records.get(topic);
       nodeTreeTopicData.publish(
         record.topic,
@@ -106,7 +76,7 @@ let comparePublishSubscribeSpeed = () => {
 
   let tStartMapTopicData = Date.now();
   while (Date.now() - tStartMapTopicData <= MEASUREMENT_TIME_MS) {
-    let topic = pickTopicFromList(topics);
+    let topic = pickRandomTopicFromList(topics);
     let record = records.get(topic);
     mapTopicData.publish(topic, record);
   }
@@ -126,7 +96,7 @@ let comparePullSpeed = () => {
   const MEASUREMENT_TIME_MS = 5000;
   console.info('\n... running speed comparison: pull (time / run: ' + MEASUREMENT_TIME_MS + 'ms)');
   const NUM_TOPICS = 50;
-  const topics = generateRandomTopics(NUM_TOPICS);
+  const topics = generateRandomTopics(NUM_TOPICS, TOPIC_STRING_LIMITS.LOWER, TOPIC_STRING_LIMITS.UPPER);
 
   let records = new Map();
   topics.forEach((topic) => {
@@ -153,7 +123,7 @@ let comparePullSpeed = () => {
   counter = 0;
   let tStartMapTopicData = Date.now();
   while (Date.now() - tStartMapTopicData <= MEASUREMENT_TIME_MS) {
-    let topic = pickTopicFromList(topics);
+    let topic = pickRandomTopicFromList(topics);
     let record = mapTopicData.pull(topic);
     record && counter++;
   }
@@ -164,7 +134,7 @@ let comparePullSpeed = () => {
   counter = 0;
   let tStartNodeTreeTopicData = Date.now();
   while (Date.now() - tStartNodeTreeTopicData <= MEASUREMENT_TIME_MS) {
-    let topic = pickTopicFromList(topics);
+    let topic = pickRandomTopicFromList(topics);
     let record = nodeTreeTopicData.pull(topic);
     record && counter++;
   }
@@ -178,7 +148,7 @@ let comparePullSpeed = () => {
 let getAllTopicsWithDataCheck = () => {
   console.info('\n... running check return of getAllTopicsWithData() calls');
   const NUM_TOPICS = 2;
-  const topics = generateRandomTopics(NUM_TOPICS);
+  const topics = generateRandomTopics(NUM_TOPICS, TOPIC_STRING_LIMITS.LOWER, TOPIC_STRING_LIMITS.UPPER);
 
   let nodeTreeTopicData = new NodeTreeTopicData();
   let mapTopicData = new MapTopicData();
