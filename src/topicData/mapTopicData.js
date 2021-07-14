@@ -32,6 +32,11 @@ class MapTopicData extends InterfaceTopicData {
     return this.topicDataBuffer.has(topic);
   }
 
+  hasData(topic) {
+    let entry = this.topicDataBuffer.get(topic);
+    return entry && entry[ENTRY_PROPERTY_DATA] !== undefined;
+  }
+
   /**
    * Pulls the data from topic data that is associated with specified topic.
    * @param {String} topic Topic strings specifying the topic path.

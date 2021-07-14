@@ -51,7 +51,7 @@ test('publish()', (t) => {
   });
 });
 
-test('has()', (t) => {
+test('has() & hasData()', (t) => {
   let topicData = t.context.topicData;
   let topics = t.context.topics;
 
@@ -66,6 +66,20 @@ test('has()', (t) => {
       t.true(topicData.has(topics[i]));
     } else {
       t.false(topicData.has(topics[i]));
+    }
+  }
+
+  // subscribe to topics with no data
+  for (let i = topics.length / 2; i < topics.length; i++) {
+    topicData.subscribe(topics[i], sinon.fake());
+  }
+  // check that hasData() returns are correct
+  for (let i = 0; i < topics.length; i++) {
+    if (i < 5) {
+      t.true(topicData.hasData(topics[i]));
+    } else {
+      t.true(topicData.has(topics[i]));
+      t.false(topicData.hasData(topics[i]));
     }
   }
 });
