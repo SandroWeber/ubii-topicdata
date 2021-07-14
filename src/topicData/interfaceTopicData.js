@@ -1,9 +1,9 @@
 /**
  * Abstarct topic data base class.
  */
-class TopicData {
+class InterfaceTopicData {
   constructor() {
-    if (new.target === TopicData) {
+    if (new.target === InterfaceTopicData) {
       throw new TypeError("Cannot construct TopicData instances directly");
     }
 
@@ -19,12 +19,20 @@ class TopicData {
       throw new TypeError("Must override subscribe");
     }
 
+    if (this.subscribeRegex === undefined) {
+      throw new TypeError("Must override subscribeRegex");
+    }
+
     if (this.subscribeAll === undefined) {
       throw new TypeError("Must override subscribeAll");
     }
 
     if (this.unsubscribe === undefined) {
       throw new TypeError("Must override unsubscribe");
+    }
+
+    if (this.unsubscribeRegex === undefined) {
+      throw new TypeError("Must override unsubscribeRegex");
     }
 
     if (this.remove === undefined) {
@@ -38,13 +46,9 @@ class TopicData {
     if (this.getAllTopicsWithData === undefined) {
       throw new TypeError("Must override getAllTopicsWithData");
     }
-
-    if (this.getRawSubtree === undefined) {
-      throw new TypeError("Must override getRawSubtree");
-    }
   }
 }
 
 module.exports = {
-  TopicData: TopicData,
+  InterfaceTopicData
 }

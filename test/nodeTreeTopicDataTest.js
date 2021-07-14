@@ -1,8 +1,8 @@
-import test from 'ava';
-import sinon from 'sinon';
+const test = require('ava');
+const sinon = require('sinon');
 
-import { RuntimeTopicData, TOPIC_EVENTS } from './../src/index.js';
-import {
+const { NodeTreeTopicData, TOPIC_EVENTS } = require('../src/index.js');
+const {
   TOPIC_PREFIX,
   TOPIC_SUFFIX,
   TOPIC_SEPARATOR,
@@ -13,8 +13,8 @@ import {
   TYPE_SPECIFIER,
   TIMESTAMP_PROPERTY_KEY,
   TIMESTAMP_SPECIFIER,
-} from './../src/topicData/constants.js';
-const { validateTopic } = require('./../src/topicData/utility.js');
+} = require('../src/topicData/constants.js');
+const { validateTopic } = require('../src/topicData/utility.js');
 
 (function () {
   // Creates and returns deep copies of the specified topic arrays.
@@ -186,7 +186,7 @@ const { validateTopic } = require('./../src/topicData/utility.js');
 
   // Topic Data builder functions
   let createTopicDataTwoOrdered = () => {
-    let topicData = new RuntimeTopicData();
+    let topicData = new NodeTreeTopicData();
 
     let timestamp = { seconds: 1, nanos: 2 };
 
@@ -200,7 +200,7 @@ const { validateTopic } = require('./../src/topicData/utility.js');
   };
 
   let createTopicDataTwoUnordered = () => {
-    let topicData = new RuntimeTopicData();
+    let topicData = new NodeTreeTopicData();
 
     topicData.publish(getTopicAY(), `awesome ay`, 'string', {
       seconds: 1,
@@ -228,7 +228,7 @@ const { validateTopic } = require('./../src/topicData/utility.js');
 
   test('empty', (t) => {
     let snapshot = createTopicDataSnapshotOne();
-    let topicData = new RuntimeTopicData();
+    let topicData = new NodeTreeTopicData();
 
     t.deepEqual(topicData.storage, snapshot);
   });
@@ -503,7 +503,7 @@ const { validateTopic } = require('./../src/topicData/utility.js');
     t.deepEqual(topicData.storage, snapshot);
   });
 
-  test('validateTopicInRuntimeTopicData', (t) => {
+  test('validateTopicInNodeTreeTopicData', (t) => {
     let valid, invalid;
     let topicData = createTopicDataTwoOrdered();
 
@@ -703,7 +703,7 @@ const { validateTopic } = require('./../src/topicData/utility.js');
   });
 
   test('emit "new topic" event on first publish', (t) => {
-    let topicData = new RuntimeTopicData();
+    let topicData = new NodeTreeTopicData();
     let topicName = '/new/topic';
 
     let callback = sinon.fake();
@@ -719,7 +719,7 @@ const { validateTopic } = require('./../src/topicData/utility.js');
   });
 
   test('get subscription tokens', (t) => {
-    let topicData = new RuntimeTopicData();
+    let topicData = new NodeTreeTopicData();
     t.is(topicData.getSubscriptionTokens(getTopicA(), undefined));
 
     let token1 = topicData.subscribe(getTopicA(), () => {});
