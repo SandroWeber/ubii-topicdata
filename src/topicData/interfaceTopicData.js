@@ -46,6 +46,10 @@ class InterfaceTopicData {
     if (this.getAllTopicsWithData === undefined) {
       throw new TypeError("Must override getAllTopicsWithData");
     }
+
+    if (this.getSubscriptionTokens === undefined) {
+      throw new TypeError("Must override getSubscriptionTokens");
+    }
   }
 }
 

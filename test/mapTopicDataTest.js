@@ -136,6 +136,28 @@ test('getAllTopicsWithData()', (t) => {
   t.is(topicsWithData.length, topics.length / 2);
 });
 
+test('getSubscriptionTokens()', (t) => {
+  let topicData = t.context.topicData;
+  let topics = t.context.topics;
+
+  let subscriptionTokens = [];
+  for (let topic of topics) {
+    let callback1 = sinon.fake();
+    let callback2 = sinon.fake();
+    let token1 = topicData.subscribe(topic, callback1);
+    let token2 = topicData.subscribe(topic, callback2);
+    subscriptionTokens.push(token1);
+    subscriptionTokens.push(token2);
+  }
+
+  for (let topic of topics) {
+    let subTokensFromTopicData = topicData.getSubscriptionTokens(topic);
+    for (let token of subTokensFromTopicData) {
+      t.true(subscriptionTokens.includes(token));
+    }
+  }
+});
+
 test('subscribe() & unsubscribe()', (t) => {
   let topicData = t.context.topicData;
   let topics = t.context.topics;

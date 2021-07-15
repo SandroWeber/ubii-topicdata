@@ -68,6 +68,16 @@ class MapTopicData extends InterfaceTopicData {
   }
 
   /**
+   * Get all subscriptions tokens for the topic.
+   * @param {string} topic
+   * @returns {Array} The list of subscription tokens
+   */
+  getSubscriptionTokens(topic) {
+    let entry = this.topicDataBuffer.get(topic);
+    return entry && entry[ENTRY_PROPERTY_SUBSCRIPTIONS];
+  }
+
+  /**
    * Publishes data under the specified topic to the topic data
    * If there is already data associated with this topic, it will be overwritten.
    * @param {String} topic Topic strings specifying the topic path.
@@ -108,7 +118,9 @@ class MapTopicData extends InterfaceTopicData {
    */
   subscribe(topic, callback) {
     if (!topic || topic === '') {
-      throw new Error('MapTopicData.subscribe(): passed topic parameter is ' + topic);
+      throw new Error(
+        'MapTopicData.subscribe(): passed topic parameter is ' + topic
+      );
     }
     if (typeof callback !== 'function') {
       throw new Error(
