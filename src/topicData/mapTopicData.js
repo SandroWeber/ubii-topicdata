@@ -86,12 +86,12 @@ class MapTopicData extends InterfaceTopicData {
   publish(topic, data) {
     if (!topic || topic === '') {
       throw new Error(
-        'MapTopicData.publish(): passed topic parameter is ' + topic
+        'MapTopicData.publish(): passed topic parameter is "' + topic + '"'
       );
     }
     if (data === undefined) {
       throw new Error(
-        'MapTopicData.publish(): passed data parameter is ' + data + '.'
+        'MapTopicData.publish(): passed data parameter is ' + data
       );
     }
 
