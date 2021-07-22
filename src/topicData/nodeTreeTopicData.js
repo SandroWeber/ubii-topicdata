@@ -10,7 +10,7 @@ const {
   TYPE_SPECIFIER,
   TOPIC_EVENTS,
   TIMESTAMP_PROPERTY_KEY,
-  TIMESTAMP_SPECIFIER
+  TIMESTAMP_SPECIFIER,
 } = require('./constants.js');
 const {
   getTopicPathFromString,
@@ -24,13 +24,12 @@ const {
    * Local runtime implementaion of a topic data.
    * The data is only available at runtime and is not permanently stored.
    * (No local file or database involved. The data is only in the program memory.)
-   * 
+   *
    * The runtime topic data uses a common javascript object as storage structure.
    * This is the most performant way to find key-value pairs.
    * The topic of queries is split and used as property keys.
    */
   class NodeTreeTopicData extends InterfaceTopicData {
-
     constructor() {
       super();
 
@@ -46,7 +45,7 @@ const {
      * Publishes data under the specified topic to the topic data
      * If there is already data associated with this topic, it will be overwritten.
      * @param {String} topic Topic strings specifying the topic path.
-     * @param {*} data 
+     * @param {*} data
      * @param {String} type Type of the data.
      */
     publish(topic, data, type, timestamp) {
@@ -97,27 +96,31 @@ const {
      */
     subscribe(topic, callback) {
       let entry = getTopicNode.call(this, topic);
-      if (typeof callback !== "function") {
-        throw new Error('Subscribe: passed callback parameter is not a function.');
+      if (typeof callback !== 'function') {
+        throw new Error(
+          'Subscribe: passed callback parameter is not a function.'
+        );
       }
       if (entry[SUBSCRIBER_PROPERTY_KEY] === undefined) {
         entry[SUBSCRIBER_PROPERTY_KEY] = [];
       }
       let subscriberId = ++this.currentTokenId;
       entry[SUBSCRIBER_PROPERTY_KEY].push({
-        'callback': callback,
-        'id': subscriberId,
+        callback: callback,
+        id: subscriberId,
       });
 
       let token = {
-        'topic': topic,
-        'id': subscriberId,
-        'type': 'single'
-      }
+        topic: topic,
+        id: subscriberId,
+        type: 'single',
+      };
       return token;
     }
 
-    subscribeRegex(topic, callback) {}
+    subscribeRegex(topic, callback) {
+      throw new Error('not implemented!');
+    }
 
     /**
      * Subscribes the callback function to all topics.
@@ -127,29 +130,31 @@ const {
      * @return Returns a token which can be passed to the unsubscribe mthod in order to unsubscribe the callback.
      */
     subscribeAll(callback) {
-      if (typeof callback !== "function") {
-        throw new Error('Subscribe: passed callback parameter is not a function.');
+      if (typeof callback !== 'function') {
+        throw new Error(
+          'Subscribe: passed callback parameter is not a function.'
+        );
       }
       if (this.universalSubscribtions === undefined) {
         this.universalSubscribtions = [];
       }
       let subscriberId = ++this.currentTokenId;
       this.universalSubscribtions.push({
-        'callback': callback,
-        'id': subscriberId,
+        callback: callback,
+        id: subscriberId,
       });
 
       let token = {
-        'topic': '',
-        'id': subscriberId,
-        'type': 'universal'
-      }
+        topic: '',
+        id: subscriberId,
+        type: 'universal',
+      };
       return token;
     }
 
     /**
      * Unsubscribes the callback specified by this token.
-     * @param {*} token 
+     * @param {*} token
      */
     unsubscribe(token) {
       if (token.type === 'single') {
@@ -157,13 +162,15 @@ const {
         if (entry[SUBSCRIBER_PROPERTY_KEY] === undefined) {
           return;
         }
-        entry[SUBSCRIBER_PROPERTY_KEY] = entry[SUBSCRIBER_PROPERTY_KEY].filter(subscriber => subscriber.id !== token.id);
+        entry[SUBSCRIBER_PROPERTY_KEY] = entry[SUBSCRIBER_PROPERTY_KEY].filter(
+          (subscriber) => subscriber.id !== token.id
+        );
       } else if (token.type === 'universal') {
-        this.universalSubscribtions = this.universalSubscribtions.filter(subscriber => subscriber.id !== token.id);
+        this.universalSubscribtions = this.universalSubscribtions.filter(
+          (subscriber) => subscriber.id !== token.id
+        );
       }
     }
-
-    unsubscribeRegex(topic, callback) {}
 
     /**
      * Removes the topic and the associated data from the topic data if the topic exists. Cleans up the path afterwards.
@@ -223,14 +230,18 @@ const {
             raw[TYPE_SPECIFIER] = entry[TYPE_PROPERTY_KEY];
             raw[TIMESTAMP_SPECIFIER] = entry[TIMESTAMP_PROPERTY_KEY];
             result.push(raw);
-          } else if (keys[i] !== SUBSCRIBER_PROPERTY_KEY && keys[i] !== TYPE_PROPERTY_KEY && keys[i] !== TIMESTAMP_PROPERTY_KEY) {
+          } else if (
+            keys[i] !== SUBSCRIBER_PROPERTY_KEY &&
+            keys[i] !== TYPE_PROPERTY_KEY &&
+            keys[i] !== TIMESTAMP_PROPERTY_KEY
+          ) {
             // Process all subtopics
             currentTopicPath.push(removeTopicPrefixAndSuffix(keys[i]));
             recursiveAddRelevantTopicDataPairs(entry[keys[i]]);
             currentTopicPath.pop();
           }
         }
-      }
+      };
 
       // start the procedure on all first layer topics (subtopics of root)
       let keys = Object.getOwnPropertyNames(this.storage);
@@ -246,12 +257,16 @@ const {
 
     /**
      * Get all subscriptions tokens for the topic.
-     * @param {string} topic 
+     * @param {string} topic
      * @returns {Array} The list of subscription tokens
      */
-    getSubscriptionTokens(topic) {
+    getSubscriptionTokensForTopic(topic) {
       let entry = getTopicNode.call(this, topic);
       return entry[SUBSCRIBER_PROPERTY_KEY];
+    }
+
+    getSubscriptionTokensForRegex() {
+      throw new Error('not implemented!');
     }
 
     getRawSubtree(topic) {
@@ -262,8 +277,6 @@ const {
       return entry;
     }
   }
-
-
 
   // --- private methods
 
@@ -284,7 +297,8 @@ const {
     let newTopic = false;
     const il = path.length;
     for (let i = 0; i < il; i++) {
-      if (subtree[path[i]] !== undefined) { // Propaply faster than hasOwnProperty (--> less safe)
+      if (subtree[path[i]] !== undefined) {
+        // Propaply faster than hasOwnProperty (--> less safe)
         subtree = subtree[path[i]];
       } else {
         if (createOnTraverse) {
@@ -303,7 +317,7 @@ const {
     }
 
     return subtree;
-  }
+  };
 
   /**
    * Cleans up the path by removing all properties that do not have any data key in its subtree (None of its
@@ -317,7 +331,7 @@ const {
     if (!recursiveIsRelevantCleanUp(this.storage[path[0]])) {
       delete this.storage[path[0]];
     }
-  }
+  };
 
   let recursiveIsRelevantCleanUp = function (entry) {
     let isRelevant = false;
@@ -329,7 +343,11 @@ const {
         isRelevant = true;
       } else {
         // Check other subtopics, Therefore exclude special properties.
-        if (keys[i] !== SUBSCRIBER_PROPERTY_KEY && keys[i] !== TYPE_PROPERTY_KEY && keys[i] !== TIMESTAMP_PROPERTY_KEY) {
+        if (
+          keys[i] !== SUBSCRIBER_PROPERTY_KEY &&
+          keys[i] !== TYPE_PROPERTY_KEY &&
+          keys[i] !== TIMESTAMP_PROPERTY_KEY
+        ) {
           let subtreeIsReleveant = recursiveIsRelevantCleanUp(entry[keys[i]]);
           if (!subtreeIsReleveant) {
             delete entry[keys[i]];
@@ -339,12 +357,12 @@ const {
       }
     }
     return isRelevant;
-  }
+  };
 
   /**
    * Calls every callback function with the specified parameters.
    * @param {Function[]} subscribers Array of subscribed callback functions
-   * @param {*} topic 
+   * @param {*} topic
    * @param {*} entry
    */
   let notify = function (subscribers, topic, entry) {
@@ -353,8 +371,8 @@ const {
     raw[TYPE_SPECIFIER] = entry[TYPE_PROPERTY_KEY];
     raw[TIMESTAMP_SPECIFIER] = entry[TIMESTAMP_PROPERTY_KEY];
 
-    subscribers.forEach(subscriber => subscriber.callback(topic, raw));
-  }
+    subscribers.forEach((subscriber) => subscriber.callback(topic, raw));
+  };
 
   module.exports = NodeTreeTopicData;
 })();

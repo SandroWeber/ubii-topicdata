@@ -720,11 +720,11 @@ const { validateTopic } = require('../src/topicData/utility.js');
 
   test('get subscription tokens', (t) => {
     let topicData = new NodeTreeTopicData();
-    t.is(topicData.getSubscriptionTokens(getTopicA(), undefined));
+    t.is(topicData.getSubscriptionTokensForTopic(getTopicA(), undefined));
 
     let token1 = topicData.subscribe(getTopicA(), () => {});
     let token2 = topicData.subscribe(getTopicA(), () => {});
-    let subs = topicData.getSubscriptionTokens(getTopicA());
+    let subs = topicData.getSubscriptionTokensForTopic(getTopicA());
     t.is(subs.length, 2);
     t.true(subs.some(element => element.id === token1.id));
     t.true(subs.some(element => element.id === token2.id));

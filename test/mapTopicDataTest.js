@@ -136,7 +136,7 @@ test('getAllTopicsWithData()', (t) => {
   t.is(topicsWithData.length, topics.length / 2);
 });
 
-test('getSubscriptionTokens()', (t) => {
+test('getSubscriptionTokensForTopic()', (t) => {
   let topicData = t.context.topicData;
   let topics = t.context.topics;
 
@@ -151,11 +151,35 @@ test('getSubscriptionTokens()', (t) => {
   }
 
   for (let topic of topics) {
-    let subTokensFromTopicData = topicData.getSubscriptionTokens(topic);
+    let subTokensFromTopicData = topicData.getSubscriptionTokensForTopic(topic);
     for (let token of subTokensFromTopicData) {
       t.true(subscriptionTokens.includes(token));
     }
   }
+});
+
+test('getSubscriptionTokensForRegex()', (t) => {
+  let topicData = t.context.topicData;
+  let regexString = '/prefix/.*/suffix';
+
+  let regexSubs = topicData.getSubscriptionTokensForRegex(regexString);
+  t.is (regexSubs.length, 0);
+  
+  let token1 = topicData.subscribeRegex(regexString, sinon.fake());
+  let token2 = topicData.subscribeRegex(regexString, sinon.fake());
+
+  regexSubs = topicData.getSubscriptionTokensForRegex(regexString);
+  t.is (regexSubs.length, 2);
+
+  topicData.unsubscribe(token2);
+
+  regexSubs = topicData.getSubscriptionTokensForRegex(regexString);
+  t.is (regexSubs.length, 1);
+
+  topicData.unsubscribe(token1);
+
+  regexSubs = topicData.getSubscriptionTokensForRegex(regexString);
+  t.is (regexSubs.length, 0);
 });
 
 test('subscribe() & unsubscribe()', (t) => {

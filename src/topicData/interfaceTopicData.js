@@ -31,10 +31,6 @@ class InterfaceTopicData {
       throw new TypeError("Must override unsubscribe");
     }
 
-    if (this.unsubscribeRegex === undefined) {
-      throw new TypeError("Must override unsubscribeRegex");
-    }
-
     if (this.remove === undefined) {
       throw new TypeError("Must override remove");
     }
@@ -47,8 +43,12 @@ class InterfaceTopicData {
       throw new TypeError("Must override getAllTopicsWithData");
     }
 
-    if (this.getSubscriptionTokens === undefined) {
-      throw new TypeError("Must override getSubscriptionTokens");
+    if (this.getSubscriptionTokensForTopic === undefined) {
+      throw new TypeError("Must override getSubscriptionTokensForTopic");
+    }
+
+    if (this.getSubscriptionTokensForRegex === undefined) {
+      throw new TypeError("Must override getSubscriptionTokensForRegex");
     }
   }
 }

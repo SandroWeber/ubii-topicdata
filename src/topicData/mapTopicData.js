@@ -72,9 +72,18 @@ class MapTopicData extends InterfaceTopicData {
    * @param {string} topic
    * @returns {Array} The list of subscription tokens
    */
-  getSubscriptionTokens(topic) {
+  getSubscriptionTokensForTopic(topic) {
     let entry = this.topicDataBuffer.get(topic);
     return entry && entry[ENTRY_PROPERTY_SUBSCRIPTIONS];
+  }
+
+  /**
+   * Get all subscriptions tokens for the regex.
+   * @param {string} regex
+   * @returns {Array} The list of subscription tokens
+   */
+  getSubscriptionTokensForRegex(regexString) {
+    return this.regexSubscriptions.filter(token => token.topic === regexString);
   }
 
   /**
