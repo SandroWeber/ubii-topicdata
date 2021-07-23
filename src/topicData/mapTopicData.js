@@ -1,7 +1,7 @@
 const EventEmitter = require('events');
 
 const { InterfaceTopicData } = require('./interfaceTopicData.js');
-const { TOPIC_EVENTS } = require('./constants.js');
+const { TOPIC_EVENTS, SUBSCRIPTION_TYPES } = require('./constants.js');
 
 const ENTRY_PROPERTY_DATA = 'd';
 const ENTRY_PROPERTY_SUBSCRIPTIONS = 's';
@@ -145,7 +145,7 @@ class MapTopicData extends InterfaceTopicData {
 
     let token = generateSubscriptionToken(
       topic,
-      MapTopicData.SUBSCRIPTION_TYPES.TOPIC,
+      SUBSCRIPTION_TYPES.TOPIC,
       callback
     );
     entry[ENTRY_PROPERTY_SUBSCRIPTIONS].push(token);
@@ -163,7 +163,7 @@ class MapTopicData extends InterfaceTopicData {
   subscribeRegex(regex, callback) {
     let token = generateSubscriptionToken(
       regex,
-      MapTopicData.SUBSCRIPTION_TYPES.REGEX,
+      SUBSCRIPTION_TYPES.REGEX,
       callback
     );
     this.regexSubscriptions.push(token);
@@ -194,11 +194,11 @@ class MapTopicData extends InterfaceTopicData {
   }
 
   unsubscribe(token) {
-    if (token.type === MapTopicData.SUBSCRIPTION_TYPES.TOPIC) {
+    if (token.type === SUBSCRIPTION_TYPES.TOPIC) {
       this.unsubscribeTopic(token);
     } else if (
-      token.type === MapTopicData.SUBSCRIPTION_TYPES.REGEX ||
-      token.type === MapTopicData.SUBSCRIPTION_TYPES.ALL
+      token.type === SUBSCRIPTION_TYPES.REGEX ||
+      token.type === SUBSCRIPTION_TYPES.ALL
     ) {
       this.unsubscribeRegex(token);
     }
@@ -247,18 +247,12 @@ let generateSubscriptionToken = (topic, subscriptionType, callback) => {
     type: subscriptionType,
     callback: callback,
   };
-  if (subscriptionType === MapTopicData.SUBSCRIPTION_TYPES.REGEX) {
+  if (subscriptionType === SUBSCRIPTION_TYPES.REGEX) {
     token.regex = new RegExp(topic);
     token.regexTopicMatches = [];
   }
 
   return token;
 };
-
-MapTopicData.SUBSCRIPTION_TYPES = Object.freeze({
-  TOPIC: 0,
-  REGEX: 1,
-  ALL: 2,
-});
 
 module.exports = MapTopicData;
