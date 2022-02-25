@@ -155,9 +155,11 @@ class MapTopicData extends InterfaceTopicData {
 
   unsubscribeTopic(token) {
     let entry = this.topicDataBuffer.get(token.topic);
-    entry[ENTRY_PROPERTY_SUBSCRIPTIONS] = entry[
-      ENTRY_PROPERTY_SUBSCRIPTIONS
-    ].filter((sub) => sub.id !== token.id);
+    if (entry) {
+      entry[ENTRY_PROPERTY_SUBSCRIPTIONS] = entry[
+        ENTRY_PROPERTY_SUBSCRIPTIONS
+      ].filter((sub) => sub.id !== token.id);
+    }
   }
 
   subscribeRegex(regex, callback) {
