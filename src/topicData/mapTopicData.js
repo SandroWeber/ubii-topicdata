@@ -92,7 +92,7 @@ class MapTopicData extends InterfaceTopicData {
    * @param {String} topic Topic strings specifying the topic path.
    * @param {Object} object Type of the data.
    */
-  publish(topic, data) {
+  publish(topic, data, publisherId) {
     if (!topic || topic === '') {
       throw new Error(
         'MapTopicData.publish(): passed topic parameter is "' + topic + '"'
@@ -114,7 +114,7 @@ class MapTopicData extends InterfaceTopicData {
     }
 
     // Notify subscribers
-    notifySubscribers(entry);
+    notifySubscribers(entry, publisherId);
   }
 
   /**
@@ -232,10 +232,10 @@ let createEntry = (topic, topicDataBuffer, data = undefined) => {
  * @param {*} topic
  * @param {*} entry
  */
-let notifySubscribers = (topicDataEntry) => {
+let notifySubscribers = (topicDataEntry, publisherId) => {
   topicDataEntry &&
     topicDataEntry[ENTRY_PROPERTY_SUBSCRIPTIONS].forEach((token) => {
-      token.callback(topicDataEntry[ENTRY_PROPERTY_DATA]);
+      token.callback(topicDataEntry[ENTRY_PROPERTY_DATA], publisherId);
     });
 };
 
