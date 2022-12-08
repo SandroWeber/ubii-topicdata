@@ -141,10 +141,16 @@ test('getAllTopicsWithData()', (t) => {
   for (let i = 0; i < topics.length / 2; i++) {
     topicData.publish(topics[i], {});
   }
+  // subscribe to the other half (topic data entries without data)
+  for (let i = topics.length / 2; i < topics.length; i++) {
+    topicData.subscribeTopic(topics[i], () => {});
+  }
 
-  // try removing topic that doesn't exist
   let topicsWithData = topicData.getAllTopicsWithData();
   t.is(topicsWithData.length, topics.length / 2);
+  for (let i = 0; i < topics.length / 2; i++) {
+    t.true(topicsWithData.some((element) => element.topic === topics[i]));
+  }
 });
 
 test('getSubscriptionTokensForTopic()', (t) => {

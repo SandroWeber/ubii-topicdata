@@ -59,12 +59,13 @@ class MapTopicData extends InterfaceTopicData {
   }
 
   getAllTopicsWithData() {
-    return Array.from(this.topicDataBuffer.keys()).map((topic) => {
+    return Array.from(this.topicDataBuffer.keys()).reduce((result, topic) => {
       let record = this.topicDataBuffer.get(topic);
       if (record[ENTRY_PROPERTY_DATA]) {
-        return {topic: topic, data: record[ENTRY_PROPERTY_DATA][record[ENTRY_PROPERTY_DATA].type]};
+        result.push({topic: topic, data: record[ENTRY_PROPERTY_DATA][record[ENTRY_PROPERTY_DATA].type]});
       }
-    });
+      return result;
+    }, []);
   }
 
   /**
