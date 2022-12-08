@@ -15,8 +15,8 @@ class InterfaceTopicData {
       throw new TypeError("Must override pull");
     }
 
-    if (this.subscribe === undefined) {
-      throw new TypeError("Must override subscribe");
+    if (this.subscribeTopic === undefined) {
+      throw new TypeError("Must override subscribeTopic");
     }
 
     if (this.subscribeRegex === undefined) {
