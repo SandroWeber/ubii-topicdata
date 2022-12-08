@@ -71,7 +71,7 @@ test('has() & hasData()', (t) => {
 
   // subscribe to topics with no data
   for (let i = topics.length / 2; i < topics.length; i++) {
-    topicData.subscribe(topics[i], sinon.fake());
+    topicData.subscribeTopic(topics[i], sinon.fake());
   }
   // check that hasData() returns are correct
   for (let i = 0; i < topics.length; i++) {
@@ -122,6 +122,17 @@ test('remove()', (t) => {
   t.false(topicData.remove(topics[0]));
 });
 
+test('getAllTopics()', (t) => {
+  let topicData = t.context.topicData;
+
+  let topics = t.context.topics;
+  for (let i = 0; i < topics.length; i++) {
+    topicData.publish(topics[i], {});
+  }
+
+  t.deepEqual(topicData.getAllTopics(), topics);
+});
+
 test('getAllTopicsWithData()', (t) => {
   let topicData = t.context.topicData;
   let topics = t.context.topics;
@@ -144,8 +155,8 @@ test('getSubscriptionTokensForTopic()', (t) => {
   for (let topic of topics) {
     let callback1 = sinon.fake();
     let callback2 = sinon.fake();
-    let token1 = topicData.subscribe(topic, callback1);
-    let token2 = topicData.subscribe(topic, callback2);
+    let token1 = topicData.subscribeTopic(topic, callback1);
+    let token2 = topicData.subscribeTopic(topic, callback2);
     subscriptionTokens.push(token1);
     subscriptionTokens.push(token2);
   }
@@ -190,7 +201,7 @@ test('subscribe() & unsubscribe()', (t) => {
   let subscriptionTokens = [];
   for (let topic of topics) {
     let callback = sinon.fake();
-    let token = topicData.subscribe(topic, callback);
+    let token = topicData.subscribeTopic(topic, callback);
     subscriptionTokens.push(token);
   }
 
@@ -228,17 +239,17 @@ test('subscribe() & unsubscribe()', (t) => {
 
   // trying to subscribe to an empty or undefined topic should throw an error
   t.throws(() => {
-    topicData.subscribe('', () => {});
+    topicData.subscribeTopic('', () => {});
   });
   t.throws(() => {
-    topicData.subscribe(undefined, () => {});
+    topicData.subscribeTopic(undefined, () => {});
   });
   // trying to subscribe with something other than a function as callback should throw an error
   t.throws(() => {
-    topicData.subscribe('/some/topic', {});
+    topicData.subscribeTopic('/some/topic', {});
   });
   t.throws(() => {
-    topicData.subscribe('/some/topic', undefined);
+    topicData.subscribeTopic('/some/topic', undefined);
   });
 });
 

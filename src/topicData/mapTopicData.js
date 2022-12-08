@@ -54,17 +54,17 @@ class MapTopicData extends InterfaceTopicData {
     return this.topicDataBuffer.delete(topic);
   }
 
+  getAllTopics() {
+    return Array.from(this.topicDataBuffer.keys());
+  }
+
   getAllTopicsWithData() {
-    return Array.from(this.topicDataBuffer.values())
-      .filter((record) => record[ENTRY_PROPERTY_DATA])
-      .map((record) =>
-        Object.assign(
-          {
-            data: record[ENTRY_PROPERTY_DATA][record[ENTRY_PROPERTY_DATA].type],
-          },
-          record[ENTRY_PROPERTY_DATA]
-        )
-      );
+    return Array.from(this.topicDataBuffer.keys()).map((topic) => {
+      let record = this.topicDataBuffer.get(topic);
+      if (record[ENTRY_PROPERTY_DATA]) {
+        return {topic: topic, data: record[ENTRY_PROPERTY_DATA][record[ENTRY_PROPERTY_DATA].type]};
+      }
+    });
   }
 
   /**
@@ -83,7 +83,9 @@ class MapTopicData extends InterfaceTopicData {
    * @returns {Array} The list of subscription tokens
    */
   getSubscriptionTokensForRegex(regexString) {
-    return this.regexSubscriptions.filter(token => token.topic === regexString);
+    return this.regexSubscriptions.filter(
+      (token) => token.topic === regexString
+    );
   }
 
   /**
@@ -125,7 +127,7 @@ class MapTopicData extends InterfaceTopicData {
    * @param {Function} callback Function called when subscriber is notified. Should accept a topic and a entry parameter.
    * @return Returns a token which can be passed to the unsubscribe mthod in order to unsubscribe the callback from the topic.
    */
-  subscribe(topic, callback) {
+  subscribeTopic(topic, callback) {
     if (!topic || topic === '') {
       throw new Error(
         'MapTopicData.subscribe(): passed topic parameter is ' + topic

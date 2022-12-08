@@ -94,7 +94,7 @@ const {
      * @param {Function} callback Function called when subscriber is notified. Should accept a topic and a entry parameter.
      * @return Returns a token which can be passed to the unsubscribe mthod in order to unsubscribe the callback from the topic.
      */
-    subscribe(topic, callback) {
+    subscribeTopic(topic, callback) {
       let entry = getTopicNode.call(this, topic);
       if (typeof callback !== 'function') {
         throw new Error(

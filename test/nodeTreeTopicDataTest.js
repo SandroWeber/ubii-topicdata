@@ -260,13 +260,13 @@ const { validateTopic } = require('../src/topicData/utility.js');
 
     // invalid subscribtions:
     t.throws(() => {
-      topicData.subscribe(getTopicA());
+      topicData.subscribeTopic(getTopicA());
     });
     t.throws(() => {
-      topicData.subscribe(getTopicA(), {});
+      topicData.subscribeTopic(getTopicA(), {});
     });
     t.throws(() => {
-      topicData.subscribe(getTopicA(), 'foo');
+      topicData.subscribeTopic(getTopicA(), 'foo');
     });
 
     // correct subscribtion resolving after publishing on topics:
@@ -294,10 +294,10 @@ const { validateTopic } = require('../src/topicData/utility.js');
       throw new Error();
     };
 
-    topicData.subscribe(getTopicA(), functionOne);
-    topicData.subscribe(getTopicAX(), functionTwo);
-    topicData.subscribe(getTopicA(), functionThree);
-    topicData.subscribe('', functionFour);
+    topicData.subscribeTopic(getTopicA(), functionOne);
+    topicData.subscribeTopic(getTopicAX(), functionTwo);
+    topicData.subscribeTopic(getTopicA(), functionThree);
+    topicData.subscribeTopic('', functionFour);
 
     topicData.publish(getTopicA(), `awesome a blubb`);
 
@@ -365,10 +365,10 @@ const { validateTopic } = require('../src/topicData/utility.js');
       topicFive = topic;
     };
 
-    topicData.subscribe(getTopicA(), functionOne);
-    topicData.subscribe(getTopicAX(), functionTwo);
-    topicData.subscribe(getTopicA(), functionThree);
-    topicData.subscribe('', functionFour);
+    topicData.subscribeTopic(getTopicA(), functionOne);
+    topicData.subscribeTopic(getTopicAX(), functionTwo);
+    topicData.subscribeTopic(getTopicA(), functionThree);
+    topicData.subscribeTopic('', functionFour);
     topicData.subscribeAll(functionFive);
 
     topicData.publish(getTopicA(), `ablubb`);
@@ -415,9 +415,9 @@ const { validateTopic } = require('../src/topicData/utility.js');
       four = four + ' ' + entry.data;
     };
 
-    let tokenOne = topicData.subscribe(getTopicA(), functionOne);
-    let tokenTwo = topicData.subscribe(getTopicA(), functionTwo);
-    let tokenThree = topicData.subscribe(getTopicA(), functionThree);
+    let tokenOne = topicData.subscribeTopic(getTopicA(), functionOne);
+    let tokenTwo = topicData.subscribeTopic(getTopicA(), functionTwo);
+    let tokenThree = topicData.subscribeTopic(getTopicA(), functionThree);
     let tokenFour = topicData.subscribeAll(functionFour);
 
     topicData.publish(getTopicA(), `ablubb`);
@@ -518,7 +518,7 @@ const { validateTopic } = require('../src/topicData/utility.js');
         topicData.has(invalid);
       });
       t.throws(() => {
-        topicData.subscribe(invalid, () => {});
+        topicData.subscribeTopic(invalid, () => {});
       });
       t.throws(() => {
         topicData.pull(invalid);
@@ -539,7 +539,7 @@ const { validateTopic } = require('../src/topicData/utility.js');
         topicData.has(valid);
       });
       t.notThrows(() => {
-        topicData.subscribe(valid, () => {});
+        topicData.subscribeTopic(valid, () => {});
       });
       t.notThrows(() => {
         topicData.pull(valid);
@@ -722,14 +722,14 @@ const { validateTopic } = require('../src/topicData/utility.js');
     let topicData = new NodeTreeTopicData();
     t.is(topicData.getSubscriptionTokensForTopic(getTopicA(), undefined));
 
-    let token1 = topicData.subscribe(getTopicA(), () => {});
-    let token2 = topicData.subscribe(getTopicA(), () => {});
+    let token1 = topicData.subscribeTopic(getTopicA(), () => {});
+    let token2 = topicData.subscribeTopic(getTopicA(), () => {});
     let subs = topicData.getSubscriptionTokensForTopic(getTopicA());
     t.is(subs.length, 2);
     t.true(subs.some(element => element.id === token1.id));
     t.true(subs.some(element => element.id === token2.id));
 
-    let token3 = topicData.subscribe(getTopicA(), () => {});
+    let token3 = topicData.subscribeTopic(getTopicA(), () => {});
     t.is(subs.length, 3);
     t.true(subs.some(element => element.id === token1.id));
     t.true(subs.some(element => element.id === token2.id));
