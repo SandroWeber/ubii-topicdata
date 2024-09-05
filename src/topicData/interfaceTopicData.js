@@ -15,6 +15,10 @@ class InterfaceTopicData {
       throw new TypeError("Must override pull");
     }
 
+    if (this.getPublisherID === undefined) {
+      throw new TypeError("Must override getPublisherID");
+    }
+
     if (this.subscribeTopic === undefined) {
       throw new TypeError("Must override subscribeTopic");
     }

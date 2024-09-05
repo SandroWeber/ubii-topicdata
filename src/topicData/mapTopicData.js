@@ -5,6 +5,7 @@ const { TOPIC_EVENTS, SUBSCRIPTION_TYPES } = require('./constants.js');
 
 const ENTRY_PROPERTY_DATA = 'd';
 const ENTRY_PROPERTY_SUBSCRIPTIONS = 's';
+const ENTRY_PROPERTY_PUBLISHER_ID = 'p';
 
 /**
  * Local runtime implementaion of a topic data.
@@ -48,6 +49,14 @@ class MapTopicData extends InterfaceTopicData {
     }
 
     return this.topicDataBuffer.get(topic)[ENTRY_PROPERTY_DATA];
+  }
+  
+  getPublisherID(topic) {
+    if (!this.topicDataBuffer.has(topic)) {
+      return undefined;
+    }
+
+    return this.topicDataBuffer.get(topic)[ENTRY_PROPERTY_PUBLISHER_ID];
   }
 
   remove(topic) {
@@ -110,10 +119,11 @@ class MapTopicData extends InterfaceTopicData {
     // Get the entry.
     let entry = this.topicDataBuffer.get(topic);
     if (!entry) {
-      entry = createEntry(topic, this.topicDataBuffer, data);
+      entry = createEntry(topic, this.topicDataBuffer, data, publisherId);
       this.events.emit(TOPIC_EVENTS.NEW_TOPIC, topic);
     } else {
       entry[ENTRY_PROPERTY_DATA] = data;
+      if (!entry[ENTRY_PROPERTY_PUBLISHER_ID]) entry[ENTRY_PROPERTY_PUBLISHER_ID] = publisherId;
     }
 
     // Notify subscribers
@@ -220,10 +230,11 @@ class MapTopicData extends InterfaceTopicData {
   }
 }
 
-let createEntry = (topic, topicDataBuffer, data = undefined) => {
+let createEntry = (topic, topicDataBuffer, data = undefined, publisherId = undefined) => {
   entry = {};
   entry[ENTRY_PROPERTY_SUBSCRIPTIONS] = [];
   entry[ENTRY_PROPERTY_DATA] = data;
+  entry[ENTRY_PROPERTY_PUBLISHER_ID] = publisherId;
   topicDataBuffer.set(topic, entry);
 
   return entry;
