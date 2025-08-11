@@ -276,6 +276,14 @@ const {
       let entry = getTopicNode.call(this, topic);
       return entry;
     }
+
+    getPublisherID(topic) {
+      if (!this.topicDataBuffer.has(topic)) {
+        return undefined;
+      }
+  
+      return this.topicDataBuffer.get(topic)[ENTRY_PROPERTY_PUBLISHER_ID];
+    }
   }
 
   // --- private methods

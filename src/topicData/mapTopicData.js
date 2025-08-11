@@ -1,11 +1,7 @@
 const EventEmitter = require('events');
 
 const { InterfaceTopicData } = require('./interfaceTopicData.js');
-const { TOPIC_EVENTS, SUBSCRIPTION_TYPES } = require('./constants.js');
-
-const ENTRY_PROPERTY_DATA = 'd';
-const ENTRY_PROPERTY_SUBSCRIPTIONS = 's';
-const ENTRY_PROPERTY_PUBLISHER_ID = 'p';
+const { TOPIC_EVENTS, SUBSCRIPTION_TYPES, TOPIC_PROPERTY } = require('./constants.js');
 
 /**
  * Local runtime implementaion of a topic data.
@@ -35,7 +31,7 @@ class MapTopicData extends InterfaceTopicData {
 
   hasData(topic) {
     let entry = this.topicDataBuffer.get(topic);
-    return entry && entry[ENTRY_PROPERTY_DATA] !== undefined;
+    return entry && entry[TOPIC_PROPERTY.DATA] !== undefined;
   }
 
   /**
@@ -48,15 +44,23 @@ class MapTopicData extends InterfaceTopicData {
       return undefined;
     }
 
-    return this.topicDataBuffer.get(topic)[ENTRY_PROPERTY_DATA];
+    return this.topicDataBuffer.get(topic)[TOPIC_PROPERTY.DATA];
   }
-  
+
   getPublisherID(topic) {
     if (!this.topicDataBuffer.has(topic)) {
       return undefined;
     }
 
-    return this.topicDataBuffer.get(topic)[ENTRY_PROPERTY_PUBLISHER_ID];
+    return this.topicDataBuffer.get(topic)[TOPIC_PROPERTY.PUBLISHER_ID];
+  }
+
+  getUserData(topic) {
+    if (!this.topicDataBuffer.has(topic)) {
+      return undefined;
+    }
+
+    return this.topicDataBuffer.get(topic)[TOPIC_PROPERTY.USERDATA];
   }
 
   remove(topic) {
@@ -70,8 +74,8 @@ class MapTopicData extends InterfaceTopicData {
   getAllTopicsWithData() {
     return Array.from(this.topicDataBuffer.keys()).reduce((result, topic) => {
       let record = this.topicDataBuffer.get(topic);
-      if (record[ENTRY_PROPERTY_DATA]) {
-        result.push({topic: topic, data: record[ENTRY_PROPERTY_DATA][record[ENTRY_PROPERTY_DATA].type]});
+      if (record[TOPIC_PROPERTY.DATA]) {
+        result.push({ topic: topic, data: record[TOPIC_PROPERTY.DATA][record[TOPIC_PROPERTY.DATA].type] });
       }
       return result;
     }, []);
@@ -84,7 +88,7 @@ class MapTopicData extends InterfaceTopicData {
    */
   getSubscriptionTokensForTopic(topic) {
     let entry = this.topicDataBuffer.get(topic);
-    return entry && entry[ENTRY_PROPERTY_SUBSCRIPTIONS];
+    return entry && entry[TOPIC_PROPERTY.SUBSCRIPTIONS];
   }
 
   /**
@@ -104,7 +108,7 @@ class MapTopicData extends InterfaceTopicData {
    * @param {String} topic Topic strings specifying the topic path.
    * @param {Object} object Type of the data.
    */
-  publish(topic, data, publisherId) {
+  publish(topic, data, publisherId, userData, timestamp) {
     if (!topic || topic === '') {
       throw new Error(
         'MapTopicData.publish(): passed topic parameter is "' + topic + '"'
@@ -117,14 +121,16 @@ class MapTopicData extends InterfaceTopicData {
     }
 
     // Get the entry.
-    let entry = this.topicDataBuffer.get(topic);
-    if (!entry) {
-      entry = createEntry(topic, this.topicDataBuffer, data, publisherId);
-      this.events.emit(TOPIC_EVENTS.NEW_TOPIC, topic);
-    } else {
-      entry[ENTRY_PROPERTY_DATA] = data;
-      if (!entry[ENTRY_PROPERTY_PUBLISHER_ID]) entry[ENTRY_PROPERTY_PUBLISHER_ID] = publisherId;
+    let existingEntry = this.topicDataBuffer.has(topic);
+    if (!existingEntry) {
+      createEntry(topic, this.topicDataBuffer, publisherId);
     }
+    let entry = this.topicDataBuffer.get(topic);
+    entry[TOPIC_PROPERTY.DATA] = data;
+    if (userData) entry[TOPIC_PROPERTY.USERDATA] = userData;
+    if (timestamp) entry[TOPIC_PROPERTY.TIMESTAMP] = timestamp;
+
+    !existingEntry && this.events.emit(TOPIC_EVENTS.NEW_TOPIC, topic);
 
     // Notify subscribers
     notifySubscribers(entry, publisherId);
@@ -161,18 +167,9 @@ class MapTopicData extends InterfaceTopicData {
       SUBSCRIPTION_TYPES.TOPIC,
       callback
     );
-    entry[ENTRY_PROPERTY_SUBSCRIPTIONS].push(token);
+    entry[TOPIC_PROPERTY.SUBSCRIPTIONS].push(token);
 
     return token;
-  }
-
-  unsubscribeTopic(token) {
-    let entry = this.topicDataBuffer.get(token.topic);
-    if (entry) {
-      entry[ENTRY_PROPERTY_SUBSCRIPTIONS] = entry[
-        ENTRY_PROPERTY_SUBSCRIPTIONS
-      ].filter((sub) => sub.id !== token.id);
-    }
   }
 
   subscribeRegex(regex, callback) {
@@ -184,24 +181,12 @@ class MapTopicData extends InterfaceTopicData {
     this.regexSubscriptions.push(token);
     for (const [topic, entry] of this.topicDataBuffer) {
       if (token.regex.test(topic)) {
-        entry[ENTRY_PROPERTY_SUBSCRIPTIONS].push(token);
+        entry[TOPIC_PROPERTY.SUBSCRIPTIONS].push(token);
         token.regexTopicMatches.push(topic);
       }
     }
 
     return token;
-  }
-
-  unsubscribeRegex(token) {
-    for (const topic of token.regexTopicMatches) {
-      let entry = this.topicDataBuffer.get(topic);
-      entry[ENTRY_PROPERTY_SUBSCRIPTIONS] = entry[
-        ENTRY_PROPERTY_SUBSCRIPTIONS
-      ].filter((sub) => sub.id !== token.id);
-    }
-    this.regexSubscriptions = this.regexSubscriptions.filter(
-      (sub) => sub.id !== token.id
-    );
   }
 
   subscribeAll(callback) {
@@ -219,22 +204,42 @@ class MapTopicData extends InterfaceTopicData {
     }
   }
 
+  unsubscribeTopic(token) {
+    let entry = this.topicDataBuffer.get(token.topic);
+    if (entry) {
+      entry[TOPIC_PROPERTY.SUBSCRIPTIONS] = entry[
+        TOPIC_PROPERTY.SUBSCRIPTIONS
+      ].filter((sub) => sub.id !== token.id);
+    }
+  }
+
+  unsubscribeRegex(token) {
+    for (const topic of token.regexTopicMatches) {
+      let entry = this.topicDataBuffer.get(topic);
+      entry[TOPIC_PROPERTY.SUBSCRIPTIONS] = entry[
+        TOPIC_PROPERTY.SUBSCRIPTIONS
+      ].filter((sub) => sub.id !== token.id);
+    }
+    this.regexSubscriptions = this.regexSubscriptions.filter(
+      (sub) => sub.id !== token.id
+    );
+  }
+
   onEventNewTopic(topic) {
     this.regexSubscriptions.forEach((token) => {
       if (token.regex.test(topic)) {
         let entry = this.topicDataBuffer.get(topic);
-        entry[ENTRY_PROPERTY_SUBSCRIPTIONS].push(token);
+        entry[TOPIC_PROPERTY.SUBSCRIPTIONS].push(token);
         token.regexTopicMatches.push(topic);
       }
     });
   }
 }
 
-let createEntry = (topic, topicDataBuffer, data = undefined, publisherId = undefined) => {
+let createEntry = (topic, topicDataBuffer, publisherId = undefined) => {
   entry = {};
-  entry[ENTRY_PROPERTY_SUBSCRIPTIONS] = [];
-  entry[ENTRY_PROPERTY_DATA] = data;
-  entry[ENTRY_PROPERTY_PUBLISHER_ID] = publisherId;
+  entry[TOPIC_PROPERTY.SUBSCRIPTIONS] = [];
+  entry[TOPIC_PROPERTY.PUBLISHER_ID] = publisherId;
   topicDataBuffer.set(topic, entry);
 
   return entry;
@@ -248,8 +253,8 @@ let createEntry = (topic, topicDataBuffer, data = undefined, publisherId = undef
  */
 let notifySubscribers = (topicDataEntry, publisherId) => {
   topicDataEntry &&
-    topicDataEntry[ENTRY_PROPERTY_SUBSCRIPTIONS].forEach((token) => {
-      token.callback(topicDataEntry[ENTRY_PROPERTY_DATA], publisherId);
+    topicDataEntry[TOPIC_PROPERTY.SUBSCRIPTIONS].forEach((token) => {
+      token.callback(topicDataEntry[TOPIC_PROPERTY.DATA], publisherId);
     });
 };
 
