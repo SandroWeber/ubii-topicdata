@@ -309,3 +309,36 @@ test('subscribeRegex() & subscribeAll() & unsubscribe()', (t) => {
   t.is(subYZ.callback.callCount, 1);
   t.is(subXYZ.callback.callCount, 0);
 });
+
+test.only('getUserData()', (t) => {
+  let topicData = t.context.topicData;
+  let topics = t.context.topics;
+  
+  let userData = {
+    testA: "a",
+    test1: 1,
+    testObj: {
+      someData: "data"
+    }
+  };
+
+  let subscriptionTokens = [];
+  for (let topic of topics) {
+    t.is(topicData.getUserData(topic), undefined);
+  }
+  for (let topic of topics) {
+    let callback = (recordData) =>  {
+      t.deepEqual(JSON.parse(topicData.getUserData(topic)), userData);
+    };
+    let token = topicData.subscribeTopic(topic, callback);
+    subscriptionTokens.push(token);
+  }
+
+  for (let topic of topics) {
+    topicData.publish(topic, "data", "test-id", JSON.stringify(userData))
+  }
+
+  for (let topic of topics) {
+    t.deepEqual(JSON.parse(topicData.getUserData(topic)), userData);
+  }
+});

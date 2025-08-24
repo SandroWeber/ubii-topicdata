@@ -63,6 +63,14 @@ class MapTopicData extends InterfaceTopicData {
     return this.topicDataBuffer.get(topic)[TOPIC_PROPERTY.USERDATA];
   }
 
+  getTimestamp(topic) {
+    if (!this.topicDataBuffer.has(topic)) {
+      return undefined;
+    }
+
+    return this.topicDataBuffer.get(topic)[TOPIC_PROPERTY.TIMESTAMP];
+  }
+
   remove(topic) {
     return this.topicDataBuffer.delete(topic);
   }
